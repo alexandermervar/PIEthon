@@ -9,5 +9,4 @@ def buildReports():
     returner.append('Stepout Location Medians')
     returner.append('PDIs (NJ41)')
 
-
     return returner

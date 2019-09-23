@@ -11,7 +11,7 @@ from PyQt5.QtGui import QFont, QIcon
 from PyQt5 import QtCore
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt, mpld3
+import matplotlib.pyplot as plt
 import htmlbase
 
 iconPath = functions.createPath('PIEcon.png')
@@ -162,6 +162,7 @@ class labbreakdown(QWidget):
         supadupaframe = supadupaframe.reset_index(drop=True)
         labbreakhtml = supadupaframe.to_html()
 
+        """
         #APPOINTMENTS
         self.statusUpdate('Moving on to appointments now. This will be worth it I swear.')
         appointmenturl = appointmentstruct.make_url()
@@ -187,9 +188,11 @@ class labbreakdown(QWidget):
         pivoto.plot.bar()
         plt.tight_layout()
         plt.savefig('reports/figures/timeandbuilding.png')
+        """
 
         tablelist = [labbreakhtml]
-        picturelist = ['figures/shiftlocations.png', 'figures/appointmentlocals.png', 'figures/timeandbuilding.png']
+        #picturelist = ['figures/shiftlocations.png', 'figures/appointmentlocals.png', 'figures/timeandbuilding.png']
+        picturelist = []
 
         outputfile = htmlbase.htmlbase('Lab Breakdown', 'Lab Breakdown', tablelist, picturelist)
         outputfile.makeHTML('LabBreakdown')

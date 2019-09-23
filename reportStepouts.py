@@ -12,7 +12,6 @@ from PyQt5.QtGui import QFont, QIcon
 from PyQt5 import QtCore
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt, mpld3
 
 iconPath = functions.createPath('PIEcon.png')
 
