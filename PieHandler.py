@@ -109,7 +109,7 @@ def goandget(driver, urllist, piedata):
         endcut = -1
         startcut = 1
         rawInput = r.text
-        print(rawInput)
+        #print(rawInput)
         if len(rawInput) == 0 or not rawInput:
             continue
         if (piedata.getform()):
