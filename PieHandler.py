@@ -3,6 +3,7 @@ import time
 import dataconverter
 import users
 import PIEdataVARS
+import requests
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
@@ -36,8 +37,15 @@ def getPie(driver):
     element = driver.find_element_by_link_text("IUB TCC")
     element.click()
 
+    time.sleep(.5)
 
-    return driver
+    cookies = driver.get_cookies()
+
+    session = requests.Session()
+    for cookie in cookies:
+        session.cookies.set(cookie['name'], cookie['value'])
+
+    return session
 
 def spamPieChat(driver, message, times):
     #assumes driver is already logged in
@@ -97,10 +105,11 @@ def goandget(driver, urllist, piedata):
     totString = ''
     counter = 1
     for url in urllist:
-        driver.get(url)
+        r = driver.get(url)
         endcut = -1
         startcut = 1
-        rawInput = seleniumHandlers.getBy(driver, 'tag', 'body', 5).text
+        rawInput = r.text
+        print(rawInput)
         if len(rawInput) == 0 or not rawInput:
             continue
         if (piedata.getform()):
