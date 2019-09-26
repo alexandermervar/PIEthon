@@ -5,7 +5,8 @@ import PieHandler
 import datetime
 import sys
 from PyQt5.QtWidgets import (QWidget, QToolTip, QDesktopWidget, QLineEdit, QLabel, QPushButton, QMessageBox, QComboBox,
-                             QPushButton, QApplication, QCalendarWidget, QTabWidget, QVBoxLayout, QHBoxLayout)
+                             QPushButton, QApplication, QCalendarWidget, QTabWidget, QVBoxLayout, QHBoxLayout, QSpacerItem,
+                             QSizePolicy)
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5 import QtCore
 import previewGui
@@ -26,17 +27,11 @@ class mainwindow(QWidget):
     def initUI(self):
         self.center()
 
-        #add a username label and text box
-        self.userlabel = QLabel(self)
-        #self.userlabel.move(x-285, y-25)
-        self.userlabel.setText("Logged in as: " + self.username)
-        self.userlabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
-        #self.userlabel.resize(275, itemheight)
-
         #add the data type label and C C C combobox
         self.datatypelabel = QLabel(self)
         #self.datatypelabel.move(leftspace, leftspace)
-        self.datatypelabel.setText("Data Type: ")
+        self.datatypelabel.setText("Data Pull Type")
+        self.datatypelabel.setAlignment(QtCore.Qt.AlignCenter)
         #self.datatypelabel.resize(labellen, itemheight)
 
         self.datacombo = QComboBox(self)
@@ -147,11 +142,13 @@ class mainwindow(QWidget):
         #self.maxlabel.move(leftspace, leftspace + itemsbefore*spacer)
         self.maxlabel.setText("Max Returns: ")
         #self.maxlabel.resize(labellen, itemheight)
+        self.maxlabel.hide()
 
         self.maxbox = QLineEdit(self)
         #self.maxbox.move(leftspace+labellen + minspace, leftspace + itemsbefore*spacer)
         #self.maxbox.resize(filterlen, itemheight)
-        self.maxbox.setText('1000')
+        self.maxbox.setText('10000000')
+        self.maxbox.hide()
 
         #add close button
         self.closebutton = QPushButton('Close', self)
@@ -164,18 +161,102 @@ class mainwindow(QWidget):
         self.submitbutton.clicked.connect(self.submititboy)
 
         self.tabs = QTabWidget()
+
+        #everything for the data pull tab
         self.datapulltab = QWidget()
+
+        datatypelabhbox = QHBoxLayout()
+        datatypelabhbox.addWidget(self.datatypelabel)
+
+        datatypehbox = QHBoxLayout()
+        datatypehbox.addWidget(self.datacombo)
+
+        filternamehbox = QHBoxLayout()
+        filternamehbox.addWidget(self.filterlabel)
+
+        usernamehbox = QHBoxLayout()
+        usernamehbox.addWidget(self.usernamelabel)
+        #usernamehbox.addWidget(self.usernamecombo)
+
+        assignedhbox = QHBoxLayout()
+        assignedhbox.addWidget(self.assignedlabel)
+        #assignedhbox.addWidget(self.assignedcombo)
+
+        locationhbox = QHBoxLayout()
+        locationhbox.addWidget(self.locationlabel)
+        #locationhbox.addWidget(self.locationcombo)
+
+        categoryhbox = QHBoxLayout()
+        categoryhbox.addWidget(self.categorylabel)
+        #categoryhbox.addWidget(self.categorycombo)
+
+        statushbox = QHBoxLayout()
+        statushbox.addWidget(self.statuslabel)
+        #statushbox.addWidget(self.statuscombo)
+
+        dataselectlayout = QVBoxLayout()
+        dataselectlayout.addLayout(datatypelabhbox)
+        dataselectlayout.addLayout(datatypehbox)
+        verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        dataselectlayout.addSpacerItem(verticalSpacer)
+        dataselectlayout.addLayout(filternamehbox)
+        dataselectlayout.addLayout(usernamehbox)
+        dataselectlayout.addWidget(self.usernamecombo)
+        dataselectlayout.addLayout(assignedhbox)
+        dataselectlayout.addWidget(self.assignedcombo)
+        dataselectlayout.addLayout(locationhbox)
+        dataselectlayout.addWidget(self.locationcombo)
+        dataselectlayout.addLayout(categoryhbox)
+        dataselectlayout.addWidget(self.categorycombo)
+        dataselectlayout.addLayout(statushbox)
+        dataselectlayout.addWidget(self.statuscombo)
+        dataselectlayout.setSpacing(3)
+        dataselectlayout.addStretch(1)
+
+        calendarlayout = QVBoxLayout()
+        calendarlayout.addWidget(self.startlabel)
+        calendarlayout.addWidget(self.startcal)
+        calendarlayout.addWidget(self.endlabel)
+        calendarlayout.addWidget(self.endcal)
+        calendarlayout.setSpacing(3)
+        calendarlayout.addStretch(1)
+
+        datapullhlayout = QHBoxLayout()
+        datapullhlayout.addLayout(dataselectlayout)
+        datapullhlayout.addLayout(calendarlayout)
+
+        self.datapulltab.setLayout(datapullhlayout)
+
         self.reporttab = QWidget()
+
+        self.startrepcal = QCalendarWidget(self)
+        self.startrepcal.setSelectedDate(datetime.date.today()-datetime.timedelta(days=30))
+        self.startrepcal.clicked.connect(self.startdatechange)
+
+        self.startreplabel = QLabel(self)
+        self.startreplabel.setText("Start Date: " + self.startcal.selectedDate().toString())
+
+        self.endrepcal = QCalendarWidget(self)
+        self.endrepcal.setSelectedDate(datetime.date.today())
+        self.endrepcal.clicked.connect(self.enddatechange)
+
+        self.endreplabel = QLabel(self)
+        self.endreplabel.setText("End Date: " + self.endcal.selectedDate().toString())
+
         self.tabs.addTab(self.datapulltab,"Data Pull")
         self.tabs.addTab(self.reporttab, "Reporting")
 
+        buttonlayout = QHBoxLayout()
+        buttonlayout.addWidget(self.closebutton)
+        buttonlayout.addWidget(self.submitbutton)
 
         outerlayout = QVBoxLayout()
         outerlayout.addWidget(self.tabs)
+        outerlayout.addLayout(buttonlayout)
         self.setLayout(outerlayout)
 
         self.combochange()
-        self.setWindowTitle('PIEthon')
+        self.setWindowTitle('PIEthon: Logged In As ' + self.username)
         self.setWindowIcon(QIcon(iconPath))
         self.show()
 
