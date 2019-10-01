@@ -227,21 +227,37 @@ class mainwindow(QWidget):
 
         self.datapulltab.setLayout(datapullhlayout)
 
+        #Report things?
+
         self.reporttab = QWidget()
 
         self.startrepcal = QCalendarWidget(self)
         self.startrepcal.setSelectedDate(datetime.date.today()-datetime.timedelta(days=30))
-        self.startrepcal.clicked.connect(self.startdatechange)
+        self.startrepcal.clicked.connect(self.startrepdatechange)
 
         self.startreplabel = QLabel(self)
-        self.startreplabel.setText("Start Date: " + self.startcal.selectedDate().toString())
+        self.startreplabel.setText("Start Date: " + self.startrepcal.selectedDate().toString())
 
         self.endrepcal = QCalendarWidget(self)
         self.endrepcal.setSelectedDate(datetime.date.today())
-        self.endrepcal.clicked.connect(self.enddatechange)
+        self.endrepcal.clicked.connect(self.endrepdatechange)
 
         self.endreplabel = QLabel(self)
-        self.endreplabel.setText("End Date: " + self.endcal.selectedDate().toString())
+        self.endreplabel.setText("End Date: " + self.endrepcal.selectedDate().toString())
+
+        reportcallablayout = QHBoxLayout()
+        reportcallablayout.addWidget(self.startreplabel)
+        reportcallablayout.addWidget(self.endreplabel)
+
+        reportcallayout = QHBoxLayout()
+        reportcallayout.addWidget(self.startrepcal)
+        reportcallayout.addWidget(self.endrepcal)
+
+        reportvlayout = QVBoxLayout()
+        reportvlayout.addLayout(reportcallablayout)
+        reportvlayout.addLayout(reportcallayout)
+
+        self.reporttab.setLayout(reportvlayout)
 
         self.tabs.addTab(self.datapulltab,"Data Pull")
         self.tabs.addTab(self.reporttab, "Reporting")
@@ -267,11 +283,16 @@ class mainwindow(QWidget):
         self.move(qr.topLeft())
 
     def startdatechange(self):
-        print(self.startcal.selectedDate())
         self.startlabel.setText("Start Date:  " + self.startcal.selectedDate().toString())
 
     def enddatechange(self):
         self.endlabel.setText("End Date:  " + self.endcal.selectedDate().toString())
+
+    def startrepdatechange(self):
+        self.startreplabel.setText("Start Date:  " + self.startrepcal.selectedDate().toString())
+
+    def endrepdatechange(self):
+        self.endreplabel.setText("End Date:  " + self.endrepcal.selectedDate().toString())
 
     def combochange(self):
         datatype = self.dataoptions.get(self.datacombo.currentText())
