@@ -3,7 +3,8 @@ import PieHandler
 import PIEdataVARS
 import mainGui
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QMessageBox,
-                             QPushButton, QRadioButton, QComboBox)
+                             QPushButton, QRadioButton, QComboBox, QApplication,
+                             QHBoxLayout, QVBoxLayout)
 from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore
 import reportLabBreakdown
@@ -12,80 +13,118 @@ import reportuserinfo
 import reportPDIs
 import reportStepouts
 import time
+import sys
 
 iconPath = functions.createPath('PIEcon.png')
+
+app = QApplication(sys.argv)
+
+screen = app.primaryScreen()
+size = screen.size()
+rect = screen.availableGeometry()
 
 class login(QWidget):
 
     def __init__(self):
         self.reportdict = reportVars.buildReports()
         super().__init__()
-
         self.initUI()
 
     def initUI(self):
-        self.resize(275, 200)
+        #self.resize(rect.height()/3, rect.width()/6)
         self.center()
 
         #add a username label and text box
         self.userlabel = QLabel(self)
-        self.userlabel.move(20, 20)
+        #self.userlabel.move(20, 20)
         self.userlabel.setText("Username")
-        self.userlabel.resize(80, 25)
+        #self.userlabel.resize(80, 25)
 
         self.userbox = QLineEdit(self)
-        self.userbox.move(90, 20)
-        self.userbox.resize(150, 25)
+        #self.userbox.move(90, 20)
+        #self.userbox.resize(150, 25)
 
         #add the password label and text box
         self.passlabel = QLabel(self)
-        self.passlabel.move(20, 55)
+        #self.passlabel.move(20, 55)
         self.passlabel.setText("Password")
-        self.passlabel.resize(80, 25)
+        #self.passlabel.resize(80, 25)
 
         self.passbox = QLineEdit(self)
         self.passbox.setEchoMode(QLineEdit.Password)
-        self.passbox.move(90, 55)
-        self.passbox.resize(150, 25)
+        #self.passbox.move(90, 55)
+        #self.passbox.resize(150, 25)
 
         #add the radio buttons
         self.reportradio = QRadioButton('Reports', self)
         self.reportradio.setChecked(True)
-        self.reportradio.move(50, 100)
+        #self.reportradio.move(50, 100)
 
         self.pulldata = QRadioButton('Pull Data', self)
-        self.pulldata.move(165, 100)
+        #self.pulldata.move(165, 100)
 
         #add the cccccccombo box
         self.categorylabel = QLabel(self)
-        self.categorylabel.move(20, 125)
+        #self.categorylabel.move(20, 125)
         self.categorylabel.setText("Report Type")
-        self.categorylabel.resize(80, 25)
+        #self.categorylabel.resize(80, 25)
 
         self.reportcombo = QComboBox(self)
         self.reportcombo.addItems(self.reportdict)
-        self.reportcombo.move(90, 125)
-        self.reportcombo.resize(150, 25)
+        #self.reportcombo.move(90, 125)
+        #self.reportcombo.resize(150, 25)
 
         self.reportradio.toggled.connect(self.radiocheck)
 
         #add close button
         self.closebutton = QPushButton('Close', self)
-        self.closebutton.move(20,160)
+        #self.closebutton.move(20,160)
         self.closebutton.clicked.connect(self.close)
 
         #add submit button
         self.submitbutton = QPushButton('Submit', self)
-        self.submitbutton.move(175,160)
+        #self.submitbutton.move(175,160)
         self.submitbutton.clicked.connect(self.pieLogin)
 
         #add the status thingy
         self.statuslabel = QLabel(self)
-        self.statuslabel.move(75, 185)
+        #self.statuslabel.move(75, 185)
         self.statuslabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         self.statuslabel.setText("Ready")
-        self.statuslabel.resize(195, 13)
+        #self.statuslabel.resize(195, 13)
 
+        userhbox = QHBoxLayout()
+        userhbox.addWidget(self.userlabel)
+        userhbox.addWidget(self.userbox)
+
+        passvbox = QHBoxLayout()
+        passvbox.addWidget(self.passlabel)
+        passvbox.addWidget(self.passbox)
+
+        radiobox = QHBoxLayout()
+        radiobox.addWidget(self.reportradio)
+        radiobox.addWidget(self.pulldata)
+
+        combohbox = QHBoxLayout()
+        combohbox.addWidget(self.categorylabel)
+        combohbox.addWidget(self.reportcombo)
+
+        buttonhbox = QHBoxLayout()
+        buttonhbox.addWidget(self.closebutton)
+        buttonhbox.addWidget(self.submitbutton)
+
+        statushbox = QHBoxLayout()
+        statushbox.addWidget(self.statuslabel)
+
+        totalvbox = QVBoxLayout()
+        totalvbox.addLayout(userhbox)
+        totalvbox.addLayout(passvbox)
+        totalvbox.addLayout(radiobox)
+        totalvbox.addLayout(combohbox)
+        totalvbox.addLayout(buttonhbox)
+        totalvbox.addLayout(statushbox)
+
+        self.setLayout(totalvbox)
         self.setWindowTitle('PIEthon')
         self.setWindowIcon(QIcon(iconPath))
         self.show()
