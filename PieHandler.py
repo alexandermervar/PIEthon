@@ -36,7 +36,17 @@ def caslogin(driver, username, password, duotype):
             button.click()
         driver.switch_to.default_content()
     else:
-        print('lol you chose code, this is still in development reee')
+        iframe = seleniumHandlers.getBy(driver,'id','duo_iframe',3)
+        driver.switch_to.frame(iframe)
+        button = driver.find_element_by_xpath("//*[contains(text(), 'Passcode')]")
+        if not button is False:
+            button.click()
+        inputthing = seleniumHandlers.getBy(driver,'class','passcode-input',3)
+        inputthing.send_keys(duotype)
+        button = driver.find_element_by_xpath("//*[contains(text(), 'Log In')]")
+        if not button is False:
+            button.click()
+        driver.switch_to.default_content()
 
     if(seleniumHandlers.getBy(driver, 'link_text', 'begin the logout process', 15) == False):
         return False
