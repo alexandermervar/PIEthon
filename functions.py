@@ -4,7 +4,7 @@ from selenium.webdriver.chrome.options import Options
 
 def buildHeadless():
     chrome_options = Options()
-    chrome_options.add_argument("--headless")
+    #chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
     here = os.path.dirname(os.path.abspath(__file__))
     here = here.replace('\\','/')

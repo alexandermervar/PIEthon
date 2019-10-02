@@ -9,7 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 
 
-def caslogin(driver, username, password):
+def caslogin(driver, username, password, duotype):
     driver.get("https://cas.iu.edu")
 
     usernamebox = seleniumHandlers.getBy(driver, 'id', 'username', 5)
@@ -20,6 +20,23 @@ def caslogin(driver, username, password):
 
     button = driver.find_element_by_class_name('button')
     button.click()
+
+    if duotype=="push":
+        iframe = seleniumHandlers.getBy(driver,'id','duo_iframe',3)
+        driver.switch_to.frame(iframe)
+        button = driver.find_element_by_xpath("//*[contains(text(), 'Push')]")
+        if not button is False:
+            button.click()
+        driver.switch_to.default_content()
+    elif duotype=="call":
+        iframe = seleniumHandlers.getBy(driver,'id','duo_iframe',3)
+        driver.switch_to.frame(iframe)
+        button = driver.find_element_by_xpath("//*[contains(text(), 'Call')]")
+        if not button is False:
+            button.click()
+        driver.switch_to.default_content()
+    else:
+        print('lol you chose code, this is still in development reee')
 
     if(seleniumHandlers.getBy(driver, 'link_text', 'begin the logout process', 15) == False):
         return False
