@@ -168,6 +168,12 @@ class login(QWidget):
         else:
             self.duocode.setEnabled(True)
 
+    def keyPressEvent(self, qKeyEvent):
+        if qKeyEvent.key() == QtCore.Qt.Key_Return or qKeyEvent.key() == QtCore.Qt.Key_Enter:
+            self.pieLogin()
+        else:
+            super().keyPressEvent(qKeyEvent)
+
     def pieLogin(self):
         self.statusUpdate('Spinning up the driver')
         driver = functions.buildHeadless()
