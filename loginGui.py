@@ -56,25 +56,27 @@ class login(QWidget):
         #self.passbox.resize(150, 25)
 
         #add the radio buttons
-        self.reportradio = QRadioButton('Reports', self)
-        self.reportradio.setChecked(True)
+        self.pushradio = QRadioButton('Duo Push', self)
+        self.pushradio.setChecked(True)
         #self.reportradio.move(50, 100)
 
-        self.pulldata = QRadioButton('Pull Data', self)
+        self.callradio = QRadioButton('Duo Call', self)
         #self.pulldata.move(165, 100)
 
+        self.coderadio = QRadioButton('Duo Code', self)
+
         #add the cccccccombo box
-        self.categorylabel = QLabel(self)
+        self.codelabel = QLabel(self)
         #self.categorylabel.move(20, 125)
-        self.categorylabel.setText("Report Type")
+        self.codelabel.setText("Duo Code:")
         #self.categorylabel.resize(80, 25)
 
-        self.reportcombo = QComboBox(self)
-        self.reportcombo.addItems(self.reportdict)
+        self.duocode = QLineEdit(self)
+        self.duocode.setEnabled(False)
         #self.reportcombo.move(90, 125)
         #self.reportcombo.resize(150, 25)
 
-        self.reportradio.toggled.connect(self.radiocheck)
+        self.coderadio.toggled.connect(self.radiocheck)
 
         #add close button
         self.closebutton = QPushButton('Close', self)
@@ -102,12 +104,13 @@ class login(QWidget):
         passvbox.addWidget(self.passbox)
 
         radiobox = QHBoxLayout()
-        radiobox.addWidget(self.reportradio)
-        radiobox.addWidget(self.pulldata)
+        radiobox.addWidget(self.pushradio)
+        radiobox.addWidget(self.callradio)
+        radiobox.addWidget(self.coderadio)
 
         combohbox = QHBoxLayout()
-        combohbox.addWidget(self.categorylabel)
-        combohbox.addWidget(self.reportcombo)
+        combohbox.addWidget(self.codelabel)
+        combohbox.addWidget(self.duocode)
 
         buttonhbox = QHBoxLayout()
         buttonhbox.addWidget(self.closebutton)
@@ -160,11 +163,10 @@ class login(QWidget):
             self.lab.show()
 
     def radiocheck(self):
-        print('hit')
-        if (self.pulldata.isChecked()):
-            self.reportcombo.setEnabled(False)
+        if (not self.coderadio.isChecked()):
+            self.duocode.setEnabled(False)
         else:
-            self.reportcombo.setEnabled(True)
+            self.duocode.setEnabled(True)
 
     def pieLogin(self):
         self.statusUpdate('Spinning up the driver')
@@ -172,7 +174,13 @@ class login(QWidget):
         self.statusUpdate('Driver built, prepare for DUO')
         user = self.userbox.text()
         password = self.passbox.text()
-        driver = PieHandler.caslogin(driver,user,password)
+        if self.pushradio.isChecked():
+            duotype = 'push'
+        elif self.callradio.isChecked():
+            duotype = 'call'
+        else:
+            duotype = self.duocode.text()
+        driver = PieHandler.caslogin(driver,user,password,duotype)
         if(not driver):
             QMessageBox.about(self,"Error","CAS login failed!")
             return
@@ -181,18 +189,14 @@ class login(QWidget):
         driver = PieHandler.getPie(driver)
         time.sleep(.7)
         self.statusUpdate('Connected to Pie')
-        if self.reportradio.isChecked():
-            print('load reports')
-            self.startreports(driver, self.reportcombo.currentText())
-        else:
-            self.statusUpdate('Pulling in Users')
-            userlist = PieHandler.grabUsers(driver)
-            self.statusUpdate('Pulling in Locations')
-            lablist = PieHandler.grabLabs(driver)
-            self.statusUpdate('Throwing it together')
-            invlabs = PieHandler.grabInvLabs(driver)
-            datalist = PIEdataVARS.buildalldatathings(userlist, lablist, invlabs)
+        self.statusUpdate('Pulling in Users')
+        userlist = PieHandler.grabUsers(driver)
+        self.statusUpdate('Pulling in Locations')
+        lablist = PieHandler.grabLabs(driver)
+        self.statusUpdate('Throwing it together')
+        invlabs = PieHandler.grabInvLabs(driver)
+        datalist = PIEdataVARS.buildalldatathings(userlist, lablist, invlabs)
 
-            self.startMain(user, datalist, driver)
+        self.startMain(user, datalist, driver)
 
         self.close()
