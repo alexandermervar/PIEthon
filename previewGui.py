@@ -2,7 +2,7 @@ import functions
 import PieHandler
 import PIEdataVARS
 import mainGui
-from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLabel, QMessageBox, QRadioButton,
+from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLabel, QLineEdit, QRadioButton, QVBoxLayout,
                              QPushButton, QScrollArea, QHBoxLayout, QGroupBox, QFormLayout, QCheckBox)
 from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore
@@ -21,6 +21,7 @@ class prevButton(QPushButton):
         self.dframe = dframe
         self.setText('preview')
         self.clicked.connect(self.colPreview)
+        self.setMinimumWidth(100)
 
     def getcols(self):
         return self.cols
@@ -38,27 +39,26 @@ class prevButton(QPushButton):
 
 class preview(QWidget):
 
-    def __init__(self, dframe):
+    def __init__(self, dframe, dtype, startdate, enddate):
         self.dframe = dframe
+        self.dtype = dtype
+        self.startdate = startdate
+        self.enddate = enddate
         super().__init__()
 
         self.initUI()
 
     def initUI(self):
-        spacer = 20
-        x = 800
-        y = 600
-        self.resize(x, y)
         self.center()
 
         mygroupbox = QGroupBox('Mark Columns to Keep (' +str(len(self.dframe.columns)) + ' Columns Total)')
-        mygroupbox.setFixedWidth(305)
+        mygroupbox.setMinimumWidth(200)
         myform = QFormLayout()
 
         buttonlist = []
         checklist = []
 
-        previewform = QFormLayout()
+        previewform = QVBoxLayout()
         rangenum = min(100, len(self.dframe))
 
         for i in range(len(self.dframe.columns)):
@@ -74,14 +74,14 @@ class preview(QWidget):
         layout = QHBoxLayout(self)
         layout.addWidget(scroll)
 
-        previewbox = QGroupBox('Preview')
-        previewbox.setFixedWidth(305)
+        previewbox = QGroupBox('Preview (' +str(len(self.dframe.index)) + ' Records Total)')
+        previewbox.setMinimumWidth(200)
 
         previewlist = []
 
         for i in range(rangenum):
-            previewlist.append(QLabel(''))
-            previewform.addRow(previewlist[i])
+            previewlist.append(QLabel(' '))
+            previewform.addWidget(previewlist[i])
 
         previewbox.setLayout(previewform)
         previewscroll = QScrollArea()
@@ -89,7 +89,7 @@ class preview(QWidget):
         layout.addWidget(previewscroll)
 
         subbox = QGroupBox('')
-        subbox.setFixedWidth(150)
+        #subbox.setFixedWidth(150)
 
         radiouno = QRadioButton('Downloads')
         radiouno.setChecked(True)
@@ -102,13 +102,24 @@ class preview(QWidget):
         radiolist.append(radiodos)
         radiolist.append(radiotres)
 
-        subform = QFormLayout()
+        subform = QVBoxLayout()
         subbut = QPushButton('Export')
         subbut.clicked.connect(lambda: self.export(checklist, radiolist))
 
 
         for radio in radiolist:
             subform.addWidget(radio)
+
+        self.exportname = QLineEdit(self)
+        self.exportname.setText(str(self.dtype) + '_' + str(self.startdate) + '_' + str(self.enddate))
+
+        exportlabel = QLabel('.csv')
+
+        hboy = QHBoxLayout()
+        hboy.addWidget(self.exportname)
+        hboy.addWidget(exportlabel)
+
+        subform.addLayout(hboy)
 
         subform.addWidget(subbut)
 
@@ -141,39 +152,8 @@ class preview(QWidget):
             if (not widget.isChecked()):
                 drops.append(widget.text())
                 #self.dframe.drop(widget.text())
-        self.dframe = self.dframe.drop(columns=drops)
-        self.dframe.to_csv(expath + 'export.csv')
-
-    def statusUpdate(self, newstat):
-        self.statuslabel.setText(newstat)
-        QtCore.QCoreApplication.processEvents()
-
-    def startMain(self, user, dataoptions, driver):
-        self.mainwind = mainGui.mainwindow(user, dataoptions, driver)
-        self.mainwind.show()
-
-    def pieLogin(self):
-        self.statusUpdate('Spinning up the driver')
-        driver = functions.buildHeadless()
-        self.statusUpdate('Driver built, prepare for DUO')
-        user = self.userbox.text()
-        password = self.passbox.text()
-        driver = PieHandler.caslogin(driver,user,password)
-        if(not driver):
-            QMessageBox.about(self,"Error","CAS login failed!")
-            return
-        else:
-            self.statusUpdate('DUO passed, going to Pie')
-        driver = PieHandler.getPie(driver)
-        self.statusUpdate('Connected to Pie')
-        #print('call to users')
-        self.statusUpdate('Pulling in Users')
-        userlist = PieHandler.grabUsers(driver)
-        self.statusUpdate('Pulling in Locations')
-        lablist = PieHandler.grabLabs(driver)
-        self.statusUpdate('Throwing it together')
-        datalist = PIEdataVARS.buildalldatathings(userlist, lablist)
-
-        self.startMain(user, datalist, driver)
-
-        self.close()
+        newframe = self.dframe.drop(columns=drops)
+        try:
+            newframe.to_csv(expath + self.exportname.text() + '.csv')
+        except:
+            newframe.to_csv(expath + str(self.dtype) + '_' + str(self.startdate) + '_' + str(self.enddate) + '.csv')
