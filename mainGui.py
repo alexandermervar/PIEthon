@@ -33,7 +33,8 @@ class mainwindow(QWidget):
         #self.datatypelabel.resize(labellen, itemheight)
 
         self.datacombo = QComboBox(self)
-        self.datacombo.addItems(self.dataoptions.keys())
+        #Sorted by alphabet
+        self.datacombo.addItems(sorted(self.dataoptions.keys()))
         #self.datacombo.move(leftspace + labellen + minspace, leftspace)
         #self.datacombo.resize(filterlen, itemheight)
         self.datacombo.currentTextChanged.connect(self.combochange)
