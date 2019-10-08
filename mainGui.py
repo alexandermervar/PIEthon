@@ -363,7 +363,7 @@ class mainwindow(QWidget):
             self.assignedcombo.setEnabled(False)
 
     def startPreview(self, dframe):
-        self.mainwind = previewGui.preview(dframe)
+        self.mainwind = previewGui.preview(dframe, self.datacombo.currentText(), self.startcal.selectedDate().toPyDate(), self.endcal.selectedDate().toPyDate())
         self.mainwind.show()
 
     def submititboy(self):
