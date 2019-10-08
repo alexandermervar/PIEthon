@@ -1,6 +1,4 @@
 import functions
-import seleniumHandlers
-import dataconverter
 import PieHandler
 import datetime
 import sys
@@ -245,6 +243,17 @@ class mainwindow(QWidget):
         self.endreplabel = QLabel(self)
         self.endreplabel.setText("End Date: " + self.endrepcal.selectedDate().toString())
 
+        self.reporttypelabel = QLabel(self)
+        self.reporttypelabel.setText('Report Type')
+
+        self.reportdrop = QComboBox(self)
+
+        reportreportlayout = QHBoxLayout()
+        #reportreportlayout.addStretch(1)
+        reportreportlayout.setAlignment(QtCore.Qt.AlignLeft)
+        reportreportlayout.addWidget(self.reporttypelabel)
+        reportreportlayout.addWidget(self.reportdrop)
+
         reportcallablayout = QHBoxLayout()
         reportcallablayout.addWidget(self.startreplabel)
         reportcallablayout.addWidget(self.endreplabel)
@@ -254,6 +263,8 @@ class mainwindow(QWidget):
         reportcallayout.addWidget(self.endrepcal)
 
         reportvlayout = QVBoxLayout()
+        reportvlayout.addLayout(reportreportlayout)
+        reportvlayout.addSpacing(10)
         reportvlayout.addLayout(reportcallablayout)
         reportvlayout.addLayout(reportcallayout)
 
@@ -266,9 +277,14 @@ class mainwindow(QWidget):
         buttonlayout.addWidget(self.closebutton)
         buttonlayout.addWidget(self.submitbutton)
 
+        self.statuslabel = QLabel(self)
+        self.statuslabel.setText("Ready")
+        self.statuslabel.setAlignment(QtCore.Qt.AlignRight)
+
         outerlayout = QVBoxLayout()
         outerlayout.addWidget(self.tabs)
         outerlayout.addLayout(buttonlayout)
+        outerlayout.addWidget(self.statuslabel)
         self.setLayout(outerlayout)
 
         self.combochange()
@@ -281,6 +297,11 @@ class mainwindow(QWidget):
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
+
+    def statusUpdate(self, newstat):
+        #print('in status update')
+        self.statuslabel.setText(newstat)
+        QtCore.QCoreApplication.processEvents()
 
     def startdatechange(self):
         self.startlabel.setText("Start Date:  " + self.startcal.selectedDate().toString())
@@ -346,16 +367,28 @@ class mainwindow(QWidget):
         self.mainwind.show()
 
     def submititboy(self):
-        datatype = self.dataoptions.get(self.datacombo.currentText())
-        datatype.set_maxreturns(self.maxbox.text())
-        datatype.set_enddate(self.endcal.selectedDate().toPyDate())
-        datatype.set_startdate(self.startcal.selectedDate().toPyDate())
-        datatype.set_username(self.usernamecombo.currentText())
-        datatype.set_assignedto(self.assignedcombo.currentText())
-        datatype.set_location(self.locationcombo.currentText())
-        datatype.set_category(self.categorycombo.currentText())
-        datatype.set_status(self.statuscombo.currentText())
+        if (self.tabs.currentIndex() == 0):
 
-        url = datatype.make_url()
-        frameboy = PieHandler.goandget(self.driver, url, datatype)
-        self.startPreview(frameboy)
+            self.statusUpdate("Preparing Data Structure")
+
+            datatype = self.dataoptions.get(self.datacombo.currentText())
+            datatype.set_maxreturns(self.maxbox.text())
+            datatype.set_enddate(self.endcal.selectedDate().toPyDate())
+            datatype.set_startdate(self.startcal.selectedDate().toPyDate())
+            datatype.set_username(self.usernamecombo.currentText())
+            datatype.set_assignedto(self.assignedcombo.currentText())
+            datatype.set_location(self.locationcombo.currentText())
+            datatype.set_category(self.categorycombo.currentText())
+            datatype.set_status(self.statuscombo.currentText())
+
+            url = datatype.make_url()
+
+            self.statusUpdate("Pulling from Pie")
+
+            frameboy = PieHandler.goandget(self.driver, url, datatype)
+
+            self.statusUpdate("Complete")
+
+            self.startPreview(frameboy)
+        else:
+            print('do report things here...')
