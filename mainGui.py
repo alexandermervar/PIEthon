@@ -1,7 +1,8 @@
 import functions
 import PieHandler
 import datetime
-import sys
+import importlib
+import os
 from PyQt5.QtWidgets import (QWidget, QToolTip, QDesktopWidget, QLineEdit, QLabel, QPushButton, QMessageBox, QComboBox,
                              QPushButton, QApplication, QCalendarWidget, QTabWidget, QVBoxLayout, QHBoxLayout, QSpacerItem,
                              QSizePolicy)
@@ -11,6 +12,11 @@ import previewGui
 import time
 
 iconPath = functions.createPath('PIEcon.png')
+font = 'BentonSans'
+fontsize = 9
+
+reports = [filename for filename in os.listdir('.') if filename.startswith("report") and filename.endswith(".py")]
+reports = [x.strip('.py') for x in reports]
 
 class mainwindow(QWidget):
 
@@ -27,136 +33,78 @@ class mainwindow(QWidget):
 
         #add the data type label and C C C combobox
         self.datatypelabel = QLabel(self)
-        #self.datatypelabel.move(leftspace, leftspace)
         self.datatypelabel.setText("Data Pull Type")
         self.datatypelabel.setAlignment(QtCore.Qt.AlignCenter)
-        #self.datatypelabel.resize(labellen, itemheight)
 
         self.datacombo = QComboBox(self)
         #Sorted by alphabet
         self.datacombo.addItems(sorted(self.dataoptions.keys()))
-        #self.datacombo.move(leftspace + labellen + minspace, leftspace)
-        #self.datacombo.resize(filterlen, itemheight)
         self.datacombo.currentTextChanged.connect(self.combochange)
 
         #itemsbefore+=1
 
         #add the filter label
         self.filterlabel = QLabel(self)
-        #self.filterlabel.move(0, 60)
         self.filterlabel.setText('Filters')
-        #self.filterlabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         self.filterlabel.setAlignment(QtCore.Qt.AlignCenter)
-        #self.filterlabel.resize(355, 25)
 
         #add all of the other filter things
         self.usernamelabel = QLabel(self)
-        #self.usernamelabel.move(leftspace, leftspace + itemsbefore*spacer)
         self.usernamelabel.setText("Created By: ")
-        #self.usernamelabel.resize(labellen, itemheight)
 
         self.usernamecombo = QComboBox(self)
-        #self.usernamecombo.addItems()
-        #self.usernamecombo.move(leftspace + labellen + minspace, leftspace + itemsbefore*spacer)
-        #self.usernamecombo.resize(filterlen, itemheight)
-
-        #itemsbefore+=1
 
         self.assignedlabel = QLabel(self)
-        #self.assignedlabel.move(leftspace, leftspace + itemsbefore*spacer)
         self.assignedlabel.setText("Assigned To: ")
-        #self.assignedlabel.resize(labellen, itemheight)
 
         self.assignedcombo = QComboBox(self)
-        #self.usernamecombo.addItems()
-        #self.assignedcombo.move(leftspace+labellen + minspace, leftspace + itemsbefore*spacer)
-        #self.assignedcombo.resize(filterlen, itemheight)
-
-        #itemsbefore+=1
 
         self.locationlabel = QLabel(self)
-        #self.locationlabel.move(leftspace, leftspace + itemsbefore*spacer)
         self.locationlabel.setText("Location: ")
-        #self.locationlabel.resize(labellen, itemheight)
 
         self.locationcombo = QComboBox(self)
-        #self.locationcombo.addItems(self.labs)
-        #self.locationcombo.move(leftspace+labellen + minspace, leftspace + itemsbefore*spacer)
-        #self.locationcombo.resize(filterlen, itemheight)
 
         #itemsbefore+=1
 
         self.categorylabel = QLabel(self)
-        #self.categorylabel.move(leftspace, leftspace + itemsbefore*spacer)
         self.categorylabel.setText("Category: ")
-        #self.categorylabel.resize(labellen, itemheight)
 
         self.categorycombo = QComboBox(self)
-        #self.categorycombo.addItems(self.labs)
-        #self.categorycombo.move(leftspace+labellen + minspace, leftspace + itemsbefore*spacer)
-        #self.categorycombo.resize(filterlen, itemheight)
-
-        #itemsbefore+=1
-
         self.statuslabel = QLabel(self)
-        #self.statuslabel.move(leftspace, leftspace + itemsbefore*spacer)
         self.statuslabel.setText("Status: ")
-        #self.statuslabel.resize(labellen, itemheight)
 
         self.statuscombo = QComboBox(self)
-        #self.statuscombo.addItems(self.labs)
-        #self.statuscombo.move(leftspace+labellen + minspace, leftspace + itemsbefore*spacer)
-        #self.statuscombo.resize(filterlen, itemheight)
-
-        #itemsbefore+=1
 
         #add the startdate and end date calendars
         self.startcal = QCalendarWidget(self)
-        #self.startcal.move(x/2 - 157, leftspace + itemsbefore*spacer + callabelspace)
         self.startcal.setSelectedDate(datetime.date.today()-datetime.timedelta(days=30))
         self.startcal.clicked.connect(self.startdatechange)
 
         self.startlabel = QLabel(self)
-        #self.startlabel.move(leftspace, leftspace + itemsbefore*spacer)
         self.startlabel.setText("Start Date: " + self.startcal.selectedDate().toString())
-        #self.startlabel.resize(labellen+150, itemheight)
-
-        #itemsbefore+=5.5
 
         self.endcal = QCalendarWidget(self)
-        #self.endcal.move(x/2 - 157, leftspace + itemsbefore*spacer + callabelspace)
         self.endcal.setSelectedDate(datetime.date.today())
         self.endcal.clicked.connect(self.enddatechange)
 
         self.endlabel = QLabel(self)
-        #self.endlabel.move(leftspace, leftspace + itemsbefore*spacer)
         self.endlabel.setText("End Date: " + self.endcal.selectedDate().toString())
-        #self.endlabel.resize(labellen+150, itemheight)
-
-
-        #itemsbefore+=5.5
 
         #create the maxreturns things
         self.maxlabel = QLabel(self)
-        #self.maxlabel.move(leftspace, leftspace + itemsbefore*spacer)
         self.maxlabel.setText("Max Returns: ")
-        #self.maxlabel.resize(labellen, itemheight)
         self.maxlabel.hide()
 
         self.maxbox = QLineEdit(self)
-        #self.maxbox.move(leftspace+labellen + minspace, leftspace + itemsbefore*spacer)
-        #self.maxbox.resize(filterlen, itemheight)
         self.maxbox.setText('10000000')
         self.maxbox.hide()
 
         #add close button
         self.closebutton = QPushButton('Close', self)
-        #self.closebutton.move(leftspace,y-50)
         self.closebutton.clicked.connect(self.close)
 
         #add submit button
         self.submitbutton = QPushButton('Submit', self)
-        #self.submitbutton.move(x-99,y-50)
         self.submitbutton.clicked.connect(self.submititboy)
 
         self.tabs = QTabWidget()
@@ -175,23 +123,18 @@ class mainwindow(QWidget):
 
         usernamehbox = QHBoxLayout()
         usernamehbox.addWidget(self.usernamelabel)
-        #usernamehbox.addWidget(self.usernamecombo)
 
         assignedhbox = QHBoxLayout()
         assignedhbox.addWidget(self.assignedlabel)
-        #assignedhbox.addWidget(self.assignedcombo)
 
         locationhbox = QHBoxLayout()
         locationhbox.addWidget(self.locationlabel)
-        #locationhbox.addWidget(self.locationcombo)
 
         categoryhbox = QHBoxLayout()
         categoryhbox.addWidget(self.categorylabel)
-        #categoryhbox.addWidget(self.categorycombo)
 
         statushbox = QHBoxLayout()
         statushbox.addWidget(self.statuslabel)
-        #statushbox.addWidget(self.statuscombo)
 
         dataselectlayout = QVBoxLayout()
         dataselectlayout.addLayout(datatypelabhbox)
@@ -248,6 +191,7 @@ class mainwindow(QWidget):
         self.reporttypelabel.setText('Report Type')
 
         self.reportdrop = QComboBox(self)
+        self.reportdrop.addItems([repo.strip('report') for repo in reports])
 
         reportreportlayout = QHBoxLayout()
         #reportreportlayout.addStretch(1)
@@ -291,6 +235,29 @@ class mainwindow(QWidget):
         self.combochange()
         self.setWindowTitle('PIEthon: Logged In As ' + self.username)
         self.setWindowIcon(QIcon(iconPath))
+
+        #style things
+        self.setStyleSheet("background-color:white;")
+        self.datatypelabel.setFont(QFont(font, fontsize))
+        self.datacombo.setFont(QFont(font, fontsize))
+        self.filterlabel.setFont(QFont(font, fontsize))
+        self.usernamelabel.setFont(QFont(font, fontsize))
+        self.usernamecombo.setFont(QFont(font, fontsize))
+        self.assignedlabel.setFont(QFont(font, fontsize))
+        self.assignedcombo.setFont(QFont(font, fontsize))
+        self.locationlabel.setFont(QFont(font, fontsize))
+        self.locationcombo.setFont(QFont(font, fontsize))
+        self.categorylabel.setFont(QFont(font, fontsize))
+        self.categorycombo.setFont(QFont(font, fontsize))
+        self.statuslabel.setFont(QFont(font, fontsize))
+        self.statuscombo.setFont(QFont(font, fontsize))
+        self.startlabel.setFont(QFont(font, fontsize))
+        self.endlabel.setFont(QFont(font, fontsize))
+        self.submitbutton.setFont(QFont(font, fontsize))
+        self.submitbutton.setStyleSheet("background-color:rgb(153,0,0); color:white;")
+        self.closebutton.setFont(QFont(font, fontsize))
+        self.closebutton.setStyleSheet("background-color:rgb(153,0,0); color:white;")
+
         self.show()
 
     def center(self):
@@ -392,4 +359,6 @@ class mainwindow(QWidget):
 
             self.startPreview(frameboy)
         else:
-            print('do report things here...')
+            self.statusUpdate("Starting Report")
+            i = importlib.import_module('report' + self.reportdrop.currentText())
+            i.main('start', 'end', self.statuslabel)

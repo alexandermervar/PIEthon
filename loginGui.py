@@ -3,12 +3,11 @@ import PieHandler
 import PIEdataVARS
 import mainGui
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QMessageBox,
-                             QPushButton, QRadioButton, QComboBox, QApplication,
+                             QPushButton, QRadioButton, QApplication,
                              QHBoxLayout, QVBoxLayout)
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QFont
 from PyQt5 import QtCore
 import reportLabBreakdown
-import reportVars
 import reportuserinfo
 import reportPDIs
 import reportStepouts
@@ -16,6 +15,8 @@ import time
 import sys
 
 iconPath = functions.createPath('PIEcon.png')
+font = 'BentonSans'
+fontsize = 9
 
 app = QApplication(sys.argv)
 
@@ -26,7 +27,6 @@ rect = screen.availableGeometry()
 class login(QWidget):
 
     def __init__(self):
-        self.reportdict = reportVars.buildReports()
         super().__init__()
         self.initUI()
 
@@ -120,16 +120,37 @@ class login(QWidget):
         statushbox.addWidget(self.statuslabel)
 
         totalvbox = QVBoxLayout()
+        totalvbox.addSpacing(10)
         totalvbox.addLayout(userhbox)
         totalvbox.addLayout(passvbox)
+        totalvbox.addSpacing(15)
         totalvbox.addLayout(radiobox)
         totalvbox.addLayout(combohbox)
+        totalvbox.addSpacing(25)
         totalvbox.addLayout(buttonhbox)
         totalvbox.addLayout(statushbox)
 
         self.setLayout(totalvbox)
         self.setWindowTitle('PIEthon')
         self.setWindowIcon(QIcon(iconPath))
+
+        #style things
+        self.setStyleSheet("background-color:white;")
+        self.userlabel.setFont(QFont(font, fontsize))
+        self.userbox.setFont(QFont(font, fontsize))
+        self.passlabel.setFont(QFont(font, fontsize))
+        self.passbox.setFont(QFont(font, fontsize))
+        self.pushradio.setFont(QFont(font, fontsize))
+        self.callradio.setFont(QFont(font, fontsize))
+        self.coderadio.setFont(QFont(font, fontsize))
+        self.codelabel.setFont(QFont(font, fontsize))
+        self.duocode.setFont(QFont(font, fontsize))
+        self.submitbutton.setFont(QFont(font, fontsize))
+        self.submitbutton.setStyleSheet("background-color:rgb(153,0,0); color:white;")
+        self.closebutton.setFont(QFont(font, fontsize))
+        self.closebutton.setStyleSheet("background-color:rgb(153,0,0); color:white;")
+        self.statuslabel.setFont(QFont(font, fontsize, QFont.Bold))
+
         self.show()
 
     def center(self):
