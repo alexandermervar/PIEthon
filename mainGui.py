@@ -78,6 +78,7 @@ class mainwindow(QWidget):
         #add the startdate and end date calendars
         self.startcal = QCalendarWidget(self)
         self.startcal.setSelectedDate(datetime.date.today()-datetime.timedelta(days=30))
+        self.startcal.setVerticalHeaderFormat(QCalendarWidget.NoVerticalHeader)
         self.startcal.clicked.connect(self.startdatechange)
 
         self.startlabel = QLabel(self)
@@ -85,6 +86,7 @@ class mainwindow(QWidget):
 
         self.endcal = QCalendarWidget(self)
         self.endcal.setSelectedDate(datetime.date.today())
+        self.endcal.setVerticalHeaderFormat(QCalendarWidget.NoVerticalHeader)
         self.endcal.clicked.connect(self.enddatechange)
 
         self.endlabel = QLabel(self)
@@ -175,6 +177,7 @@ class mainwindow(QWidget):
 
         self.startrepcal = QCalendarWidget(self)
         self.startrepcal.setSelectedDate(datetime.date.today()-datetime.timedelta(days=30))
+        self.startrepcal.setVerticalHeaderFormat(QCalendarWidget.NoVerticalHeader)
         self.startrepcal.clicked.connect(self.startrepdatechange)
 
         self.startreplabel = QLabel(self)
@@ -182,6 +185,7 @@ class mainwindow(QWidget):
 
         self.endrepcal = QCalendarWidget(self)
         self.endrepcal.setSelectedDate(datetime.date.today())
+        self.endrepcal.setVerticalHeaderFormat(QCalendarWidget.NoVerticalHeader)
         self.endrepcal.clicked.connect(self.endrepdatechange)
 
         self.endreplabel = QLabel(self)
