@@ -79,6 +79,7 @@ class mainwindow(QWidget):
         self.startcal = QCalendarWidget(self)
         self.startcal.setSelectedDate(datetime.date.today()-datetime.timedelta(days=30))
         self.startcal.setVerticalHeaderFormat(QCalendarWidget.NoVerticalHeader)
+        self.startcal.setGridVisible(True)
         self.startcal.clicked.connect(self.startdatechange)
 
         self.startlabel = QLabel(self)
@@ -87,6 +88,7 @@ class mainwindow(QWidget):
         self.endcal = QCalendarWidget(self)
         self.endcal.setSelectedDate(datetime.date.today())
         self.endcal.setVerticalHeaderFormat(QCalendarWidget.NoVerticalHeader)
+        self.endcal.setGridVisible(True)
         self.endcal.clicked.connect(self.enddatechange)
 
         self.endlabel = QLabel(self)
@@ -241,7 +243,7 @@ class mainwindow(QWidget):
         self.setWindowIcon(QIcon(iconPath))
 
         #style things
-        self.setStyleSheet("background-color:white;")
+        #self.setStyleSheet("background-color:white;")
         self.datatypelabel.setFont(QFont(font, fontsize))
         self.datacombo.setFont(QFont(font, fontsize))
         self.filterlabel.setFont(QFont(font, fontsize))
@@ -261,7 +263,67 @@ class mainwindow(QWidget):
         self.submitbutton.setStyleSheet("background-color:rgb(153,0,0); color:white;")
         self.closebutton.setFont(QFont(font, fontsize))
         self.closebutton.setStyleSheet("background-color:rgb(153,0,0); color:white;")
+        self.startcal.setStyleSheet('QSpinBox{'
+                                  'background-color:rgb(153,0,0);'
+                                  'selection-background-color: rgb(153, 0, 0);'
+                                  'selection-color: white;'
+                                  'color:white;}'
 
+                                  'QToolButton{'
+                                  'background-color:rgb(153,0,0);'
+                                  'color:white;}'
+
+                                  'QWidget#qt_calendar_navigationbar{'
+                                  'background-color:rgb(153,0,0);'
+                                  'color:white;}'
+
+                                  'QMenu{'
+                                  'background-color:rgb(153,0,0);}'
+                                  )
+        self.endcal.setStyleSheet('QSpinBox{'
+                                  'background-color:rgb(153,0,0);'
+                                  'selection-background-color: rgb(153, 0, 0);'
+                                  'selection-color: white;'
+                                  'color:white;}'
+                                  
+                                  'QToolButton{'
+                                  'background-color:rgb(153,0,0);'
+                                  'color:white;}'
+                                  
+                                  'QWidget#qt_calendar_navigationbar{'
+                                  'background-color:rgb(153,0,0);'
+                                  'color:white;}'
+                                  
+                                  'QMenu{'
+                                  'background-color:rgb(153,0,0);}'
+                                  )
+        """
+        self.endcal.setStyleSheet('QWidget#qt_calendar_navigationbar{'
+                                  'background-color:rgb(153,0,0);'
+                                  'color:white;}'
+
+                                  'QMenu{'
+                                  'background-color:rgb(153,0,0);'
+                                  'color:white;}'
+
+                                  'QSpinBox{'
+                                  'background-color:rgb(153,0,0);'
+                                  'color:white;}'
+
+                                  'QWidget{'
+                                  'alternate-background-color:rgb(153,0,0);'
+                                  'color:white;}'
+
+                                  'QPrevNextCalButton#qt_calendar_prevmonth{'
+                                  'alternate-background-color:rgb(153,0,0);'
+                                  'background-color:rgb(153,0,0);'
+                                  'color:white;}'
+
+                                  'QMenu{'
+                                  'background-color:rgb(153,0,0);'
+                                  'color:white;}'
+                                  )
+        """
         self.show()
 
     def center(self):
