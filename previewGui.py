@@ -126,6 +126,8 @@ class preview(QWidget):
         subbox.setLayout(subform)
         layout.addWidget(subbox)
 
+        self.setStyleSheet(open("iu_stylesheet.qss", "r").read())
+
         self.setWindowTitle('PIEthon')
         self.setWindowIcon(QIcon(iconPath))
         self.show()

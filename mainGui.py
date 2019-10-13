@@ -70,8 +70,8 @@ class mainwindow(QWidget):
         self.categorylabel.setText("Category: ")
 
         self.categorycombo = QComboBox(self)
-        self.statuslabel = QLabel(self)
-        self.statuslabel.setText("Status: ")
+        self.statuslabels = QLabel(self)
+        self.statuslabels.setText("Status: ")
 
         self.statuscombo = QComboBox(self)
 
@@ -138,7 +138,7 @@ class mainwindow(QWidget):
         categoryhbox.addWidget(self.categorylabel)
 
         statushbox = QHBoxLayout()
-        statushbox.addWidget(self.statuslabel)
+        statushbox.addWidget(self.statuslabels)
 
         dataselectlayout = QVBoxLayout()
         dataselectlayout.addLayout(datatypelabhbox)
@@ -230,6 +230,7 @@ class mainwindow(QWidget):
 
         self.statuslabel = QLabel(self)
         self.statuslabel.setText("Ready")
+        self.statuslabel.setObjectName('statuslabel')
         self.statuslabel.setAlignment(QtCore.Qt.AlignRight)
 
         outerlayout = QVBoxLayout()
@@ -243,87 +244,8 @@ class mainwindow(QWidget):
         self.setWindowIcon(QIcon(iconPath))
 
         #style things
-        #self.setStyleSheet("background-color:white;")
-        self.datatypelabel.setFont(QFont(font, fontsize))
-        self.datacombo.setFont(QFont(font, fontsize))
-        self.filterlabel.setFont(QFont(font, fontsize))
-        self.usernamelabel.setFont(QFont(font, fontsize))
-        self.usernamecombo.setFont(QFont(font, fontsize))
-        self.assignedlabel.setFont(QFont(font, fontsize))
-        self.assignedcombo.setFont(QFont(font, fontsize))
-        self.locationlabel.setFont(QFont(font, fontsize))
-        self.locationcombo.setFont(QFont(font, fontsize))
-        self.categorylabel.setFont(QFont(font, fontsize))
-        self.categorycombo.setFont(QFont(font, fontsize))
-        self.statuslabel.setFont(QFont(font, fontsize))
-        self.statuscombo.setFont(QFont(font, fontsize))
-        self.startlabel.setFont(QFont(font, fontsize))
-        self.endlabel.setFont(QFont(font, fontsize))
-        self.submitbutton.setFont(QFont(font, fontsize))
-        self.submitbutton.setStyleSheet("background-color:rgb(153,0,0); color:white;")
-        self.closebutton.setFont(QFont(font, fontsize))
-        self.closebutton.setStyleSheet("background-color:rgb(153,0,0); color:white;")
-        self.startcal.setStyleSheet('QSpinBox{'
-                                  'background-color:rgb(153,0,0);'
-                                  'selection-background-color: rgb(153, 0, 0);'
-                                  'selection-color: white;'
-                                  'color:white;}'
 
-                                  'QToolButton{'
-                                  'background-color:rgb(153,0,0);'
-                                  'color:white;}'
-
-                                  'QWidget#qt_calendar_navigationbar{'
-                                  'background-color:rgb(153,0,0);'
-                                  'color:white;}'
-
-                                  'QMenu{'
-                                  'background-color:rgb(153,0,0);}'
-                                  )
-        self.endcal.setStyleSheet('QSpinBox{'
-                                  'background-color:rgb(153,0,0);'
-                                  'selection-background-color: rgb(153, 0, 0);'
-                                  'selection-color: white;'
-                                  'color:white;}'
-                                  
-                                  'QToolButton{'
-                                  'background-color:rgb(153,0,0);'
-                                  'color:white;}'
-                                  
-                                  'QWidget#qt_calendar_navigationbar{'
-                                  'background-color:rgb(153,0,0);'
-                                  'color:white;}'
-                                  
-                                  'QMenu{'
-                                  'background-color:rgb(153,0,0);}'
-                                  )
-        """
-        self.endcal.setStyleSheet('QWidget#qt_calendar_navigationbar{'
-                                  'background-color:rgb(153,0,0);'
-                                  'color:white;}'
-
-                                  'QMenu{'
-                                  'background-color:rgb(153,0,0);'
-                                  'color:white;}'
-
-                                  'QSpinBox{'
-                                  'background-color:rgb(153,0,0);'
-                                  'color:white;}'
-
-                                  'QWidget{'
-                                  'alternate-background-color:rgb(153,0,0);'
-                                  'color:white;}'
-
-                                  'QPrevNextCalButton#qt_calendar_prevmonth{'
-                                  'alternate-background-color:rgb(153,0,0);'
-                                  'background-color:rgb(153,0,0);'
-                                  'color:white;}'
-
-                                  'QMenu{'
-                                  'background-color:rgb(153,0,0);'
-                                  'color:white;}'
-                                  )
-        """
+        self.setStyleSheet(open("iu_stylesheet.qss", "r").read())
         self.show()
 
     def center(self):

@@ -1,0 +1,105 @@
+QWidget {
+    background-color:white;
+}
+
+QPushButton {
+    background-color:rgb(153,0,0);
+    color:white;
+    border-width: 2px;
+    border-radius: 10px;
+    border-color:rgb(153,0,0);
+    font: bold 12pt 'Arial';
+    min-width: 5em;
+    max-width: 10em;
+    padding: 3px;
+}
+
+QPushButton:hover {
+    background-color:white;
+    color:rgb(153,0,0);
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    border-color:rgb(153,0,0);
+    font: bold 12pt 'Arial';
+    min-width: 5em;
+    max-width: 10em;
+    padding: 3px;
+}
+
+QLabel {
+    font: bold 10pt 'Arial';
+}
+
+QLabel#statuslabel {
+    font: bold 10pt 'Arial';
+}
+
+QLineEdit {
+    font: 10pt 'Arial';
+}
+
+QRadioButton {
+    font: 9pt 'Arial';
+}
+
+QCalendarWidget QSpinBox{
+    background-color:rgb(153,0,0);
+    selection-background-color: rgb(153, 0, 0);
+    selection-color: white;
+    color:white;
+}
+
+QCalendarWidget QToolButton{
+    background-color:rgb(153,0,0);
+    color:white;
+}
+
+QWidget#qt_calendar_navigationbar{
+    background-color:rgb(153,0,0);
+    color:white;
+}
+
+QCalendarWidget QMenu{
+    background-color:rgb(153,0,0);
+}
+
+QComboBox {
+    border: 1px solid gray;
+    border-radius: 3px;
+    background-color: white;
+    padding: 1px 18px 1px 3px;
+    min-width: 6em;
+}
+
+QComboBox::drop-down {
+    border-left-width: 1px;
+    border-left-color: darkgray;
+    border-left-style: solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+QComboBox:disabled {
+    border: 0px solid gray;
+    border-radius: 3px;
+    background-color: lightgray;
+    padding: 1px 18px 1px 3px;
+    min-width: 6em;
+}
+
+QComboBox QAbstractItemView {
+    border: 2px solid darkgray;
+    selection-background-color: rgb(153,0,0);
+    selection-color:white;
+    color:black;
+    font: 8pt 'Arial';
+}
+
+QComboBox::drop-down:disabled {
+    border-left-width: 0px;
+    border-left-color: darkgray;
+    border-left-style: solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 0px;
+}

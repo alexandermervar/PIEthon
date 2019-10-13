@@ -24,6 +24,8 @@ screen = app.primaryScreen()
 size = screen.size()
 rect = screen.availableGeometry()
 
+qss="iu_stylesheet.qss"
+
 class login(QWidget):
 
     def __init__(self):
@@ -37,7 +39,7 @@ class login(QWidget):
         #add a username label and text box
         self.userlabel = QLabel(self)
         #self.userlabel.move(20, 20)
-        self.userlabel.setText("Username")
+        self.userlabel.setText("Username:")
         #self.userlabel.resize(80, 25)
 
         self.userbox = QLineEdit(self)
@@ -47,7 +49,7 @@ class login(QWidget):
         #add the password label and text box
         self.passlabel = QLabel(self)
         #self.passlabel.move(20, 55)
-        self.passlabel.setText("Password")
+        self.passlabel.setText("Password:")
         #self.passlabel.resize(80, 25)
 
         self.passbox = QLineEdit(self)
@@ -90,6 +92,7 @@ class login(QWidget):
 
         #add the status thingy
         self.statuslabel = QLabel(self)
+        self.statuslabel.setObjectName('statuslabel')
         #self.statuslabel.move(75, 185)
         self.statuslabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         self.statuslabel.setText("Ready")
@@ -135,21 +138,7 @@ class login(QWidget):
         self.setWindowIcon(QIcon(iconPath))
 
         #style things
-        self.setStyleSheet("background-color:white;")
-        self.userlabel.setFont(QFont(font, fontsize))
-        self.userbox.setFont(QFont(font, fontsize))
-        self.passlabel.setFont(QFont(font, fontsize))
-        self.passbox.setFont(QFont(font, fontsize))
-        self.pushradio.setFont(QFont(font, fontsize))
-        self.callradio.setFont(QFont(font, fontsize))
-        self.coderadio.setFont(QFont(font, fontsize))
-        self.codelabel.setFont(QFont(font, fontsize))
-        self.duocode.setFont(QFont(font, fontsize))
-        self.submitbutton.setFont(QFont(font, fontsize))
-        self.submitbutton.setStyleSheet("background-color:rgb(153,0,0); color:white;")
-        self.closebutton.setFont(QFont(font, fontsize))
-        self.closebutton.setStyleSheet("background-color:rgb(153,0,0); color:white;")
-        self.statuslabel.setFont(QFont(font, fontsize, QFont.Bold))
+        self.setStyleSheet(open("iu_stylesheet.qss", "r").read())
 
         self.show()
 
