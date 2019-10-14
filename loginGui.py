@@ -38,71 +38,57 @@ class login(QWidget):
 
         #add a username label and text box
         self.userlabel = QLabel(self)
-        #self.userlabel.move(20, 20)
-        self.userlabel.setText("Username:")
-        #self.userlabel.resize(80, 25)
+        self.userlabel.setObjectName('bigboi')
+        self.userlabel.setText("Username")
 
         self.userbox = QLineEdit(self)
-        #self.userbox.move(90, 20)
-        #self.userbox.resize(150, 25)
+        self.userbox.setObjectName("important")
+
 
         #add the password label and text box
         self.passlabel = QLabel(self)
-        #self.passlabel.move(20, 55)
-        self.passlabel.setText("Password:")
-        #self.passlabel.resize(80, 25)
+        self.passlabel.setObjectName('bigboi')
+        self.passlabel.setText("Password")
 
         self.passbox = QLineEdit(self)
         self.passbox.setEchoMode(QLineEdit.Password)
-        #self.passbox.move(90, 55)
-        #self.passbox.resize(150, 25)
+        self.passbox.setObjectName("important")
 
         #add the radio buttons
         self.pushradio = QRadioButton('Duo Push', self)
         self.pushradio.setChecked(True)
-        #self.reportradio.move(50, 100)
 
         self.callradio = QRadioButton('Duo Call', self)
-        #self.pulldata.move(165, 100)
 
         self.coderadio = QRadioButton('Duo Code', self)
 
-        #add the cccccccombo box
         self.codelabel = QLabel(self)
-        #self.categorylabel.move(20, 125)
         self.codelabel.setText("Duo Code:")
-        #self.categorylabel.resize(80, 25)
 
         self.duocode = QLineEdit(self)
         self.duocode.setEnabled(False)
-        #self.reportcombo.move(90, 125)
-        #self.reportcombo.resize(150, 25)
 
         self.coderadio.toggled.connect(self.radiocheck)
 
         #add close button
         self.closebutton = QPushButton('Close', self)
-        #self.closebutton.move(20,160)
         self.closebutton.clicked.connect(self.close)
 
         #add submit button
         self.submitbutton = QPushButton('Submit', self)
-        #self.submitbutton.move(175,160)
         self.submitbutton.clicked.connect(self.pieLogin)
 
         #add the status thingy
         self.statuslabel = QLabel(self)
         self.statuslabel.setObjectName('statuslabel')
-        #self.statuslabel.move(75, 185)
         self.statuslabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         self.statuslabel.setText("Ready")
-        #self.statuslabel.resize(195, 13)
 
-        userhbox = QHBoxLayout()
+        userhbox = QVBoxLayout()
         userhbox.addWidget(self.userlabel)
         userhbox.addWidget(self.userbox)
 
-        passvbox = QHBoxLayout()
+        passvbox = QVBoxLayout()
         passvbox.addWidget(self.passlabel)
         passvbox.addWidget(self.passbox)
 
@@ -129,7 +115,7 @@ class login(QWidget):
         totalvbox.addSpacing(15)
         totalvbox.addLayout(radiobox)
         totalvbox.addLayout(combohbox)
-        totalvbox.addSpacing(25)
+        totalvbox.addSpacing(30)
         totalvbox.addLayout(buttonhbox)
         totalvbox.addLayout(statushbox)
 

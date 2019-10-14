@@ -162,6 +162,7 @@ class mainwindow(QWidget):
         calendarlayout = QVBoxLayout()
         calendarlayout.addWidget(self.startlabel)
         calendarlayout.addWidget(self.startcal)
+        calendarlayout.addSpacing(10)
         calendarlayout.addWidget(self.endlabel)
         calendarlayout.addWidget(self.endcal)
         calendarlayout.setSpacing(3)
@@ -169,9 +170,14 @@ class mainwindow(QWidget):
 
         datapullhlayout = QHBoxLayout()
         datapullhlayout.addLayout(dataselectlayout)
+        datapullhlayout.addSpacing(10)
         datapullhlayout.addLayout(calendarlayout)
 
-        self.datapulltab.setLayout(datapullhlayout)
+        datapullvlayout =QVBoxLayout()
+        datapullvlayout.addSpacing(15)
+        datapullvlayout.addLayout(datapullhlayout)
+
+        self.datapulltab.setLayout(datapullvlayout)
 
         #Report things?
 
@@ -207,15 +213,18 @@ class mainwindow(QWidget):
 
         reportcallablayout = QHBoxLayout()
         reportcallablayout.addWidget(self.startreplabel)
+        reportcallablayout.addSpacing(10)
         reportcallablayout.addWidget(self.endreplabel)
 
         reportcallayout = QHBoxLayout()
         reportcallayout.addWidget(self.startrepcal)
+        reportcallayout.addSpacing(10)
         reportcallayout.addWidget(self.endrepcal)
 
         reportvlayout = QVBoxLayout()
+        reportvlayout.addSpacing(15)
         reportvlayout.addLayout(reportreportlayout)
-        reportvlayout.addSpacing(10)
+        reportvlayout.addSpacing(15)
         reportvlayout.addLayout(reportcallablayout)
         reportvlayout.addLayout(reportcallayout)
 
@@ -235,6 +244,7 @@ class mainwindow(QWidget):
 
         outerlayout = QVBoxLayout()
         outerlayout.addWidget(self.tabs)
+        outerlayout.addSpacing(15)
         outerlayout.addLayout(buttonlayout)
         outerlayout.addWidget(self.statuslabel)
         self.setLayout(outerlayout)

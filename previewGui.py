@@ -22,6 +22,7 @@ class prevButton(QPushButton):
         self.setText('preview')
         self.clicked.connect(self.colPreview)
         self.setMinimumWidth(100)
+        self.setObjectName('previewbutton')
 
     def getcols(self):
         return self.cols
@@ -52,7 +53,6 @@ class preview(QWidget):
         self.center()
 
         mygroupbox = QGroupBox('Mark Columns to Keep (' +str(len(self.dframe.columns)) + ' Columns Total)')
-        mygroupbox.setMinimumWidth(200)
         myform = QFormLayout()
 
         buttonlist = []
@@ -75,7 +75,6 @@ class preview(QWidget):
         layout.addWidget(scroll)
 
         previewbox = QGroupBox('Preview (' +str(len(self.dframe.index)) + ' Records Total)')
-        previewbox.setMinimumWidth(200)
 
         previewlist = []
 
