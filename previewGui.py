@@ -1,11 +1,7 @@
 import functions
-import PieHandler
-import PIEdataVARS
-import mainGui
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLabel, QLineEdit, QRadioButton, QVBoxLayout,
                              QPushButton, QScrollArea, QHBoxLayout, QGroupBox, QFormLayout, QCheckBox)
 from PyQt5.QtGui import QIcon
-from PyQt5 import QtCore
 from os.path import expanduser
 
 iconPath = functions.createPath('PIEcon.png')
@@ -71,6 +67,7 @@ class preview(QWidget):
         scroll = QScrollArea()
         scroll.setWidget(mygroupbox)
         scroll.setWidgetResizable(True)
+        scroll.horizontalScrollBar().setEnabled = False
         layout = QHBoxLayout(self)
         layout.addWidget(scroll)
 
@@ -84,6 +81,7 @@ class preview(QWidget):
 
         previewbox.setLayout(previewform)
         previewscroll = QScrollArea()
+        previewscroll.horizontalScrollBar().setEnabled = False
         previewscroll.setWidget(previewbox)
         layout.addWidget(previewscroll)
 
