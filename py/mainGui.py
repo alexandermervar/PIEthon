@@ -1,21 +1,16 @@
-import functions
-import PieHandler
+from py import functions, PieHandler, previewGui
 import datetime
 import importlib
 import os
-from PyQt5.QtWidgets import (QWidget, QToolTip, QDesktopWidget, QLineEdit, QLabel, QPushButton, QMessageBox, QComboBox,
-                             QPushButton, QApplication, QCalendarWidget, QTabWidget, QVBoxLayout, QHBoxLayout, QSpacerItem,
+from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QComboBox,
+                             QPushButton, QCalendarWidget, QTabWidget, QVBoxLayout, QHBoxLayout, QSpacerItem,
                              QSizePolicy)
-from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore
-import previewGui
-import time
 
-iconPath = functions.createPath('PIEcon.png')
-font = 'BentonSans'
-fontsize = 9
+iconPath = functions.createPath('resources//PIEcon.png')
 
-reports = [filename for filename in os.listdir('.') if filename.startswith("report") and filename.endswith(".py")]
+reports = [filename for filename in os.listdir(os.path.dirname(os.path.abspath(__file__))) if filename.startswith("report") and filename.endswith(".py")]
 reports = [x.strip('.py') for x in reports]
 
 class mainwindow(QWidget):
@@ -40,8 +35,6 @@ class mainwindow(QWidget):
         #Sorted by alphabet
         self.datacombo.addItems(sorted(self.dataoptions.keys()))
         self.datacombo.currentTextChanged.connect(self.combochange)
-
-        #itemsbefore+=1
 
         #add the filter label
         self.filterlabel = QLabel(self)
@@ -255,7 +248,7 @@ class mainwindow(QWidget):
 
         #style things
 
-        self.setStyleSheet(open("iu_stylesheet.qss", "r").read())
+        self.setStyleSheet(open("resources//iu_stylesheet.qss", "r").read())
         self.show()
 
     def center(self):

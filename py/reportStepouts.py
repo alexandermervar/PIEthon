@@ -1,17 +1,9 @@
-import PIEdataVARS
-import functions
-import PieHandler
-import PIEdataVARS
 import datetime
-import htmlbase
-import sys
-import mainGui
-from PyQt5.QtWidgets import (QWidget, QToolTip, QDesktopWidget, QLineEdit, QLabel, QPushButton, QMessageBox,
-                             QPushButton, QApplication, QRadioButton, QComboBox, QCalendarWidget)
-from PyQt5.QtGui import QFont, QIcon
+from py import mainGui, functions, htmlbase, PIEdataVARS, PieHandler
+from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLabel, QPushButton, QCalendarWidget)
+from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore
 import numpy as np
-import pandas as pd
 
 iconPath = functions.createPath('PIEcon.png')
 

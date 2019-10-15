@@ -1,20 +1,13 @@
-import functions
-import PieHandler
-import PIEdataVARS
-import mainGui
+from py import mainGui, functions, PIEdataVARS, PieHandler
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QMessageBox,
                              QPushButton, QRadioButton, QApplication,
                              QHBoxLayout, QVBoxLayout)
-from PyQt5.QtGui import QIcon, QFont
+from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore
-import reportLabBreakdown
-import reportuserinfo
-import reportPDIs
-import reportStepouts
 import time
 import sys
 
-iconPath = functions.createPath('PIEcon.png')
+iconPath = functions.createPath('resources//PIEcon.png')
 font = 'BentonSans'
 fontsize = 9
 
@@ -124,7 +117,7 @@ class login(QWidget):
         self.setWindowIcon(QIcon(iconPath))
 
         #style things
-        self.setStyleSheet(open("iu_stylesheet.qss", "r").read())
+        self.setStyleSheet(open("resources//iu_stylesheet.qss", "r").read())
 
         self.show()
 
@@ -144,19 +137,6 @@ class login(QWidget):
         self.mainwind = mainGui.mainwindow(user, dataoptions, driver)
         #print('time to show')
         self.mainwind.show()
-
-    def startreports(self, driver, text):
-        if text == 'Lab Breakdown':
-            self.lab = reportLabBreakdown.labbreakdown(driver)
-            self.lab.show()
-        if text == 'Incomplete User Information':
-            reportuserinfo.getinfo(driver)
-        if text == 'Stepout Location Medians':
-            self.lab = reportStepouts.stepoutaverages(driver)
-            self.lab.show()
-        if text == 'PDIs (NJ41)':
-            self.lab = reportPDIs.Pdis(driver)
-            self.lab.show()
 
     def radiocheck(self):
         if (not self.coderadio.isChecked()):
@@ -182,7 +162,7 @@ class login(QWidget):
             duotype = 'call'
         else:
             duotype = self.duocode.text()
-        driver = PieHandler.caslogin(driver,user,password,duotype)
+        driver = PieHandler.caslogin(driver, user, password, duotype)
         if(not driver):
             QMessageBox.about(self,"Error","CAS login failed!")
             return

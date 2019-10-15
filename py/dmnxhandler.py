@@ -1,4 +1,4 @@
-import seleniumHandlers
+from py import seleniumHandlers
 import time
 import fnmatch
 import pandas as pd
@@ -36,7 +36,7 @@ def getdmnx(driver, username, password):
     time.sleep(.5)
 
 def gettable(driver) :
-    buttonguy = seleniumHandlers.getBy(driver, 'name','isc_2Xicon', 20)
+    buttonguy = seleniumHandlers.getBy(driver, 'name', 'isc_2Xicon', 20)
     buttonguy.click()
 
     time.sleep(1)

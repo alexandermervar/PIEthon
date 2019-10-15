@@ -35,7 +35,7 @@ QPushButton#previewbutton {
     border-radius: 4px;
     border-color: black;
     font: 8pt 'Arial';
-    min-width: 1em;
+    min-width: 3em;
     max-width: 3em;
     padding: 2px;
 }
@@ -47,7 +47,7 @@ QPushButton#previewbutton:hover {
     border-radius: 4px;
     border-color:black;
     font: 8pt 'Arial';
-    min-width: 1em;
+    min-width: 3em;
     max-width: 3em;
     padding: 2px;
 }
@@ -62,6 +62,11 @@ QLabel#statuslabel {
 
 QLabel#bigboi {
     font: bold 10pt 'Arial';
+}
+
+QLabel#previewlabel {
+    font: 9pt 'Arial';
+    min-width: 20em;
 }
 
 QLineEdit {
@@ -204,6 +209,19 @@ QTabBar::tab:selected {
     border-bottom-width: 0px;
 }
 
-QScrollArea
+QScrollArea {
+    min-width: 20em;
+}
+
+QGroupBox {
+    min-width: 20em;
+}
+
+QGroupBox:title {
+    subcontrol-origin: margin;
+    subcontrol-position: top center;
+    padding-left: 5px;
+    padding-right: 5px;
+}
 
 

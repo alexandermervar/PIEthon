@@ -4,15 +4,12 @@ Nick Johnson
 """
 
 import re
-from datetime import datetime, date, time
-import functions
-import PieHandler
-import PIEdataVARS
+from datetime import datetime
+from py import functions, htmlbase, PIEdataVARS, PieHandler
 import pandas as pd
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLabel, QPushButton, QRadioButton, QComboBox)
 from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore
-import htmlbase
 
 iconPath = functions.createPath('PIEcon.png')
 
