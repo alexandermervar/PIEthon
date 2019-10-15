@@ -1,14 +1,11 @@
-import functions
-import PieHandler
-import PIEdataVARS
-import mainGui
+from py import functions
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLabel, QLineEdit, QRadioButton, QVBoxLayout,
                              QPushButton, QScrollArea, QHBoxLayout, QGroupBox, QFormLayout, QCheckBox)
 from PyQt5.QtGui import QIcon
-from PyQt5 import QtCore
+from PyQt5.QtCore import Qt
 from os.path import expanduser
 
-iconPath = functions.createPath('PIEcon.png')
+iconPath = functions.createPath('resources//PIEcon.png')
 
 
 class prevButton(QPushButton):
@@ -71,6 +68,8 @@ class preview(QWidget):
         scroll = QScrollArea()
         scroll.setWidget(mygroupbox)
         scroll.setWidgetResizable(True)
+        scroll.horizontalScrollBar().setEnabled = False
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         layout = QHBoxLayout(self)
         layout.addWidget(scroll)
 
@@ -80,10 +79,13 @@ class preview(QWidget):
 
         for i in range(rangenum):
             previewlist.append(QLabel(' '))
+            previewlist[i].setObjectName('previewlabel')
             previewform.addWidget(previewlist[i])
 
         previewbox.setLayout(previewform)
         previewscroll = QScrollArea()
+        previewscroll.horizontalScrollBar().setEnabled = False
+        previewscroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         previewscroll.setWidget(previewbox)
         layout.addWidget(previewscroll)
 
@@ -125,7 +127,7 @@ class preview(QWidget):
         subbox.setLayout(subform)
         layout.addWidget(subbox)
 
-        self.setStyleSheet(open("iu_stylesheet.qss", "r").read())
+        self.setStyleSheet(open("resources//iu_stylesheet.qss", "r").read())
 
         self.setWindowTitle('PIEthon')
         self.setWindowIcon(QIcon(iconPath))

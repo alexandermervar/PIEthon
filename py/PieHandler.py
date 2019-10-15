@@ -1,8 +1,5 @@
-import seleniumHandlers
 import time
-import dataconverter
-import users
-import PIEdataVARS
+from py import dataconverter, PIEdataVARS, seleniumHandlers, users
 import requests
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -22,26 +19,26 @@ def caslogin(driver, username, password, duotype):
     button.click()
 
     if duotype=="push":
-        iframe = seleniumHandlers.getBy(driver,'id','duo_iframe',3)
+        iframe = seleniumHandlers.getBy(driver, 'id', 'duo_iframe', 3)
         driver.switch_to.frame(iframe)
         button = driver.find_element_by_xpath("//*[contains(text(), 'Push')]")
         if not button is False:
             button.click()
         driver.switch_to.default_content()
     elif duotype=="call":
-        iframe = seleniumHandlers.getBy(driver,'id','duo_iframe',3)
+        iframe = seleniumHandlers.getBy(driver, 'id', 'duo_iframe', 3)
         driver.switch_to.frame(iframe)
         button = driver.find_element_by_xpath("//*[contains(text(), 'Call')]")
         if not button is False:
             button.click()
         driver.switch_to.default_content()
     else:
-        iframe = seleniumHandlers.getBy(driver,'id','duo_iframe',3)
+        iframe = seleniumHandlers.getBy(driver, 'id', 'duo_iframe', 3)
         driver.switch_to.frame(iframe)
         button = driver.find_element_by_xpath("//*[contains(text(), 'Passcode')]")
         if not button is False:
             button.click()
-        inputthing = seleniumHandlers.getBy(driver,'class','passcode-input',3)
+        inputthing = seleniumHandlers.getBy(driver, 'class', 'passcode-input', 3)
         inputthing.send_keys(duotype)
         button = driver.find_element_by_xpath("//*[contains(text(), 'Log In')]")
         if not button is False:
@@ -96,7 +93,7 @@ def grabUsers(driver):
 
     userlist = {}
 
-    tempuser = users.user('','','')
+    tempuser = users.user('', '', '')
     userlist[''] = tempuser
 
     for index, row in framey.iterrows():
@@ -117,7 +114,7 @@ def grabLabs(driver):
     return lablist
 
 def grabInvLabs(driver):
-    labframe = goandget(driver,['https://pie.iu.edu/Api/InventoryLocations?page=0&pageLimit=1010'], PIEdataVARS.contacts)
+    labframe = goandget(driver, ['https://pie.iu.edu/Api/InventoryLocations?page=0&pageLimit=1010'], PIEdataVARS.contacts)
 
     labframe = labframe[['location-shortName', 'id']]
 

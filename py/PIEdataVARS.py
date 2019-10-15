@@ -1,4 +1,4 @@
-import PIEdata
+from py import PIEdata
 
 # Make some variables
 contactcatdict = {}

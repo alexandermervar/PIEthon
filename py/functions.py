@@ -6,11 +6,12 @@ def buildHeadless():
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
-    here = os.path.dirname(os.path.abspath(__file__))
+    here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     here = here.replace('\\','/')
     prefs = {'download.default_directory': here}
     chrome_options.add_experimental_option('prefs', prefs)
-    pather = here + '/chromedriver.exe'
+    print(here)
+    pather = here + '/resources/chromedriver.exe'
 
     driver = webdriver.Chrome(
         executable_path=os.path.abspath(pather),
