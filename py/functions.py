@@ -10,7 +10,6 @@ def buildHeadless():
     here = here.replace('\\','/')
     prefs = {'download.default_directory': here}
     chrome_options.add_experimental_option('prefs', prefs)
-    print(here)
     pather = here + '/resources/chromedriver.exe'
 
     driver = webdriver.Chrome(
@@ -20,7 +19,7 @@ def buildHeadless():
     return driver
 
 def createPath(paththing):
-    here = os.path.dirname(os.path.abspath(__file__))
+    here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     filename = os.path.join(here, paththing)
     return filename
 

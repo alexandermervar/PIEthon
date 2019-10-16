@@ -71,20 +71,6 @@ def getPie(driver):
 
     return session
 
-def spamPieChat(driver, message, times):
-    #assumes driver is already logged in
-    x=0
-    while x < times:
-        chatbox = seleniumHandlers.getBy(driver, 'id', 'chatMessageText', 5)
-        chatbox.send_keys(message)
-
-        sendit = seleniumHandlers.getBy(driver, 'xpath',
-                                        "//*[@id=\"mainContent\"]/div/div[2]/div/div/div[1]/div[2]/div[2]/form/button",
-                                        5)
-        sendit.click()
-        time.sleep(8)
-        x += 1
-
 def grabUsers(driver):
     framey = goandget(driver, ['https://pie.iu.edu/Api/Users?page=0&pageLimit=1000&searchTerms=&active=true&whitelistInclusiveMaskNames=Employee&fromUsersView=true&maskId=5'], PIEdataVARS.contacts)
 
@@ -133,7 +119,6 @@ def goandget(driver, urllist, piedata):
         endcut = -1
         startcut = 1
         rawInput = r.text
-        #print(rawInput)
         if len(rawInput) == 0 or not rawInput:
             continue
         if (piedata.getform()):
@@ -141,7 +126,9 @@ def goandget(driver, urllist, piedata):
             endcut=rawInput.find("questions")-3
             startcut=12
         if len(rawInput) <= 2 or (piedata.getform() and rawInput[11] =='[' and rawInput[12] == ']'):
-            if counter==1:
+            if counter==1 and counter==len(urllist):
+                continue
+            elif counter==1:
                 totString = '[' + totString
             elif counter==len(urllist):
                 if totString[-1] == ",":
@@ -164,8 +151,8 @@ def goandget(driver, urllist, piedata):
                 rawInput = rawInput[startcut:endcut] + ','
         totString = totString + rawInput
         counter+=1
-    if (totString == False):
-        return
+    if (totString == False) or (totString == ''):
+        return False
     else:
         frame = dataconverter.getFrame(totString, piedata.allowbracks)
         return frame
@@ -175,8 +162,7 @@ def goandgetinv(driver, urllist, invsearch):
     supString = ''
     counter = 1
     for url in urllist:
-        driver.get(url)
-        rawInput = seleniumHandlers.getBy(driver, 'tag', 'body', 5).text
+        rawInput = driver.get(url).text
         if (len(urllist) != 1):
             if counter == 1:
                 rawInput = rawInput[1:]

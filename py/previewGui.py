@@ -143,7 +143,6 @@ class preview(QWidget):
         expath = ''
         for radio in radiolist:
             if radio.isChecked():
-                print(radio.text())
                 if radio.text() == 'Downloads':
                     expath = expanduser('~/Downloads/')
                 if radio.text() == 'Documents':

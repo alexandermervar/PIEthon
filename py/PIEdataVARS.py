@@ -99,9 +99,23 @@ accountchecks = PIEdata.PIEdata('Account Checks',
                                 'https://pie.iu.edu/Api/AccountChecks?page=0&pageLimit={0}',
                                 ['maxreturns'])
 
+#add account checks
+contactslong = PIEdata.PIEdata('Contacts-Long',
+                                'https://pie.iu.edu/Api/Contacts?page=0&pageLimit={0}&searchTerms=&startTime={1}&endtime={2}&LocationIds={3}&categoryIds={4}&creatorIds={5}',
+                                ['maxreturns', 'startdate', 'enddate', 'location', 'category', 'username'])
+contactslong.setcategorydict(contactcatdict)
+
+#attendance issues
+attendance_issues = PIEdata.PIEdata('Attendance Issues',
+                                'https://pie.iu.edu/Api/AttendanceIssues?page=0&pageLimit={0}&startTime={1}&endTime={2}',
+                                ['maxreturns', 'startdate', 'enddate'])
+
 def buildalldatathings(userdict, labdict, invlabs):
     contacts.setuserdict(userdict)
     contacts.setlabdict(labdict)
+
+    contactslong.setuserdict(userdict)
+    contactslong.setlabdict(labdict)
 
     goldstars.set_assigneddict(userdict)
 
@@ -115,7 +129,7 @@ def buildalldatathings(userdict, labdict, invlabs):
 
     invreports.setchuncks(15)
 
-    itemlist = [contacts, goldstars, pdis, shifts,locations, invreports, appointments, activerusers, graveyardheads, subpleas, schedules, assignedbadges, employeeMeetings, accountchecks]
+    itemlist = [contacts, goldstars, pdis, shifts,locations, invreports, appointments, activerusers, graveyardheads, subpleas, schedules, assignedbadges, employeeMeetings, accountchecks, contactslong, attendance_issues]
 
     datalist = {}
 
