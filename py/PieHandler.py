@@ -1,6 +1,7 @@
 import time
 from py import dataconverter, PIEdataVARS, seleniumHandlers, users
 import requests
+import numpy as np
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
@@ -281,3 +282,24 @@ def findstart(listthing, reorder):
     else:
         listthing.remove(max(listthing))
         return findstart(listthing, reorder)
+
+def invcounttwo(invframe):
+    print('in invcounttwo')
+
+    def aggfunct():
+        print('aggfunct')
+        counts = invframe[['count']].to_numpy()
+        print('counts')
+        difs = np.diff(counts) * -1
+        print('diffs')
+        reorderthresh = invframe[['reordernum']].mean()/13
+        print('reorder')
+        difs = difs[difs < reorderthresh & difs > 0]
+        print('removes')
+        return np.sum(difs)
+
+    thingy = invframe.groupby('labname').apply(aggfunct)
+    return thingy
+
+
+

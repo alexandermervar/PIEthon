@@ -58,6 +58,12 @@ def main(driver, startdate, enddate, statuslabel):
     #INVENTORY REPORTS
     inventoryurl = inventoryreportstruct.make_url()
     invframe = PieHandler.goandgetinv(driver, inventoryurl, 'Letter(8.5" x 11")')
+    for key,val in invframe.items():
+        print('key is ' + str(key) + ' and the len is ' + str(len(val)))
+    print('doing the new thing')
+    newboy = PieHandler.invcounttwo(invframe)
+    print(newboy)
+    return
     paperdict = PieHandler.findinvused(invframe)
     usedict = PieHandler.usepapdict(paperdict)
     toframe = {}
