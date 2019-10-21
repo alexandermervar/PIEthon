@@ -162,7 +162,6 @@ def invedit(input, search):
         iterboyo+=1
 
     print('data convert loop complete')
-    return returndict
     df = pd.DataFrame(data=returndict)
     print('df created')
     return df
