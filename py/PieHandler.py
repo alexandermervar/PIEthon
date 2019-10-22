@@ -285,26 +285,22 @@ def findstart(listthing, reorder):
         return findstart(listthing, reorder)
 
 def invcounttwo(invframe):
-    print('in invcounttwo')
+    thingy = invframe.groupby(by='labname')
 
-    def aggfunct(data):
-        print('aggfunct')
-        print(data)
-        print(str(data[x]))
+    lab = []
+    paper = []
+
+    for name,data in thingy:
+        lab.append(name)
         counts = data['count'].values
-        print(counts)
-        print('counts')
-        difs = np.diff(counts) * -1
-        print('diffs')
-        reorderthresh = data[['reordernum']].mean()/13
-        print('reorder')
-        print(difs)
+        difs = np.diff(counts)
+        reorderthresh = float(data[['reordernum']].mean()/1.15)
         newdifs = difs[difs < reorderthresh]
-        print('removes')
-        return np.sum(newdifs)
+        newerdifs = newdifs[newdifs > 0]
+        paper.append(np.sum(newerdifs))
 
-    thingy = invframe.groupby(by='labname').agg({'count': lambda x: aggfunct(x)})
-    return thingy
+    return pd.DataFrame({'Lab':lab,'Paper Used':paper})
+
 
 
 
