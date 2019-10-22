@@ -299,7 +299,7 @@ def invcounttwo(invframe):
         newerdifs = newdifs[newdifs > 0]
         paper.append(np.sum(newerdifs))
 
-    return pd.DataFrame({'Lab':lab,'Paper Used':paper})
+    return pd.DataFrame({'lab':lab,'paper_used':paper})
 
 
 

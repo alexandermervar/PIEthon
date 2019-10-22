@@ -2,7 +2,7 @@ from py import functions, htmlbase, PIEdataVARS, PieHandler
 from PyQt5 import QtCore
 import numpy as np
 import pandas as pd
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 def main(driver, startdate, enddate, statuslabel):
     print("in reportmain")
@@ -58,27 +58,12 @@ def main(driver, startdate, enddate, statuslabel):
     #INVENTORY REPORTS
     inventoryurl = inventoryreportstruct.make_url()
     invframe = PieHandler.goandgetinv(driver, inventoryurl, 'Letter(8.5" x 11")')
-    for key,val in invframe.items():
-        print('key is ' + str(key) + ' and the len is ' + str(len(val)))
     print('doing the new thing')
-    newboy = PieHandler.invcounttwo(invframe)
-    print(newboy)
-    return
-    paperdict = PieHandler.findinvused(invframe)
-    usedict = PieHandler.usepapdict(paperdict)
-    toframe = {}
-    locas = []
-    nums = []
-    for key,val in usedict.items():
-        locas.append(key)
-        nums.append(val)
-    toframe['locationName'] = locas
-    toframe['paper_used'] = nums
-    invuseframe = pd.DataFrame(data=toframe)
+    invuseframe = PieHandler.invcounttwo(invframe)
     print("inventory reports done")
 
     #PUTTING THINGS TOGETHER
-    invuseframe['abb'] = invuseframe['locationName'].apply(lambda x: functions.getAbb(x))
+    invuseframe['abb'] = invuseframe['lab'].apply(lambda x: functions.getAbb(x))
 
     invuseframe = invuseframe.groupby('abb')['paper_used'].sum().reset_index()
     supadupaframe = pd.merge(supaframe, invuseframe, on='abb', how='outer')
@@ -87,12 +72,12 @@ def main(driver, startdate, enddate, statuslabel):
     supadupaframe.sort_values(by=['overall_score'], ascending=False, inplace=True)
     supadupaframe = supadupaframe.reset_index(drop=True)
     labbreakhtml = supadupaframe.to_html()
+    print("uhhhhh okay")
 
-    """
     #APPOINTMENTS
-    self.statusUpdate('Moving on to appointments now. This will be worth it I swear.')
+    statusUpdate(statuslabel, 'Moving on to appointments now. This will be worth it I swear.')
     appointmenturl = appointmentstruct.make_url()
-    appointmentframe = PieHandler.goandget(self.driver, appointmenturl, appointmentstruct)
+    appointmentframe = PieHandler.goandget(driver, appointmenturl, appointmentstruct)
 
     shiftlocationframe = appointmentframe['shiftType-name'].value_counts().to_frame()
     plt.tight_layout()
@@ -114,11 +99,9 @@ def main(driver, startdate, enddate, statuslabel):
     pivoto.plot.bar()
     plt.tight_layout()
     plt.savefig('reports/figures/timeandbuilding.png')
-    """
 
     tablelist = [labbreakhtml]
-    #picturelist = ['figures/shiftlocations.png', 'figures/appointmentlocals.png', 'figures/timeandbuilding.png']
-    picturelist = []
+    picturelist = ['figures/shiftlocations.png', 'figures/appointmentlocals.png', 'figures/timeandbuilding.png']
 
     outputfile = htmlbase.htmlbase('Lab Breakdown', 'Lab Breakdown', tablelist, picturelist)
     outputfile.makeHTML('LabBreakdown')
