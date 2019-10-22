@@ -2,7 +2,7 @@ from py import functions, PieHandler, previewGui
 import datetime
 import importlib
 import os
-from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QComboBox,
+from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QComboBox, QMessageBox,
                              QPushButton, QCalendarWidget, QTabWidget, QVBoxLayout, QHBoxLayout, QSpacerItem,
                              QSizePolicy)
 from PyQt5.QtGui import QIcon
@@ -346,10 +346,13 @@ class mainwindow(QWidget):
 
             frameboy = PieHandler.goandget(self.driver, url, datatype)
 
-            self.statusUpdate("Complete")
-
-            self.startPreview(frameboy)
+            if frameboy is False:
+                QMessageBox.about(self, "Error", "No Results Returned!")
+                return
+            else:
+                self.statusUpdate("Complete")
+                self.startPreview(frameboy)
         else:
             self.statusUpdate("Starting Report")
-            i = importlib.import_module('report' + self.reportdrop.currentText())
-            i.main('start', 'end', self.statuslabel)
+            i = importlib.import_module('py.report' + self.reportdrop.currentText())
+            i.main(self.driver,self.startrepcal.selectedDate().toPyDate(), self.endrepcal.selectedDate().toPyDate(), self.statuslabel)
