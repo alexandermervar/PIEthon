@@ -1,21 +1,11 @@
 from py import mainGui, functions, PIEdataVARS, PieHandler
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QMessageBox,
-                             QPushButton, QRadioButton, QApplication,
-                             QHBoxLayout, QVBoxLayout)
+                             QPushButton, QRadioButton, QHBoxLayout, QVBoxLayout)
 from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore
 import time
-import sys
 
 iconPath = functions.createPath('resources//PIEcon.png')
-font = 'BentonSans'
-fontsize = 9
-
-app = QApplication(sys.argv)
-
-screen = app.primaryScreen()
-size = screen.size()
-rect = screen.availableGeometry()
 
 qss="iu_stylesheet.qss"
 

@@ -1,7 +1,7 @@
-from py import PIEdataVARS, PieHandler
+from py import PIEdataVARS, PieHandler, htmlbase
 import pandas as pd
 
-def getinfo(driver):
+def main(driver, startdate, enddate, statuslabel):
     activeuserstruct = PIEdataVARS.activerusers
     urllist = activeuserstruct.make_url()
     userframe = PieHandler.goandget(driver, urllist, activeuserstruct)
@@ -30,9 +30,11 @@ def getinfo(driver):
 
     userframe = userframe[['lastName', 'firstName', 'username', 'Missing Attributes']]
 
-    for index, row in userframe.iterrows():
-        if not row["Missing Attributes"]  == []:
-            print(str(row['firstName']) + ' ' + str(row['lastName']) + ' is missing ' + str(row['Missing Attributes']))
+    tablelist = [userframe.to_html()]
+    picturelist = []
+
+    outputfile = htmlbase.htmlbase('Missing User Info', 'Missing User Info', tablelist, picturelist)
+    outputfile.makeHTML('Missing_User_Info')
 
 def yikescheck(val):
     #might need to check if the value is a string
