@@ -11,7 +11,9 @@ from PyQt5 import QtCore
 iconPath = functions.createPath('resources//PIEcon.png')
 
 reports = [filename for filename in os.listdir(os.path.dirname(os.path.abspath(__file__))) if filename.startswith("report") and filename.endswith(".py")]
-reports = [x.strip('.py') for x in reports]
+reports = [x.replace('.py','') for x in reports]
+
+#https://nikolak.com/pyqt-threading-tutorial/
 
 class mainwindow(QWidget):
 
@@ -196,7 +198,7 @@ class mainwindow(QWidget):
         self.reporttypelabel.setText('Report Type')
 
         self.reportdrop = QComboBox(self)
-        self.reportdrop.addItems([repo.strip('report') for repo in reports])
+        self.reportdrop.addItems([repo.replace('report','') for repo in reports])
 
         reportreportlayout = QHBoxLayout()
         #reportreportlayout.addStretch(1)
