@@ -21,6 +21,8 @@ class mainwindow(QWidget):
         self.username = username
         self.dataoptions = dataoptions
         self.driver = driver
+        self.subThread = submitThread(self)
+        self.subThread.finished.connect(self.completed)
         super().__init__()
 
         self.initUI()
@@ -104,7 +106,7 @@ class mainwindow(QWidget):
 
         #add submit button
         self.submitbutton = QPushButton('Submit', self)
-        self.submitbutton.clicked.connect(self.submititboy)
+        self.submitbutton.clicked.connect(self.subThread.start)
 
         self.tabs = QTabWidget()
 
@@ -323,38 +325,44 @@ class mainwindow(QWidget):
             self.assignedcombo.clear()
             self.assignedcombo.setEnabled(False)
 
-    def startPreview(self, dframe):
-        self.mainwind = previewGui.preview(dframe, self.datacombo.currentText(), self.startcal.selectedDate().toPyDate(), self.endcal.selectedDate().toPyDate())
+    def completed(self):
+        self.mainwind = previewGui.preview(self.dframe, self.datacombo.currentText(), self.startcal.selectedDate().toPyDate(), self.endcal.selectedDate().toPyDate())
         self.mainwind.show()
 
-    def submititboy(self):
-        if (self.tabs.currentIndex() == 0):
+class submitThread(QtCore.QThread):
 
-            self.statusUpdate("Preparing Data Structure")
+    def __init__(self, window):
+        self.window = window
+        QtCore.QThread.__init__(self)
 
-            datatype = self.dataoptions.get(self.datacombo.currentText())
-            datatype.set_maxreturns(self.maxbox.text())
-            datatype.set_enddate(self.endcal.selectedDate().toPyDate())
-            datatype.set_startdate(self.startcal.selectedDate().toPyDate())
-            datatype.set_username(self.usernamecombo.currentText())
-            datatype.set_assignedto(self.assignedcombo.currentText())
-            datatype.set_location(self.locationcombo.currentText())
-            datatype.set_category(self.categorycombo.currentText())
-            datatype.set_status(self.statuscombo.currentText())
+    def __del__(self):
+        self.wait()
 
+    def run(self):
+        if (self.window.tabs.currentIndex() == 0):
+            self.window.statusUpdate("Preparing Data Structure")
+
+            datatype = self.window.dataoptions.get(self.window.datacombo.currentText())
+            datatype.set_maxreturns(self.window.maxbox.text())
+            datatype.set_enddate(self.window.endcal.selectedDate().toPyDate())
+            datatype.set_startdate(self.window.startcal.selectedDate().toPyDate())
+            datatype.set_username(self.window.usernamecombo.currentText())
+            datatype.set_assignedto(self.window.assignedcombo.currentText())
+            datatype.set_location(self.window.locationcombo.currentText())
+            datatype.set_category(self.window.categorycombo.currentText())
+            datatype.set_status(self.window.statuscombo.currentText())
             url = datatype.make_url()
 
-            self.statusUpdate("Pulling from Pie")
+            self.window.statusUpdate("Pulling from Pie")
 
-            frameboy = PieHandler.goandget(self.driver, url, datatype)
-
+            frameboy = PieHandler.goandget(self.window.driver, url, datatype)
             if frameboy is False:
-                QMessageBox.about(self, "Error", "No Results Returned!")
+                QMessageBox.about(self.window, "Error", "No Results Returned!")
                 return
             else:
-                self.statusUpdate("Complete")
-                self.startPreview(frameboy)
+                self.window.statusUpdate("Complete")
+                self.window.dframe = frameboy
         else:
-            self.statusUpdate("Starting Report")
-            i = importlib.import_module('py.report' + self.reportdrop.currentText())
-            i.main(self.driver,self.startrepcal.selectedDate().toPyDate(), self.endrepcal.selectedDate().toPyDate(), self.statuslabel)
+            self.window.statusUpdate("Starting Report")
+            i = importlib.import_module('py.report' + self.window.reportdrop.currentText())
+            i.main(self.window.driver,self.window.startrepcal.selectedDate().toPyDate(), self.window.endrepcal.selectedDate().toPyDate(), self.window.statuslabel)
