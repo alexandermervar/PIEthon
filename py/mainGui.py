@@ -17,10 +17,11 @@ reports = [x.replace('.py','') for x in reports]
 
 class mainwindow(QWidget):
 
-    def __init__(self, username, dataoptions, driver):
+    def __init__(self, username, dataoptions, driver, semesters):
         self.username = username
         self.dataoptions = dataoptions
         self.driver = driver
+        self.semesters = semesters
         self.subThread = submitThread(self)
         self.subThread.finished.connect(self.completed)
         super().__init__()
@@ -82,6 +83,12 @@ class mainwindow(QWidget):
         self.startlabel = QLabel(self)
         self.startlabel.setText("Start Date: " + self.startcal.selectedDate().toString())
 
+        self.startdroplabel = QLabel(self)
+        self.startdroplabel.setText('Autoselect start of :  ')
+
+        self.startcombo = QComboBox(self)
+        self.startcombo.addItems(self.semesters.keys())
+
         self.endcal = QCalendarWidget(self)
         self.endcal.setSelectedDate(datetime.date.today())
         self.endcal.setVerticalHeaderFormat(QCalendarWidget.NoVerticalHeader)
@@ -90,6 +97,12 @@ class mainwindow(QWidget):
 
         self.endlabel = QLabel(self)
         self.endlabel.setText("End Date: " + self.endcal.selectedDate().toString())
+
+        self.enddroplabel = QLabel(self)
+        self.enddroplabel.setText('Autoselect start of :  ')
+
+        self.endcombo = QComboBox(self)
+        self.endcombo.addItems(self.semesters.keys())
 
         #create the maxreturns things
         self.maxlabel = QLabel(self)
@@ -156,11 +169,25 @@ class mainwindow(QWidget):
         dataselectlayout.setSpacing(3)
         dataselectlayout.addStretch(1)
 
+        startdrophlayout = QHBoxLayout()
+        startdrophlayout.addWidget(self.startdroplabel)
+        startdrophlayout.addWidget(self.startcombo)
+        startdrophlayout.setSpacing(0)
+        startdrophlayout.addStretch(0)
+
+        enddropylayout = QHBoxLayout()
+        enddropylayout.addWidget(self.enddroplabel)
+        enddropylayout.addWidget(self.endcombo)
+        enddropylayout.setSpacing(0)
+        enddropylayout.addStretch(0)
+
         calendarlayout = QVBoxLayout()
         calendarlayout.addWidget(self.startlabel)
+        calendarlayout.addLayout(startdrophlayout)
         calendarlayout.addWidget(self.startcal)
         calendarlayout.addSpacing(10)
         calendarlayout.addWidget(self.endlabel)
+        calendarlayout.addLayout(enddropylayout)
         calendarlayout.addWidget(self.endcal)
         calendarlayout.setSpacing(3)
         calendarlayout.addStretch(1)

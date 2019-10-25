@@ -76,15 +76,15 @@ graveyardheads = PIEdata.PIEdata('Graveyard HeadCounts',
 formkey = PIEdata.PIEdata('Form Key',
                           'https://pie.iu.edu/Api/LocationEvaluationForms',
                           [])
-
+#Add Sub Pleas
 subpleas = PIEdata.PIEdata('Sub Plea',
                            'https://pie.iu.edu/Api/SubPleas?page=0&pageLimit={0}&startTime={1}&endTime={2}',
                            ['maxreturns', 'startdate', 'enddate'])
-
+#Add schedules
 schedules = PIEdata.PIEdata('Semester Schedules',
                             'https://pie.iu.edu/Api/Schedules?page=0&pageLimit=101',
                             [])
-
+#Add assigned badges
 assignedbadges = PIEdata.PIEdata('Assigned Badges',
                                  'https://pie.iu.edu/Api/AssignedBadges?page=0&pageLimit={0}&startTime={1}&endTime={2}',
                                  ['maxreturns', 'startdate', 'enddate'])

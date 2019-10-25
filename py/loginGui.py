@@ -18,8 +18,9 @@ class login(QWidget):
         self.initUI()
 
     def initUI(self):
-        #self.resize(rect.height()/3, rect.width()/6)
         self.center()
+
+        self.semesters = ''
 
         #add a username label and text box
         self.userlabel = QLabel(self)
@@ -126,7 +127,7 @@ class login(QWidget):
 
     def startMain(self, user, dataoptions, driver):
         #print('here we go')
-        self.mainwind = mainGui.mainwindow(user, dataoptions, driver)
+        self.mainwind = mainGui.mainwindow(user, dataoptions, driver, self.semesters)
         #print('time to show')
         self.mainwind.show()
 
@@ -180,12 +181,12 @@ class submitThread(QtCore.QThread):
         userlist = PieHandler.grabUsers(driver)
         self.window.statusUpdate('Pulling in Locations')
         lablist = PieHandler.grabLabs(driver)
-        self.window.statusUpdate('Throwing it together')
         invlabs = PieHandler.grabInvLabs(driver)
+        self.window.statusUpdate('Grabbing Semesters')
+        self.window.semesters = PieHandler.grabSemesters(driver)
+        self.window.statusUpdate('Throwing it together')
         datalist = PIEdataVARS.buildalldatathings(userlist, lablist, invlabs)
         self.window.datalist = datalist
         self.window.driver = driver
         self.window.statusUpdate('Starting Main Window')
-        #window.mainwind = mainGui.mainwindow(user, datalist, driver)
-        #window.mainwind.show()
         return

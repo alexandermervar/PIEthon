@@ -1,5 +1,5 @@
 import time
-from py import dataconverter, PIEdataVARS, seleniumHandlers, users
+from py import dataconverter, PIEdataVARS, seleniumHandlers, users, semesters
 import requests
 import pandas as pd
 import numpy as np
@@ -112,6 +112,22 @@ def grabInvLabs(driver):
         lablist[row['location-shortName']] = row['id']
 
     return lablist
+
+def grabSemesters(driver):
+    framey = goandget(driver, [PIEdataVARS.schedules.link], PIEdataVARS.schedules)
+
+    framey = framey[['name', 'startTime', 'endTime']]
+
+    semkey = {}
+
+    tempuser = semesters.semester('', '', '')
+    semkey[''] = tempuser
+
+    for index, row in framey.iterrows():
+        tempuser = semesters.semester(row['name'], row['startTime'], row['endTime'])
+        semkey[row['name']] = tempuser
+
+    return semkey
 
 def goandget(driver, urllist, piedata):
     totString = ''
