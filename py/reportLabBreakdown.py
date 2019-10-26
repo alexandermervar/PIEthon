@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-description = "This report list contacts per staffed hour and paper usage for each lab, as well as graphs for appointment history. This report is used for prioritizing labs in Lab Breakdown"
+description = "This report lists contacts per staffed hour and paper usage for each lab, as well as graphs for appointment history. This report is used for prioritizing labs in Lab Breakdown"
 active = True
 author = 'Brian Funk'
 

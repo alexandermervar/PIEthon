@@ -83,6 +83,7 @@ class mainwindow(QWidget):
 
         self.startdroplabel = QLabel(self)
         self.startdroplabel.setText('Autoselect start of :  ')
+        self.startdroplabel.setObjectName('desctext')
 
         self.startcombo = QComboBox(self)
         self.startcombo.addItems(self.semesters.keys())
@@ -99,6 +100,7 @@ class mainwindow(QWidget):
 
         self.enddroplabel = QLabel(self)
         self.enddroplabel.setText('Autoselect end of :  ')
+        self.enddroplabel.setObjectName('desctext')
 
         self.endcombo = QComboBox(self)
         self.endcombo.addItems(self.semesters.keys())
@@ -253,10 +255,11 @@ class mainwindow(QWidget):
         self.descbox = QLabel(self)
         self.descbox.setText("")
         self.descbox.setWordWrap(True)
-        self.descbox.setFixedWidth(self.usernamecombo.frameGeometry().width()+54)
+        self.descbox.setFixedWidth(self.usernamecombo.frameGeometry().width()+53)
         self.descbox.setObjectName('desctext')
 
         self.startrepdroplabel = QLabel(self)
+        self.startrepdroplabel.setObjectName('desctext')
         self.startrepdroplabel.setText('Autoselect start of :  ')
 
         self.startrepcombo = QComboBox(self)
@@ -265,6 +268,7 @@ class mainwindow(QWidget):
 
         self.enddropreplabel = QLabel(self)
         self.enddropreplabel.setText('Autoselect end of :  ')
+        self.enddropreplabel.setObjectName('desctext')
 
         self.endrepcombo = QComboBox(self)
         self.endrepcombo.addItems(self.semesters.keys())
@@ -365,50 +369,70 @@ class mainwindow(QWidget):
     def startdatechange(self):
         self.startcombo.setCurrentIndex(0)
         self.startlabel.setText("Start Date:  " + self.startcal.selectedDate().toString())
+        self.startreplabel.setText("Start Date:  " + self.startcal.selectedDate().toString())
+        self.startrepcal.setSelectedDate(self.startcal.selectedDate())
 
     def enddatechange(self):
         self.endcombo.setCurrentIndex(0)
         self.endlabel.setText("End Date:  " + self.endcal.selectedDate().toString())
+        self.endreplabel.setText("End Date:  " + self.endcal.selectedDate().toString())
+        self.endrepcal.setSelectedDate(self.endcal.selectedDate())
 
     def startrepdatechange(self):
         self.startrepcombo.setCurrentIndex(0)
         self.startreplabel.setText("Start Date:  " + self.startrepcal.selectedDate().toString())
+        self.startlabel.setText("Start Date:  " + self.startrepcal.selectedDate().toString())
+        self.startcal.setSelectedDate(self.startrepcal.selectedDate())
 
     def endrepdatechange(self):
         self.endrepcombo.setCurrentIndex(0)
         self.endreplabel.setText("End Date:  " + self.endrepcal.selectedDate().toString())
+        self.endlabel.setText("End Date:  " + self.endrepcal.selectedDate().toString())
+        self.endcal.setSelectedDate(self.endrepcal.selectedDate())
 
     def startcomboselect(self):
+        self.startrepcombo.setCurrentIndex(self.startcombo.currentIndex())
         sempick = self.semesters[self.startcombo.currentText()].getStart()[:10]
         if sempick == '':
             return
         conv = datetime.datetime.strptime(sempick, '%Y-%m-%d')
         self.startlabel.setText("Start Date:  " + conv.strftime('%a %b %d %Y'))
+        self.startreplabel.setText("Start Date:  " + conv.strftime('%a %b %d %Y'))
         self.startcal.setSelectedDate(conv)
+        self.startrepcal.setSelectedDate(conv)
 
     def endcomboselect(self):
+        self.endrepcombo.setCurrentIndex(self.endcombo.currentIndex())
         sempick = self.semesters[self.endcombo.currentText()].getEnd()[:10]
         if sempick == '':
             return
         conv = datetime.datetime.strptime(sempick, '%Y-%m-%d')
         self.endlabel.setText("End Date:  " + conv.strftime('%a %b %d %Y'))
+        self.endreplabel.setText("End Date:  " + conv.strftime('%a %b %d %Y'))
         self.endcal.setSelectedDate(conv)
+        self.endrepcal.setSelectedDate(conv)
 
     def startrepcomboselect(self):
+        self.startcombo.setCurrentIndex(self.startrepcombo.currentIndex())
         sempick = self.semesters[self.startrepcombo.currentText()].getStart()[:10]
         if sempick == '':
             return
         conv = datetime.datetime.strptime(sempick, '%Y-%m-%d')
         self.startreplabel.setText("Start Date:  " + conv.strftime('%a %b %d %Y'))
+        self.startlabel.setText("Start Date:  " + conv.strftime('%a %b %d %Y'))
         self.startrepcal.setSelectedDate(conv)
+        self.startcal.setSelectedDate(conv)
 
     def endrepcomboselect(self):
+        self.endcombo.setCurrentIndex(self.endrepcombo.currentIndex())
         sempick = self.semesters[self.endrepcombo.currentText()].getEnd()[:10]
         if sempick == '':
             return
         conv = datetime.datetime.strptime(sempick, '%Y-%m-%d')
         self.endreplabel.setText("End Date:  " + conv.strftime('%a %b %d %Y'))
+        self.endlabel.setText("End Date:  " + conv.strftime('%a %b %d %Y'))
         self.endrepcal.setSelectedDate(conv)
+        self.endcal.setSelectedDate(conv)
 
     def reportcombochange(self):
         i = importlib.import_module('py.report' + self.reportdrop.currentText())
@@ -464,8 +488,12 @@ class mainwindow(QWidget):
             self.assignedcombo.setEnabled(False)
 
     def completed(self):
-        self.mainwind = previewGui.preview(self.dframe, self.datacombo.currentText(), self.startcal.selectedDate().toPyDate(), self.endcal.selectedDate().toPyDate())
-        self.mainwind.show()
+        if self.startcal.selectedDate().daysTo(self.endcal.selectedDate()) < 0 or self.statuslabel.text() == 'ERROR: No results returned':
+            return
+        if(self.tabs.currentIndex()==0):
+            self.mainwind = previewGui.preview(self.dframe, self.datacombo.currentText(), self.startcal.selectedDate().toPyDate(), self.endcal.selectedDate().toPyDate())
+            self.mainwind.show()
+        self.statusUpdate('Ready')
 
 class submitThread(QtCore.QThread):
 
@@ -477,7 +505,12 @@ class submitThread(QtCore.QThread):
         self.wait()
 
     def run(self):
+        if self.window.startcal.selectedDate().daysTo(self.window.endcal.selectedDate()) < 0:
+            self.window.statusUpdate("ERROR: Start date is after end date")
+            self.window.statuslabel.setStyleSheet("color: red;")
+            return
         self.window.setDisabled(True)
+        self.window.statuslabel.setStyleSheet("color: black;")
         if (self.window.tabs.currentIndex() == 0):
             self.window.statusUpdate("Preparing Data Structure")
 
@@ -496,7 +529,8 @@ class submitThread(QtCore.QThread):
 
             frameboy = PieHandler.goandget(self.window.driver, url, datatype)
             if frameboy is False:
-                QMessageBox.about(self.window, "Error", "No Results Returned!")
+                self.window.statusUpdate("ERROR: No results returned")
+                self.window.statuslabel.setStyleSheet("color: red;")
                 self.window.setDisabled(False)
                 return
             else:

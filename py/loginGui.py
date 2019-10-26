@@ -138,12 +138,14 @@ class login(QWidget):
             self.duocode.setEnabled(True)
 
     def keyPressEvent(self, qKeyEvent):
-        if qKeyEvent.key() == QtCore.Qt.Key_Return or qKeyEvent.key() == QtCore.Qt.Key_Enter:
+        if (qKeyEvent.key() == QtCore.Qt.Key_Return or qKeyEvent.key() == QtCore.Qt.Key_Enter) and (self.userbox.hasFocus() or self.passbox.hasFocus()):
             self.subThread.start()
         else:
             super().keyPressEvent(qKeyEvent)
 
     def completed(self):
+        if self.userbox.text() == '' or self.passbox.text() == '':
+            return
         self.startMain(self.userbox.text(), self.datalist, self.driver)
         self.close()
 
@@ -157,7 +159,16 @@ class submitThread(QtCore.QThread):
         self.wait()
 
     def run(self):
+        if self.window.userbox.text() == '':
+            self.window.statusUpdate("ERROR: Please provide a username")
+            self.window.statuslabel.setStyleSheet("color: red;")
+            return
+        if self.window.passbox.text() == '':
+            self.window.statusUpdate("ERROR: Please enter a password")
+            self.window.statuslabel.setStyleSheet("color: red;")
+            return
         self.window.setDisabled(True)
+        self.window.statuslabel.setStyleSheet("color: black;")
         self.window.statusUpdate('Spinning up the driver')
         driver = functions.buildHeadless()
         self.window.statusUpdate('Driver built, prepare for DUO')
