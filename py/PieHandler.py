@@ -208,12 +208,23 @@ def invcounttwo(invframe):
     paper = []
 
     for name,data in thingy:
+        print(name)
+        print(data)
         lab.append(name)
+        print(lab)
         counts = data['count'].values
-        difs = np.diff(counts)
+        print(counts)
+        countstwo = counts[counts == arr.astype(int)]
+        print(countstwo)
+        difs = np.diff(countstwo)
+        print(difs)
         reorderthresh = float(data[['reordernum']].mean()/1.15)
+        print(reorderthresh)
         newdifs = difs[difs < reorderthresh]
+        print(newdifs)
         newerdifs = newdifs[newdifs > 0]
+        print(newerdifs)
+        print(np.sum(newerdifs))
         paper.append(np.sum(newerdifs))
 
     return pd.DataFrame({'lab':lab,'paper_used':paper})

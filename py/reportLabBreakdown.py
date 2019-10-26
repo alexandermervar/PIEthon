@@ -51,6 +51,7 @@ def main(driver, startdate, enddate, statuslabel):
     #INVENTORY REPORTS
     inventoryurl = inventoryreportstruct.make_url()
     invframe = PieHandler.goandgetinv(driver, inventoryurl, 'Letter(8.5" x 11")')
+    print('entering new inv count')
     invuseframe = PieHandler.invcounttwo(invframe)
 
     #PUTTING THINGS TOGETHER
