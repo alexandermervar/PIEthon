@@ -69,6 +69,10 @@ QLabel#previewlabel {
     min-width: 20em;
 }
 
+QLabel#desctext {
+    font: 9pt 'Arial';
+}
+
 QLineEdit {
     font: 10pt 'Arial';
     border: 1px solid black;

@@ -157,6 +157,7 @@ class submitThread(QtCore.QThread):
         self.wait()
 
     def run(self):
+        self.window.setDisabled(True)
         self.window.statusUpdate('Spinning up the driver')
         driver = functions.buildHeadless()
         self.window.statusUpdate('Driver built, prepare for DUO')
@@ -171,6 +172,7 @@ class submitThread(QtCore.QThread):
         driver = PieHandler.caslogin(driver, user, password, duotype)
         if(not driver):
             QMessageBox.about(self.window,"Error","CAS login failed!")
+            self.window.setDisabled(False)
             return
         else:
             self.window.statusUpdate('DUO passed, going to Pie')

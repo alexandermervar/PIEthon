@@ -1,6 +1,10 @@
 from py import PIEdataVARS, PieHandler, htmlbase
 import pandas as pd
 
+description = "Goes through active users and lists if they are missing any contact information on their Pie profile page"
+active = True
+author = 'Brian Funk'
+
 def main(driver, startdate, enddate, statuslabel):
     activeuserstruct = PIEdataVARS.activerusers
     urllist = activeuserstruct.make_url()

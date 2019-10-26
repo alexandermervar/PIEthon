@@ -62,8 +62,6 @@ class mainwindow(QWidget):
 
         self.locationcombo = QComboBox(self)
 
-        #itemsbefore+=1
-
         self.categorylabel = QLabel(self)
         self.categorylabel.setText("Category: ")
 
@@ -88,6 +86,7 @@ class mainwindow(QWidget):
 
         self.startcombo = QComboBox(self)
         self.startcombo.addItems(self.semesters.keys())
+        self.startcombo.currentTextChanged.connect(self.startcomboselect)
 
         self.endcal = QCalendarWidget(self)
         self.endcal.setSelectedDate(datetime.date.today())
@@ -99,10 +98,11 @@ class mainwindow(QWidget):
         self.endlabel.setText("End Date: " + self.endcal.selectedDate().toString())
 
         self.enddroplabel = QLabel(self)
-        self.enddroplabel.setText('Autoselect start of :  ')
+        self.enddroplabel.setText('Autoselect end of :  ')
 
         self.endcombo = QComboBox(self)
         self.endcombo.addItems(self.semesters.keys())
+        self.endcombo.currentTextChanged.connect(self.endcomboselect)
 
         #create the maxreturns things
         self.maxlabel = QLabel(self)
@@ -210,6 +210,7 @@ class mainwindow(QWidget):
         self.startrepcal = QCalendarWidget(self)
         self.startrepcal.setSelectedDate(datetime.date.today()-datetime.timedelta(days=30))
         self.startrepcal.setVerticalHeaderFormat(QCalendarWidget.NoVerticalHeader)
+        self.startrepcal.setGridVisible(True)
         self.startrepcal.clicked.connect(self.startrepdatechange)
 
         self.startreplabel = QLabel(self)
@@ -218,6 +219,7 @@ class mainwindow(QWidget):
         self.endrepcal = QCalendarWidget(self)
         self.endrepcal.setSelectedDate(datetime.date.today())
         self.endrepcal.setVerticalHeaderFormat(QCalendarWidget.NoVerticalHeader)
+        self.endrepcal.setGridVisible(True)
         self.endrepcal.clicked.connect(self.endrepdatechange)
 
         self.endreplabel = QLabel(self)
@@ -225,34 +227,100 @@ class mainwindow(QWidget):
 
         self.reporttypelabel = QLabel(self)
         self.reporttypelabel.setText('Report Type')
+        self.reporttypelabel.setAlignment(QtCore.Qt.AlignCenter)
 
         self.reportdrop = QComboBox(self)
         self.reportdrop.addItems([repo.replace('report','') for repo in reports])
+        self.reportdrop.currentTextChanged.connect(self.reportcombochange)
 
-        reportreportlayout = QHBoxLayout()
-        #reportreportlayout.addStretch(1)
-        reportreportlayout.setAlignment(QtCore.Qt.AlignLeft)
-        reportreportlayout.addWidget(self.reporttypelabel)
-        reportreportlayout.addWidget(self.reportdrop)
+        self.reportactivelabel = QLabel(self)
+        self.reportactivelabel.setText("Active")
 
-        reportcallablayout = QHBoxLayout()
-        reportcallablayout.addWidget(self.startreplabel)
-        reportcallablayout.addSpacing(10)
-        reportcallablayout.addWidget(self.endreplabel)
+        self.reportactive = QLabel(self)
+        self.reportactive.setText("")
+        self.reportactive.setObjectName('desctext')
 
-        reportcallayout = QHBoxLayout()
-        reportcallayout.addWidget(self.startrepcal)
-        reportcallayout.addSpacing(10)
-        reportcallayout.addWidget(self.endrepcal)
+        self.reportauthorlabel = QLabel(self)
+        self.reportauthorlabel.setText("Author")
 
-        reportvlayout = QVBoxLayout()
-        reportvlayout.addSpacing(15)
-        reportvlayout.addLayout(reportreportlayout)
-        reportvlayout.addSpacing(15)
-        reportvlayout.addLayout(reportcallablayout)
-        reportvlayout.addLayout(reportcallayout)
+        self.reportauthor = QLabel(self)
+        self.reportauthor.setText("")
+        self.reportauthor.setObjectName('desctext')
 
-        self.reporttab.setLayout(reportvlayout)
+        self.reportdesclabel = QLabel(self)
+        self.reportdesclabel.setText("Report Description")
+
+        self.descbox = QLabel(self)
+        self.descbox.setText("")
+        self.descbox.setWordWrap(True)
+        self.descbox.setFixedWidth(self.usernamecombo.frameGeometry().width()+54)
+        self.descbox.setObjectName('desctext')
+
+        self.startrepdroplabel = QLabel(self)
+        self.startrepdroplabel.setText('Autoselect start of :  ')
+
+        self.startrepcombo = QComboBox(self)
+        self.startrepcombo.addItems(self.semesters.keys())
+        self.startrepcombo.currentTextChanged.connect(self.startrepcomboselect)
+
+        self.enddropreplabel = QLabel(self)
+        self.enddropreplabel.setText('Autoselect end of :  ')
+
+        self.endrepcombo = QComboBox(self)
+        self.endrepcombo.addItems(self.semesters.keys())
+        self.endrepcombo.currentTextChanged.connect(self.endrepcomboselect)
+
+        newreportlayout = QVBoxLayout()
+
+        newreportlayout.addWidget(self.reporttypelabel)
+        newreportlayout.addWidget(self.reportdrop)
+        verticalSpacernew = QSpacerItem(10, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        newreportlayout.addSpacerItem(verticalSpacernew)
+        newreportlayout.addWidget(self.reportauthorlabel)
+        newreportlayout.addWidget(self.reportauthor)
+        verticalSpacernewest = QSpacerItem(10, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        newreportlayout.addSpacerItem(verticalSpacernewest)
+        newreportlayout.addWidget(self.reportactivelabel)
+        newreportlayout.addWidget(self.reportactive)
+        verticalSpacernewer = QSpacerItem(10, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        newreportlayout.addSpacerItem(verticalSpacernewer)
+        newreportlayout.addWidget(self.reportdesclabel)
+        newreportlayout.addWidget(self.descbox)
+        newreportlayout.setSpacing(3)
+        newreportlayout.addStretch(1)
+
+        startrepdrophlayout = QHBoxLayout()
+        startrepdrophlayout.addWidget(self.startrepdroplabel)
+        startrepdrophlayout.addWidget(self.startrepcombo)
+        startrepdrophlayout.setSpacing(0)
+        startrepdrophlayout.addStretch(0)
+
+        endrepdropylayout = QHBoxLayout()
+        endrepdropylayout.addWidget(self.enddropreplabel)
+        endrepdropylayout.addWidget(self.endrepcombo)
+        endrepdropylayout.setSpacing(0)
+        endrepdropylayout.addStretch(0)
+
+        repcallayout = QVBoxLayout()
+        repcallayout.addWidget(self.startreplabel)
+        repcallayout.addLayout(startrepdrophlayout)
+        repcallayout.addWidget(self.startrepcal)
+        repcallayout.addSpacing(10)
+        repcallayout.addWidget(self.endreplabel)
+        repcallayout.addLayout(endrepdropylayout)
+        repcallayout.addWidget(self.endrepcal)
+        repcallayout.setSpacing(3)
+        repcallayout.addStretch(1)
+
+        reportouterlayout = QHBoxLayout()
+        reportouterlayout.addLayout(newreportlayout)
+        reportouterlayout.addSpacing(10)
+        reportouterlayout.addLayout(repcallayout)
+
+        reportouterlayoutout = QVBoxLayout()
+        reportouterlayoutout.addSpacing(15)
+        reportouterlayoutout.addLayout(reportouterlayout)
+        self.reporttab.setLayout(reportouterlayoutout)
 
         self.tabs.addTab(self.datapulltab,"Data Pull")
         self.tabs.addTab(self.reporttab, "Reporting")
@@ -273,8 +341,9 @@ class mainwindow(QWidget):
         outerlayout.addWidget(self.statuslabel)
         self.setLayout(outerlayout)
 
+        self.reportcombochange()
         self.combochange()
-        self.setWindowTitle('PIEthon: Logged In As ' + self.username)
+        self.setWindowTitle('PIEthon: logged in as ' + self.username)
         self.setWindowIcon(QIcon(iconPath))
 
         #style things
@@ -294,16 +363,58 @@ class mainwindow(QWidget):
         QtCore.QCoreApplication.processEvents()
 
     def startdatechange(self):
+        self.startcombo.setCurrentIndex(0)
         self.startlabel.setText("Start Date:  " + self.startcal.selectedDate().toString())
 
     def enddatechange(self):
+        self.endcombo.setCurrentIndex(0)
         self.endlabel.setText("End Date:  " + self.endcal.selectedDate().toString())
 
     def startrepdatechange(self):
+        self.startrepcombo.setCurrentIndex(0)
         self.startreplabel.setText("Start Date:  " + self.startrepcal.selectedDate().toString())
 
     def endrepdatechange(self):
+        self.endrepcombo.setCurrentIndex(0)
         self.endreplabel.setText("End Date:  " + self.endrepcal.selectedDate().toString())
+
+    def startcomboselect(self):
+        sempick = self.semesters[self.startcombo.currentText()].getStart()[:10]
+        if sempick == '':
+            return
+        conv = datetime.datetime.strptime(sempick, '%Y-%m-%d')
+        self.startlabel.setText("Start Date:  " + conv.strftime('%a %b %d %Y'))
+        self.startcal.setSelectedDate(conv)
+
+    def endcomboselect(self):
+        sempick = self.semesters[self.endcombo.currentText()].getEnd()[:10]
+        if sempick == '':
+            return
+        conv = datetime.datetime.strptime(sempick, '%Y-%m-%d')
+        self.endlabel.setText("End Date:  " + conv.strftime('%a %b %d %Y'))
+        self.endcal.setSelectedDate(conv)
+
+    def startrepcomboselect(self):
+        sempick = self.semesters[self.startrepcombo.currentText()].getStart()[:10]
+        if sempick == '':
+            return
+        conv = datetime.datetime.strptime(sempick, '%Y-%m-%d')
+        self.startreplabel.setText("Start Date:  " + conv.strftime('%a %b %d %Y'))
+        self.startrepcal.setSelectedDate(conv)
+
+    def endrepcomboselect(self):
+        sempick = self.semesters[self.endrepcombo.currentText()].getEnd()[:10]
+        if sempick == '':
+            return
+        conv = datetime.datetime.strptime(sempick, '%Y-%m-%d')
+        self.endreplabel.setText("End Date:  " + conv.strftime('%a %b %d %Y'))
+        self.endrepcal.setSelectedDate(conv)
+
+    def reportcombochange(self):
+        i = importlib.import_module('py.report' + self.reportdrop.currentText())
+        self.descbox.setText(i.description)
+        self.reportactive.setText(str(i.active))
+        self.reportauthor.setText(str(i.author))
 
     def combochange(self):
         datatype = self.dataoptions.get(self.datacombo.currentText())
@@ -366,6 +477,7 @@ class submitThread(QtCore.QThread):
         self.wait()
 
     def run(self):
+        self.window.setDisabled(True)
         if (self.window.tabs.currentIndex() == 0):
             self.window.statusUpdate("Preparing Data Structure")
 
@@ -385,11 +497,14 @@ class submitThread(QtCore.QThread):
             frameboy = PieHandler.goandget(self.window.driver, url, datatype)
             if frameboy is False:
                 QMessageBox.about(self.window, "Error", "No Results Returned!")
+                self.window.setDisabled(False)
                 return
             else:
                 self.window.statusUpdate("Complete")
                 self.window.dframe = frameboy
+                self.window.setDisabled(False)
         else:
             self.window.statusUpdate("Starting Report")
             i = importlib.import_module('py.report' + self.window.reportdrop.currentText())
             i.main(self.window.driver,self.window.startrepcal.selectedDate().toPyDate(), self.window.endrepcal.selectedDate().toPyDate(), self.window.statuslabel)
+            self.window.setDisabled(False)
