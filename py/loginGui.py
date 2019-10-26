@@ -1,21 +1,11 @@
 from py import mainGui, functions, PIEdataVARS, PieHandler
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QMessageBox,
-                             QPushButton, QRadioButton, QApplication,
-                             QHBoxLayout, QVBoxLayout)
+                             QPushButton, QRadioButton, QHBoxLayout, QVBoxLayout)
 from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore
 import time
-import sys
 
 iconPath = functions.createPath('resources//PIEcon.png')
-font = 'BentonSans'
-fontsize = 9
-
-app = QApplication(sys.argv)
-
-screen = app.primaryScreen()
-size = screen.size()
-rect = screen.availableGeometry()
 
 qss="iu_stylesheet.qss"
 
@@ -23,11 +13,14 @@ class login(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.subThread = submitThread(self)
+        self.subThread.finished.connect(self.completed)
         self.initUI()
 
     def initUI(self):
-        #self.resize(rect.height()/3, rect.width()/6)
         self.center()
+
+        self.semesters = ''
 
         #add a username label and text box
         self.userlabel = QLabel(self)
@@ -69,7 +62,7 @@ class login(QWidget):
 
         #add submit button
         self.submitbutton = QPushButton('Submit', self)
-        self.submitbutton.clicked.connect(self.pieLogin)
+        self.submitbutton.clicked.connect(self.subThread.start)
 
         #add the status thingy
         self.statuslabel = QLabel(self)
@@ -134,7 +127,7 @@ class login(QWidget):
 
     def startMain(self, user, dataoptions, driver):
         #print('here we go')
-        self.mainwind = mainGui.mainwindow(user, dataoptions, driver)
+        self.mainwind = mainGui.mainwindow(user, dataoptions, driver, self.semesters)
         #print('time to show')
         self.mainwind.show()
 
@@ -145,40 +138,68 @@ class login(QWidget):
             self.duocode.setEnabled(True)
 
     def keyPressEvent(self, qKeyEvent):
-        if qKeyEvent.key() == QtCore.Qt.Key_Return or qKeyEvent.key() == QtCore.Qt.Key_Enter:
-            self.pieLogin()
+        if (qKeyEvent.key() == QtCore.Qt.Key_Return or qKeyEvent.key() == QtCore.Qt.Key_Enter) and (self.userbox.hasFocus() or self.passbox.hasFocus()):
+            self.subThread.start()
         else:
             super().keyPressEvent(qKeyEvent)
 
-    def pieLogin(self):
-        self.statusUpdate('Spinning up the driver')
+    def completed(self):
+        if self.userbox.text() == '' or self.passbox.text() == '':
+            return
+        self.startMain(self.userbox.text(), self.datalist, self.driver)
+        self.close()
+
+class submitThread(QtCore.QThread):
+
+    def __init__(self, window):
+        self.window = window
+        QtCore.QThread.__init__(self)
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        if self.window.userbox.text() == '':
+            self.window.statusUpdate("ERROR: Please provide a username")
+            self.window.statuslabel.setStyleSheet("color: red;")
+            return
+        if self.window.passbox.text() == '':
+            self.window.statusUpdate("ERROR: Please enter a password")
+            self.window.statuslabel.setStyleSheet("color: red;")
+            return
+        self.window.setDisabled(True)
+        self.window.statuslabel.setStyleSheet("color: black;")
+        self.window.statusUpdate('Spinning up the driver')
         driver = functions.buildHeadless()
-        self.statusUpdate('Driver built, prepare for DUO')
-        user = self.userbox.text()
-        password = self.passbox.text()
-        if self.pushradio.isChecked():
+        self.window.statusUpdate('Driver built, prepare for DUO')
+        user = self.window.userbox.text()
+        password = self.window.passbox.text()
+        if self.window.pushradio.isChecked():
             duotype = 'push'
-        elif self.callradio.isChecked():
+        elif self.window.callradio.isChecked():
             duotype = 'call'
         else:
-            duotype = self.duocode.text()
+            duotype = self.window.duocode.text()
         driver = PieHandler.caslogin(driver, user, password, duotype)
         if(not driver):
-            QMessageBox.about(self,"Error","CAS login failed!")
+            QMessageBox.about(self.window,"Error","CAS login failed!")
+            self.window.setDisabled(False)
             return
         else:
-            self.statusUpdate('DUO passed, going to Pie')
+            self.window.statusUpdate('DUO passed, going to Pie')
         driver = PieHandler.getPie(driver)
         time.sleep(.7)
-        self.statusUpdate('Connected to Pie')
-        self.statusUpdate('Pulling in Users')
+        self.window.statusUpdate('Connected to Pie')
+        self.window.statusUpdate('Pulling in Users')
         userlist = PieHandler.grabUsers(driver)
-        self.statusUpdate('Pulling in Locations')
+        self.window.statusUpdate('Pulling in Locations')
         lablist = PieHandler.grabLabs(driver)
-        self.statusUpdate('Throwing it together')
         invlabs = PieHandler.grabInvLabs(driver)
+        self.window.statusUpdate('Grabbing Semesters')
+        self.window.semesters = PieHandler.grabSemesters(driver)
+        self.window.statusUpdate('Throwing it together')
         datalist = PIEdataVARS.buildalldatathings(userlist, lablist, invlabs)
-
-        self.startMain(user, datalist, driver)
-
-        self.close()
+        self.window.datalist = datalist
+        self.window.driver = driver
+        self.window.statusUpdate('Starting Main Window')
+        return

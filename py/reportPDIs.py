@@ -11,8 +11,9 @@ from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLabel, QPushButton, QRadi
 from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore
 
-iconPath = functions.createPath('PIEcon.png')
-
+description = "Honestly not sure what it does but it needs to be completely overhauled. Running this will crash PIEthon"
+active = False
+author = 'Nick Johnson'
 
 class Pdis(QWidget):
 

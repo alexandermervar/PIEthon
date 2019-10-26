@@ -4,8 +4,11 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+description = "This report lists contacts per staffed hour and paper usage for each lab, as well as graphs for appointment history. This report is used for prioritizing labs in Lab Breakdown"
+active = True
+author = 'Brian Funk'
+
 def main(driver, startdate, enddate, statuslabel):
-    print("in reportmain")
     contactstruct = PIEdataVARS.contacts
     locationstruct = PIEdataVARS.locations
     inventoryreportstruct = PIEdataVARS.invreports
@@ -18,29 +21,20 @@ def main(driver, startdate, enddate, statuslabel):
     container.append(inventoryreportstruct)
     container.append(appointmentstruct)
 
-    print("container complete")
-
     for struct in container:
         struct.set_enddate(enddate)
         struct.set_startdate(startdate)
         struct.set_maxreturns(100000)
 
-    print("structs updates")
-
     statusUpdate(statuslabel, 'Loading contacts, please be patient')
-
-    print(startdate)
 
     #CONTACTS
     contacturl = contactstruct.make_url()
-    print("url made")
     contactframe = PieHandler.goandget(driver, contacturl, contactstruct)
-    print("frame obtained")
     testy = contactframe['locationName'].value_counts().reset_index()
     testy.rename(columns={'locationName': 'contacts', 'index': 'locationName'}, inplace=True)
     testy['abb'] = testy['locationName'].apply(lambda x: functions.getAbb(x))
     testy = testy.groupby('abb')['contacts'].sum().reset_index()
-    print("contacts done")
 
     #LOCATIONS
     statusUpdate(statuslabel, 'Loading locations, please keep being patient')
@@ -53,14 +47,11 @@ def main(driver, startdate, enddate, statuslabel):
     supaframe = pd.merge(locationframe, testy, left_on='abb', right_on='abb', how='outer')
     supaframe['contacts_per_hour'] = supaframe['contacts']/supaframe['staffed_hours']
     statusUpdate(statuslabel, 'Loading inventory reports, thanks for sticking around')
-    print("locations done")
 
     #INVENTORY REPORTS
     inventoryurl = inventoryreportstruct.make_url()
     invframe = PieHandler.goandgetinv(driver, inventoryurl, 'Letter(8.5" x 11")')
-    print('doing the new thing')
     invuseframe = PieHandler.invcounttwo(invframe)
-    print("inventory reports done")
 
     #PUTTING THINGS TOGETHER
     invuseframe['abb'] = invuseframe['lab'].apply(lambda x: functions.getAbb(x))
@@ -72,7 +63,6 @@ def main(driver, startdate, enddate, statuslabel):
     supadupaframe.sort_values(by=['overall_score'], ascending=False, inplace=True)
     supadupaframe = supadupaframe.reset_index(drop=True)
     labbreakhtml = supadupaframe.to_html()
-    print("uhhhhh okay")
 
     #APPOINTMENTS
     statusUpdate(statuslabel, 'Moving on to appointments now. This will be worth it I swear.')
@@ -95,6 +85,8 @@ def main(driver, startdate, enddate, statuslabel):
     smallboi = appointmentframe[['month', 'shiftType-shortName']]
     pivoto = smallboi.pivot_table(index='month', columns='shiftType-shortName', values='shiftType-shortName', aggfunc=len)
 
+    statusUpdate(statuslabel, 'GeneratingReport')
+
     plt.tight_layout()
     pivoto.plot.bar()
     plt.tight_layout()
@@ -105,8 +97,6 @@ def main(driver, startdate, enddate, statuslabel):
 
     outputfile = htmlbase.htmlbase('Lab Breakdown', 'Lab Breakdown', tablelist, picturelist)
     outputfile.makeHTML('LabBreakdown')
-
-    #supadupaframe.to_csv('labbreakdown.csv')
 
 def statusUpdate(label, newstat):
     label.setText(newstat)

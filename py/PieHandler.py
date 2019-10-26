@@ -1,5 +1,5 @@
 import time
-from py import dataconverter, PIEdataVARS, seleniumHandlers, users
+from py import dataconverter, PIEdataVARS, seleniumHandlers, users, semesters
 import requests
 import pandas as pd
 import numpy as np
@@ -113,6 +113,22 @@ def grabInvLabs(driver):
 
     return lablist
 
+def grabSemesters(driver):
+    framey = goandget(driver, [PIEdataVARS.schedules.link], PIEdataVARS.schedules)
+
+    framey = framey[['name', 'startTime', 'endTime']]
+
+    semkey = {}
+
+    tempuser = semesters.semester('', '', '')
+    semkey[''] = tempuser
+
+    for index, row in framey.iterrows():
+        tempuser = semesters.semester(row['name'], row['startTime'], row['endTime'])
+        semkey[row['name']] = tempuser
+
+    return semkey
+
 def goandget(driver, urllist, piedata):
     totString = ''
     counter = 1
@@ -184,105 +200,6 @@ def goandgetinv(driver, urllist, invsearch):
     else:
         frame = dataconverter.invedit(supString, invsearch)
         return frame
-
-def findinvused(frame):
-    paperdict = {}
-
-    for index, row in frame.iterrows():
-        if row['labname'] not in paperdict:
-            templist = []
-            templist.append(row['reordernum'])
-            paperdict[row['labname']] = templist
-        else:
-            paperdict[row['labname']] = [row['count']] + paperdict.get(row['labname'])
-
-    return paperdict
-
-def usepapdict(paperdict):
-    usagedict = {}
-    for key,val in paperdict.items():
-        if (len(val) < 5) or (key == 'EG100'):
-            usagedict[key] = ''
-            continue
-        val = list(filter(None,val))
-        if key == 'TV250':
-            reorder = 6
-        elif key == 'UE020':
-            reorder = 11
-        else:
-            reorder = val[-1]
-        usage = invloop(val,reorder,0, key)
-        usagedict[key] = usage
-    negativevals = []
-    for key, val in usagedict.items():
-        if type(val) is not int:
-            negativevals.append(key)
-            continue
-        if (val<0):
-            negativevals.append(key)
-    for valer in negativevals:
-        usagedict[valer] = 0
-    return usagedict
-
-
-def invloop(listthing, reorder, used, key):
-    starting = findstart(listthing[:5], reorder)
-    prev = starting
-    jumpthresh = 8
-    dropthresh = 1.3
-    if key == 'LC114':
-        jumpthresh = 12
-        dropthresh = 2
-    jumpcheck = 0
-    jumplist = []
-    dropcheck = 0
-    droplist = []
-    lastvalid = starting
-    for x in range(0, len(listthing) - 1):
-        if (prev <= reorder) and ((listthing[x] - prev) > reorder):
-            print('found a big jump below reorder')
-            used = used + (starting - prev)
-            return invloop(listthing[x:],reorder, used, key)
-        elif (prev + jumpthresh < listthing[x]):
-            print('jump up')
-            jumpcheck+=1
-            jumplist.append(listthing[x])
-            if jumpcheck == 3:
-                print('three jumps in a row')
-                used = used + starting - lastvalid
-                starting = max(jumplist)
-                prev = listthing[x]
-        elif (prev-listthing[x]) > (reorder/dropthresh):
-            print('drop down')
-            dropcheck+=1
-            droplist.append(listthing[x])
-            if dropcheck == 3:
-                print('three drops in a row')
-                used = used + starting - lastvalid
-                starting = max(droplist)
-                prev = listthing[x]
-        else:
-            jumpcheck = 0
-            jumplist = []
-            dropcheck = 0
-            droplist = []
-            prev = listthing[x]
-            lastvalid = listthing[x]
-    used = used + (starting - prev)
-    return used
-
-def findstart(listthing, reorder):
-    thing = reorder * 11
-    if listthing == []:
-        print("RUH ROW SHAGGYjljlkjlkjl;kj;kjhkljguytiguyilyygulihybujhkhjooiubjuj")
-        return
-    if max(listthing) is None:
-        return listthing[0]
-    if max(listthing) <= (reorder*11):
-        return max(listthing)
-    else:
-        listthing.remove(max(listthing))
-        return findstart(listthing, reorder)
 
 def invcounttwo(invframe):
     thingy = invframe.groupby(by='labname')
