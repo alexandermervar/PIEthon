@@ -209,7 +209,7 @@ def invcounttwo(invframe):
 
     for name,data in thingy:
         lab.append(name)
-        counts = data['count'].values
+        counts = pd.to_numeric(data['count']).dropna().to_numpy().astype(int)
         difs = np.diff(counts)
         reorderthresh = float(data[['reordernum']].mean()/1.15)
         newdifs = difs[difs < reorderthresh]
