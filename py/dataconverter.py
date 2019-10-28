@@ -109,7 +109,6 @@ def listloop(input, dicter, recent, allowbracks):
                 continue
 
 def invedit(input, search):
-    print('in invedit')
     obj = json.loads(input)
 
     returndict = {}
@@ -161,9 +160,7 @@ def invedit(input, search):
 
         iterboyo+=1
 
-    print('data convert loop complete')
     df = pd.DataFrame(data=returndict)
-    print('df created')
     return df
 
 def formpull(input):
