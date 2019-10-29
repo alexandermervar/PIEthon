@@ -8,12 +8,8 @@ from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QComboB
 from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore
 
-iconPath = functions.createPath('resources//PIEcon.png')
-
 reports = [filename for filename in os.listdir(os.path.dirname(os.path.abspath(__file__))) if filename.startswith("report") and filename.endswith(".py")]
 reports = [x.replace('.py','') for x in reports]
-
-#https://nikolak.com/pyqt-threading-tutorial/
 
 class mainwindow(QWidget):
 
@@ -348,7 +344,7 @@ class mainwindow(QWidget):
         self.reportcombochange()
         self.combochange()
         self.setWindowTitle('PIEthon: logged in as ' + self.username)
-        self.setWindowIcon(QIcon(iconPath))
+        self.setWindowIcon(QIcon('resources//PIEcon.png'))
 
         #style things
 
@@ -488,12 +484,16 @@ class mainwindow(QWidget):
             self.assignedcombo.setEnabled(False)
 
     def completed(self):
-        if self.startcal.selectedDate().daysTo(self.endcal.selectedDate()) < 0 or self.statuslabel.text() == 'ERROR: No results returned':
+        if self.datecheck() or self.dframe is False:
             return
         if(self.tabs.currentIndex()==0):
             self.mainwind = previewGui.preview(self.dframe, self.datacombo.currentText(), self.startcal.selectedDate().toPyDate(), self.endcal.selectedDate().toPyDate())
             self.mainwind.show()
+        self.dframe = False
         self.statusUpdate('Ready')
+
+    def datecheck(self):
+        return ((self.startcal.selectedDate().daysTo(self.endcal.selectedDate()) < 0) or (self.startrepcal.selectedDate().daysTo(self.endrepcal.selectedDate()) < 0))
 
 class submitThread(QtCore.QThread):
 
@@ -505,7 +505,7 @@ class submitThread(QtCore.QThread):
         self.wait()
 
     def run(self):
-        if self.window.startcal.selectedDate().daysTo(self.window.endcal.selectedDate()) < 0:
+        if self.window.datecheck():
             self.window.statusUpdate("ERROR: Start date is after end date")
             self.window.statuslabel.setStyleSheet("color: red;")
             return
@@ -526,7 +526,6 @@ class submitThread(QtCore.QThread):
             url = datatype.make_url()
 
             self.window.statusUpdate("Pulling from Pie")
-
             frameboy = PieHandler.goandget(self.window.driver, url, datatype)
             if frameboy is False:
                 self.window.statusUpdate("ERROR: No results returned")

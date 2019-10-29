@@ -5,10 +5,6 @@ from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore
 import time
 
-iconPath = functions.createPath('resources//PIEcon.png')
-
-qss="iu_stylesheet.qss"
-
 class login(QWidget):
 
     def __init__(self):
@@ -107,7 +103,7 @@ class login(QWidget):
 
         self.setLayout(totalvbox)
         self.setWindowTitle('PIEthon')
-        self.setWindowIcon(QIcon(iconPath))
+        self.setWindowIcon(QIcon('resources//PIEcon.png'))
 
         #style things
         self.setStyleSheet(open("resources//iu_stylesheet.qss", "r").read())

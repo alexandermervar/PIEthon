@@ -5,9 +5,6 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 from os.path import expanduser
 
-iconPath = functions.createPath('resources//PIEcon.png')
-
-
 class prevButton(QPushButton):
 
     def __init__(self, cols, rows, form, dframe):
@@ -130,7 +127,7 @@ class preview(QWidget):
         self.setStyleSheet(open("resources//iu_stylesheet.qss", "r").read())
 
         self.setWindowTitle('PIEthon')
-        self.setWindowIcon(QIcon(iconPath))
+        self.setWindowIcon(QIcon('resources//PIEcon.png'))
         self.show()
 
     def center(self):
