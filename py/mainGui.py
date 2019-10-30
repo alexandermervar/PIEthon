@@ -1,19 +1,11 @@
-from py import functions, PieHandler, previewGui
+from py import PieHandler, previewGui,report
 import datetime
 import importlib
-import os
-from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QComboBox, QMessageBox,
+from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QComboBox,
                              QPushButton, QCalendarWidget, QTabWidget, QVBoxLayout, QHBoxLayout, QSpacerItem,
                              QSizePolicy)
 from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore
-
-iconPath = functions.createPath('resources//PIEcon.png')
-
-reports = [filename for filename in os.listdir(os.path.dirname(os.path.abspath(__file__))) if filename.startswith("report") and filename.endswith(".py")]
-reports = [x.replace('.py','') for x in reports]
-
-#https://nikolak.com/pyqt-threading-tutorial/
 
 class mainwindow(QWidget):
 
@@ -232,7 +224,7 @@ class mainwindow(QWidget):
         self.reporttypelabel.setAlignment(QtCore.Qt.AlignCenter)
 
         self.reportdrop = QComboBox(self)
-        self.reportdrop.addItems([repo.replace('report','') for repo in reports])
+        self.reportdrop.addItems([x.name for x in report.report_list])
         self.reportdrop.currentTextChanged.connect(self.reportcombochange)
 
         self.reportactivelabel = QLabel(self)
@@ -345,10 +337,13 @@ class mainwindow(QWidget):
         outerlayout.addWidget(self.statuslabel)
         self.setLayout(outerlayout)
 
+        self.current_report = False
+        self.dframe = False
+
         self.reportcombochange()
         self.combochange()
         self.setWindowTitle('PIEthon: logged in as ' + self.username)
-        self.setWindowIcon(QIcon(iconPath))
+        self.setWindowIcon(QIcon('resources//PIEcon.png'))
 
         #style things
 
@@ -435,10 +430,10 @@ class mainwindow(QWidget):
         self.endcal.setSelectedDate(conv)
 
     def reportcombochange(self):
-        i = importlib.import_module('py.report' + self.reportdrop.currentText())
-        self.descbox.setText(i.description)
-        self.reportactive.setText(str(i.active))
-        self.reportauthor.setText(str(i.author))
+        self.current_report = report.report_list[self.reportdrop.currentIndex()]
+        self.descbox.setText(self.current_report.description)
+        self.reportactive.setText(str(self.current_report.active))
+        self.reportauthor.setText(str(self.current_report.author))
 
     def combochange(self):
         datatype = self.dataoptions.get(self.datacombo.currentText())
@@ -488,12 +483,16 @@ class mainwindow(QWidget):
             self.assignedcombo.setEnabled(False)
 
     def completed(self):
-        if self.startcal.selectedDate().daysTo(self.endcal.selectedDate()) < 0 or self.statuslabel.text() == 'ERROR: No results returned':
+        if self.datecheck() or self.dframe is False:
             return
         if(self.tabs.currentIndex()==0):
             self.mainwind = previewGui.preview(self.dframe, self.datacombo.currentText(), self.startcal.selectedDate().toPyDate(), self.endcal.selectedDate().toPyDate())
             self.mainwind.show()
+        self.dframe = False
         self.statusUpdate('Ready')
+
+    def datecheck(self):
+        return ((self.startcal.selectedDate().daysTo(self.endcal.selectedDate()) < 0) or (self.startrepcal.selectedDate().daysTo(self.endrepcal.selectedDate()) < 0))
 
 class submitThread(QtCore.QThread):
 
@@ -505,13 +504,14 @@ class submitThread(QtCore.QThread):
         self.wait()
 
     def run(self):
-        if self.window.startcal.selectedDate().daysTo(self.window.endcal.selectedDate()) < 0:
+        if self.window.datecheck():
             self.window.statusUpdate("ERROR: Start date is after end date")
             self.window.statuslabel.setStyleSheet("color: red;")
             return
         self.window.setDisabled(True)
         self.window.statuslabel.setStyleSheet("color: black;")
         if (self.window.tabs.currentIndex() == 0):
+            self.window.dframe = False
             self.window.statusUpdate("Preparing Data Structure")
 
             datatype = self.window.dataoptions.get(self.window.datacombo.currentText())
@@ -526,7 +526,6 @@ class submitThread(QtCore.QThread):
             url = datatype.make_url()
 
             self.window.statusUpdate("Pulling from Pie")
-
             frameboy = PieHandler.goandget(self.window.driver, url, datatype)
             if frameboy is False:
                 self.window.statusUpdate("ERROR: No results returned")
@@ -538,7 +537,11 @@ class submitThread(QtCore.QThread):
                 self.window.dframe = frameboy
                 self.window.setDisabled(False)
         else:
+            if self.window.current_report.active is False:
+                self.window.statusUpdate("ERROR: Report is not active")
+                self.window.statuslabel.setStyleSheet("color: red;")
+                self.window.setDisabled(False)
+                return
             self.window.statusUpdate("Starting Report")
-            i = importlib.import_module('py.report' + self.window.reportdrop.currentText())
-            i.main(self.window.driver,self.window.startrepcal.selectedDate().toPyDate(), self.window.endrepcal.selectedDate().toPyDate(), self.window.statuslabel)
+            self.window.current_report.run_main(self.window.driver,self.window.startrepcal.selectedDate().toPyDate(), self.window.endrepcal.selectedDate().toPyDate(), self.window.statuslabel)
             self.window.setDisabled(False)

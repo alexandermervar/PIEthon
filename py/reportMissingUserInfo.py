@@ -1,9 +1,5 @@
-from py import PIEdataVARS, PieHandler, htmlbase
+from py import PIEdataVARS, PieHandler, htmlbase, report
 import pandas as pd
-
-description = "Goes through active users and lists if they are missing any contact information on their Pie profile page"
-active = True
-author = 'Brian Funk'
 
 def main(driver, startdate, enddate, statuslabel):
     activeuserstruct = PIEdataVARS.activerusers
@@ -49,3 +45,11 @@ def yikescheck(val):
         return True
     else:
         return False
+
+description = "Goes through active users and lists if they are missing any contact information on their Pie profile page"
+active = True
+author = 'Brian Funk'
+
+missinginforeport = report.report('Missing User Info', author,active)
+missinginforeport.description = description
+missinginforeport.main_run = main
