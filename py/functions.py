@@ -1,4 +1,3 @@
-import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
@@ -9,8 +8,7 @@ def buildHeadless():
     #here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     #here = here.replace('\\','/')
     #prefs = {'download.default_directory': here}
-    chrome_options.add_experimental_option('prefs', prefs)
-
+    #chrome_options.add_experimental_option('prefs', prefs)
     driver = webdriver.Chrome(
         executable_path='resources//chromedriver.exe',
         chrome_options=chrome_options)

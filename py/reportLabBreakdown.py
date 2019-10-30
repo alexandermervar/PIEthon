@@ -1,12 +1,8 @@
-from py import functions, htmlbase, PIEdataVARS, PieHandler
+from py import functions, htmlbase, PIEdataVARS, PieHandler, report
 from PyQt5 import QtCore
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
-description = "This report lists contacts per staffed hour and paper usage for each lab, as well as graphs for appointment history. This report is used for prioritizing labs in Lab Breakdown"
-active = True
-author = 'Brian Funk'
 
 def main(driver, startdate, enddate, statuslabel):
     contactstruct = PIEdataVARS.contacts
@@ -101,3 +97,11 @@ def main(driver, startdate, enddate, statuslabel):
 def statusUpdate(label, newstat):
     label.setText(newstat)
     QtCore.QCoreApplication.processEvents()
+
+description = "This report lists contacts per staffed hour and paper usage for each lab, as well as graphs for appointment history. This report is used for prioritizing labs in Lab Breakdown"
+active = True
+author = 'Brian Funk'
+
+labbreakreport = report.report('Lab Breakdown', author, active)
+labbreakreport.description = description
+labbreakreport.main_run = main
