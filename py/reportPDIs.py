@@ -5,15 +5,11 @@ Nick Johnson
 
 import re
 from datetime import datetime
-from py import functions, htmlbase, PIEdataVARS, PieHandler
+from py import report, htmlbase, PIEdataVARS, PieHandler
 import pandas as pd
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLabel, QPushButton, QRadioButton, QComboBox)
 from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore
-
-description = "Honestly not sure what it does but it needs to be completely overhauled. Running this will crash PIEthon"
-active = False
-author = 'Nick Johnson'
 
 class Pdis(QWidget):
 
@@ -157,3 +153,11 @@ def removeHTML(string: str):  # removes HTML entities from string
     string = re.sub('&amp;|&#38;', "&", string)  # removes &amp; or &#38; and replaces with ampersand
 
     return string
+
+description = "Honestly not sure what it does but it needs to be completely overhauled. Running this will crash PIEthon"
+active = False
+author = 'Nick Johnson'
+
+pdireport = report.report('PDI Report',author,active)
+pdireport.description = description
+pdireport.main_run = False

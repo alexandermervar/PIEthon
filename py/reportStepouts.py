@@ -1,10 +1,5 @@
-from py import functions, htmlbase, PIEdataVARS, PieHandler
+from py import functions, htmlbase, PIEdataVARS, PieHandler, report
 import numpy as np
-
-#This is a bad report...make better lol
-description = "Just give median stepout times for each lab. Honestly kinda useless. Need to make not trash"
-active = True
-author = 'Brian Funk'
 
 def main(driver, startdate, enddate, statuslabel):
     locationstruct = PIEdataVARS.locations
@@ -22,3 +17,12 @@ def main(driver, startdate, enddate, statuslabel):
 
     outputfile = htmlbase.htmlbase('Stepout Medians', 'Stepout Medians', tablelist, picturelist)
     outputfile.makeHTML('StepoutMedians')
+
+#This is a bad report...make better lol
+description = "Just give median stepout times for each lab. Honestly kinda useless. Need to make not trash"
+active = True
+author = 'Brian Funk'
+
+stepoutreport = report.report('Stepout Report', author,active)
+stepoutreport.description = description
+stepoutreport.main_run = main

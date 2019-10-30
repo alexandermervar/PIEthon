@@ -1,4 +1,3 @@
-import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
@@ -6,22 +5,15 @@ def buildHeadless():
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
-    here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    here = here.replace('\\','/')
-    prefs = {'download.default_directory': here}
-    chrome_options.add_experimental_option('prefs', prefs)
-    pather = here + '/resources/chromedriver.exe'
-
+    #here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    #here = here.replace('\\','/')
+    #prefs = {'download.default_directory': here}
+    #chrome_options.add_experimental_option('prefs', prefs)
     driver = webdriver.Chrome(
-        executable_path=os.path.abspath(pather),
+        executable_path='resources//chromedriver.exe',
         chrome_options=chrome_options)
 
     return driver
-
-def createPath(paththing):
-    here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    filename = os.path.join(here, paththing)
-    return filename
 
 def pieTimeConvert(date):
     fordate = date.strftime('%Y-%m-%d')
