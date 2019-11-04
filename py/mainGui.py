@@ -1,4 +1,4 @@
-from py import PieHandler, previewGui,report
+from py import PieHandler, previewGui,report, functions
 import datetime
 import importlib
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QComboBox,
@@ -343,11 +343,11 @@ class mainwindow(QWidget):
         self.reportcombochange()
         self.combochange()
         self.setWindowTitle('PIEthon: logged in as ' + self.username)
-        self.setWindowIcon(QIcon('resources//PIEcon.png'))
+        self.setWindowIcon(QIcon(functions.resource_path('resources\\PIEcon.png')))
 
         #style things
 
-        self.setStyleSheet(open("resources//iu_stylesheet.qss", "r").read())
+        self.setStyleSheet(open(functions.resource_path("resources\\iu_stylesheet.qss"), "r").read())
         self.show()
 
     def center(self):

@@ -103,10 +103,10 @@ class login(QWidget):
 
         self.setLayout(totalvbox)
         self.setWindowTitle('PIEthon')
-        self.setWindowIcon(QIcon('resources//PIEcon.png'))
+        self.setWindowIcon(QIcon(functions.resource_path('resources\\PIEcon.png')))
 
         #style things
-        self.setStyleSheet(open("resources//iu_stylesheet.qss", "r").read())
+        self.setStyleSheet(open(functions.resource_path("resources\\iu_stylesheet.qss"), "r").read())
 
         self.show()
 
