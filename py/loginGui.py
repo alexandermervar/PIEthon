@@ -1,5 +1,5 @@
 from py import mainGui, functions, PIEdataVARS, PieHandler
-from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QMessageBox,
+from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel,
                              QPushButton, QRadioButton, QHBoxLayout, QVBoxLayout)
 from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore

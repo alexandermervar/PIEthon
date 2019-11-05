@@ -1,10 +1,10 @@
 import webbrowser, os
 
 def report_path():
-    return os.path.expanduser('~Documents/PIEthon/reports')
+    return os.path.expanduser('~/Documents/PIEthon/reports')
 
 def figure_path():
-    return os.path.expanduser('~Documents/PIEthon/figures')
+    return os.path.expanduser('~/Documents/PIEthon/figures')
 
 class htmlbase:
     def __init__(self, title, header, tablelist, picturelist):
@@ -99,4 +99,4 @@ class htmlbase:
         fh.write(superstring)
         fh.close()
 
-        webbrowser.open('file://' + os.path.expanduser('~/Documents/PIEthon/reports') + filename + ".html")
+        webbrowser.open('file://' + os.path.expanduser('~\\Documents\\PIEthon\\reports\\') + filename + ".html")

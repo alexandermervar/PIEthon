@@ -9,6 +9,7 @@ import os
 PyInstaller.__main__.run([
     '--name=%s' % 'PIEthon',
     '--onefile',
+    '--windowed',
     '--add-data=%s' % 'resources/chromedriver.exe;resources',
     '--add-data=%s' % 'resources/iu_stylesheet.qss;resources',
     '--add-data=%s' % 'resources/down_arrow_3.png;resources',

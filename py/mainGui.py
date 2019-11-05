@@ -1,6 +1,5 @@
 from py import PieHandler, previewGui,report, functions
 import datetime
-import importlib
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QComboBox,
                              QPushButton, QCalendarWidget, QTabWidget, QVBoxLayout, QHBoxLayout, QSpacerItem,
                              QSizePolicy)
@@ -542,9 +541,16 @@ class submitThread(QtCore.QThread):
                 self.window.statuslabel.setStyleSheet("color: red;")
                 self.window.setDisabled(False)
                 return
-            os.mkdir(os.path.expanduser('~/Documents/PIEthon'))
-            os.mkdir(os.path.expanduser('~/Documents/PIEthon/reports'))
-            os.mkdir(os.path.expanduser('~/Documents/PIEthon/figures'))
+
+            if not os.path.exists(os.path.expanduser('~/Documents/PIEthon')):
+                os.mkdir(os.path.expanduser('~/Documents/PIEthon'))
+            if not os.path.exists(os.path.expanduser('~/Documents/PIEthon/reports')):
+                print(str(os.path.expanduser('~/Documents/PIEthon/reports')))
+                os.mkdir(os.path.expanduser('~/Documents/PIEthon/reports'))
+
+            if not os.path.exists(os.path.expanduser('~/Documents/PIEthon/figures')):
+                os.mkdir(os.path.expanduser('~/Documents/PIEthon/figures'))
+
             self.window.statusUpdate("Starting Report")
             self.window.current_report.run_main(self.window.driver,self.window.startrepcal.selectedDate().toPyDate(), self.window.endrepcal.selectedDate().toPyDate(), self.window.statuslabel)
             self.window.setDisabled(False)

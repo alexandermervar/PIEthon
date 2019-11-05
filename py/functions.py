@@ -16,6 +16,8 @@ def buildHeadless():
         executable_path= resource_path('resources\\chromedriver.exe'),
         chrome_options=chrome_options)
 
+    driver.HideCommandPromptWindow=True
+
     return driver
 
 def resource_path(relative_path):
@@ -23,7 +25,6 @@ def resource_path(relative_path):
     try:
         # PyInstaller creates a temp folder and stores path in _MEIPASS
         base_path = sys._MEIPASS
-        #relative_path = relative_path.replace('resources\\','')
     except Exception:
         base_path = os.path.abspath(".")
 
