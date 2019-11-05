@@ -1,19 +1,34 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+import os
+import sys
 
 def buildHeadless():
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument('log-level=2')
     #here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     #here = here.replace('\\','/')
     #prefs = {'download.default_directory': here}
     #chrome_options.add_experimental_option('prefs', prefs)
     driver = webdriver.Chrome(
-        executable_path='resources//chromedriver.exe',
+        executable_path= resource_path('resources\\chromedriver.exe'),
         chrome_options=chrome_options)
 
+    driver.HideCommandPromptWindow=True
+
     return driver
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 def pieTimeConvert(date):
     fordate = date.strftime('%Y-%m-%d')

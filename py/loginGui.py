@@ -1,5 +1,5 @@
 from py import mainGui, functions, PIEdataVARS, PieHandler
-from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QMessageBox,
+from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel,
                              QPushButton, QRadioButton, QHBoxLayout, QVBoxLayout)
 from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore
@@ -103,10 +103,10 @@ class login(QWidget):
 
         self.setLayout(totalvbox)
         self.setWindowTitle('PIEthon')
-        self.setWindowIcon(QIcon('resources//PIEcon.png'))
+        self.setWindowIcon(QIcon(functions.resource_path('resources\\PIEcon.png')))
 
         #style things
-        self.setStyleSheet(open("resources//iu_stylesheet.qss", "r").read())
+        self.setStyleSheet(open(functions.resource_path("resources\\iu_stylesheet.qss"), "r").read())
 
         self.show()
 
@@ -140,7 +140,7 @@ class login(QWidget):
             super().keyPressEvent(qKeyEvent)
 
     def completed(self):
-        if self.userbox.text() == '' or self.passbox.text() == '':
+        if self.userbox.text() == '' or self.passbox.text() == '' or self.driver == 'long':
             return
         self.startMain(self.userbox.text(), self.datalist, self.driver)
         self.close()
@@ -178,7 +178,9 @@ class submitThread(QtCore.QThread):
             duotype = self.window.duocode.text()
         driver = PieHandler.caslogin(driver, user, password, duotype)
         if(not driver):
-            QMessageBox.about(self.window,"Error","CAS login failed!")
+            self.window.driver = 'long'
+            self.window.statusUpdate("ERROR: Duo took too much time")
+            self.window.statuslabel.setStyleSheet("color: red;")
             self.window.setDisabled(False)
             return
         else:

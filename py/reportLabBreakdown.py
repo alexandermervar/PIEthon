@@ -69,13 +69,13 @@ def main(driver, startdate, enddate, statuslabel):
     plt.tight_layout()
     shiftlocationframe.plot.pie(y='shiftType-name',autopct=functions.make_autopct(shiftlocationframe['shiftType-name'].tolist()), fontsize=15, figsize=(8, 8))
     plt.tight_layout()
-    plt.savefig('reports/figures/shiftlocations.png')
+    plt.savefig(htmlbase.figure_path() + '\\shiftlocations.png')
 
     buildingframe = appointmentframe['ticket-residence-building-name'].value_counts().to_frame()
     plt.tight_layout()
     buildingframe.plot.bar(figsize=(8,8))
     plt.tight_layout()
-    plt.savefig('reports/figures/appointmentlocals.png')
+    plt.savefig(htmlbase.figure_path() + '\\appointmentlocals.png')
 
     appointmentframe['month'] = appointmentframe['scheduledStartTime'].apply(lambda x: functions.getMonth(x))
     smallboi = appointmentframe[['month', 'shiftType-shortName']]
@@ -86,7 +86,7 @@ def main(driver, startdate, enddate, statuslabel):
     plt.tight_layout()
     pivoto.plot.bar()
     plt.tight_layout()
-    plt.savefig('reports/figures/timeandbuilding.png')
+    plt.savefig(htmlbase.figure_path() + '\\timeandbuilding.png')
 
     tablelist = [labbreakhtml]
     picturelist = ['figures/shiftlocations.png', 'figures/appointmentlocals.png', 'figures/timeandbuilding.png']

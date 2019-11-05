@@ -124,10 +124,10 @@ class preview(QWidget):
         subbox.setLayout(subform)
         layout.addWidget(subbox)
 
-        self.setStyleSheet(open("resources//iu_stylesheet.qss", "r").read())
+        self.setStyleSheet(open(functions.resource_path("resources\\iu_stylesheet.qss"), "r").read())
 
         self.setWindowTitle('PIEthon')
-        self.setWindowIcon(QIcon('resources//PIEcon.png'))
+        self.setWindowIcon(QIcon(functions.resource_path('resources\\PIEcon.png')))
         self.show()
 
     def center(self):

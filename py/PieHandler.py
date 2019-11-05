@@ -47,7 +47,7 @@ def caslogin(driver, username, password, duotype):
             button.click()
         driver.switch_to.default_content()
 
-    if(seleniumHandlers.getBy(driver, 'link_text', 'begin the logout process', 15) == False):
+    if(seleniumHandlers.getBy(driver, 'link_text', 'begin the logout process', 20) == False):
         return False
     else:
         return driver

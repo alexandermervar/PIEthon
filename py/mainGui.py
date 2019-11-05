@@ -1,11 +1,11 @@
-from py import PieHandler, previewGui,report
+from py import PieHandler, previewGui,report, functions
 import datetime
-import importlib
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QComboBox,
                              QPushButton, QCalendarWidget, QTabWidget, QVBoxLayout, QHBoxLayout, QSpacerItem,
                              QSizePolicy)
 from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore
+import os
 
 class mainwindow(QWidget):
 
@@ -343,11 +343,10 @@ class mainwindow(QWidget):
         self.reportcombochange()
         self.combochange()
         self.setWindowTitle('PIEthon: logged in as ' + self.username)
-        self.setWindowIcon(QIcon('resources//PIEcon.png'))
+        self.setWindowIcon(QIcon(functions.resource_path('resources\\PIEcon.png')))
 
         #style things
-
-        self.setStyleSheet(open("resources//iu_stylesheet.qss", "r").read())
+        self.setStyleSheet(open(functions.resource_path("resources\\iu_stylesheet.qss"), "r").read())
         self.show()
 
     def center(self):
@@ -542,6 +541,16 @@ class submitThread(QtCore.QThread):
                 self.window.statuslabel.setStyleSheet("color: red;")
                 self.window.setDisabled(False)
                 return
+
+            if not os.path.exists(os.path.expanduser('~/Documents/PIEthon')):
+                os.mkdir(os.path.expanduser('~/Documents/PIEthon'))
+            if not os.path.exists(os.path.expanduser('~/Documents/PIEthon/reports')):
+                print(str(os.path.expanduser('~/Documents/PIEthon/reports')))
+                os.mkdir(os.path.expanduser('~/Documents/PIEthon/reports'))
+
+            if not os.path.exists(os.path.expanduser('~/Documents/PIEthon/figures')):
+                os.mkdir(os.path.expanduser('~/Documents/PIEthon/figures'))
+
             self.window.statusUpdate("Starting Report")
             self.window.current_report.run_main(self.window.driver,self.window.startrepcal.selectedDate().toPyDate(), self.window.endrepcal.selectedDate().toPyDate(), self.window.statuslabel)
             self.window.setDisabled(False)

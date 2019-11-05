@@ -157,7 +157,7 @@ QComboBox::drop-down {
 }
 
 QComboBox::down-arrow:enabled {
-    image: url(./Resources/down_arrow_3.PNG);
+    image: url(resources/down_arrow_3.PNG);
     width: 14px;
     height: 14px;
 }
