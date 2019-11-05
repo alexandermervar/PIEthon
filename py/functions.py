@@ -7,6 +7,7 @@ def buildHeadless():
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument('log-level=2')
     #here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     #here = here.replace('\\','/')
     #prefs = {'download.default_directory': here}

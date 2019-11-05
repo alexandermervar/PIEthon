@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QComboB
                              QSizePolicy)
 from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore
+import os
 
 class mainwindow(QWidget):
 
@@ -346,7 +347,6 @@ class mainwindow(QWidget):
         self.setWindowIcon(QIcon(functions.resource_path('resources\\PIEcon.png')))
 
         #style things
-
         self.setStyleSheet(open(functions.resource_path("resources\\iu_stylesheet.qss"), "r").read())
         self.show()
 
@@ -542,6 +542,9 @@ class submitThread(QtCore.QThread):
                 self.window.statuslabel.setStyleSheet("color: red;")
                 self.window.setDisabled(False)
                 return
+            os.mkdir(os.path.expanduser('~/Documents/PIEthon'))
+            os.mkdir(os.path.expanduser('~/Documents/PIEthon/reports'))
+            os.mkdir(os.path.expanduser('~/Documents/PIEthon/figures'))
             self.window.statusUpdate("Starting Report")
             self.window.current_report.run_main(self.window.driver,self.window.startrepcal.selectedDate().toPyDate(), self.window.endrepcal.selectedDate().toPyDate(), self.window.statuslabel)
             self.window.setDisabled(False)

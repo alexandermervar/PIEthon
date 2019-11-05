@@ -1,7 +1,15 @@
 import webbrowser, os
 
+def report_path():
+    return os.path.expanduser('~Documents/PIEthon/reports')
+
+def figure_path():
+    return os.path.expanduser('~Documents/PIEthon/figures')
+
 class htmlbase:
     def __init__(self, title, header, tablelist, picturelist):
+
+        #checks for correct folders
         self.title = title
         self.header = header
         self.toppart =\
@@ -87,9 +95,8 @@ class htmlbase:
 
     def makeHTML(self, filename):
         superstring = self.buildall()
-        print('partytime')
-        fh = open('reports/' + filename + ".html", "w")
+        fh = open(os.path.expanduser('~/Documents/PIEthon/reports/') + str(filename) + ".html", "w")
         fh.write(superstring)
         fh.close()
 
-        webbrowser.open('file://' + os.path.realpath('reports/' + filename + ".html"))
+        webbrowser.open('file://' + os.path.expanduser('~/Documents/PIEthon/reports') + filename + ".html")
