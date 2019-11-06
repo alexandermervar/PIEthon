@@ -167,7 +167,7 @@ class submitThread(QtCore.QThread):
         self.window.statuslabel.setStyleSheet("color: black;")
         self.window.statusUpdate('Spinning up the driver')
         driver = functions.buildHeadless()
-        self.window.statusUpdate('Driver built, prepare for DUO')
+        self.window.statusUpdate('Driver built, sending to CAS')
         user = self.window.userbox.text()
         password = self.window.passbox.text()
         if self.window.pushradio.isChecked():
@@ -177,7 +177,13 @@ class submitThread(QtCore.QThread):
         else:
             duotype = self.window.duocode.text()
         driver = PieHandler.caslogin(driver, user, password, duotype)
-        if(not driver):
+        if driver == 'invalidlogin':
+            self.window.driver = 'long'
+            self.window.statusUpdate("ERROR: Invalid CAS credentials")
+            self.window.statuslabel.setStyleSheet("color: red;")
+            self.window.setDisabled(False)
+            return
+        if(driver is False):
             self.window.driver = 'long'
             self.window.statusUpdate("ERROR: Duo took too much time")
             self.window.statuslabel.setStyleSheet("color: red;")

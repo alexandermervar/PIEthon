@@ -20,28 +20,32 @@ def caslogin(driver, username, password, duotype):
     button = driver.find_element_by_class_name('button')
     button.click()
 
+    if seleniumHandlers.getBy(driver,'xpath', "//*[contains(text(), 'Login unsuccessful:')]", 2) is not False:
+        return 'invalidlogin'
+
     if duotype=="push":
-        iframe = seleniumHandlers.getBy(driver, 'id', 'duo_iframe', 3)
+        iframe = seleniumHandlers.getBy(driver, 'id', 'duo_iframe', 5)
         driver.switch_to.frame(iframe)
         button = driver.find_element_by_xpath("//*[contains(text(), 'Push')]")
         if not button is False:
             button.click()
         driver.switch_to.default_content()
     elif duotype=="call":
-        iframe = seleniumHandlers.getBy(driver, 'id', 'duo_iframe', 3)
+        iframe = seleniumHandlers.getBy(driver, 'id', 'duo_iframe', 5)
         driver.switch_to.frame(iframe)
         button = driver.find_element_by_xpath("//*[contains(text(), 'Call')]")
         if not button is False:
             button.click()
         driver.switch_to.default_content()
     else:
-        iframe = seleniumHandlers.getBy(driver, 'id', 'duo_iframe', 3)
+        iframe = seleniumHandlers.getBy(driver, 'id', 'duo_iframe', 5)
         driver.switch_to.frame(iframe)
         button = driver.find_element_by_xpath("//*[contains(text(), 'Passcode')]")
         if not button is False:
             button.click()
-        inputthing = seleniumHandlers.getBy(driver, 'class', 'passcode-input', 3)
+        inputthing = seleniumHandlers.getBy(driver, 'class', 'passcode-input', 5)
         inputthing.send_keys(duotype)
+        time.sleep(.5)
         button = driver.find_element_by_xpath("//*[contains(text(), 'Log In')]")
         if not button is False:
             button.click()
