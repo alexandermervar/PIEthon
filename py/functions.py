@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from py import seleniumHandlers
 import os
 import sys
 
@@ -7,16 +8,14 @@ def buildHeadless():
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
-    chrome_options.add_argument('log-level=2')
+    #chrome_options.add_argument("--log-level=OFF")
     #here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     #here = here.replace('\\','/')
     #prefs = {'download.default_directory': here}
     #chrome_options.add_experimental_option('prefs', prefs)
-    driver = webdriver.Chrome(
+    driver = seleniumHandlers.HiddenChromeWebDriver(
         executable_path= resource_path('resources\\chromedriver.exe'),
         chrome_options=chrome_options)
-
-    driver.HideCommandPromptWindow=True
 
     return driver
 
