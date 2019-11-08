@@ -89,7 +89,7 @@ def main(driver, startdate, enddate, statuslabel):
     plt.savefig(htmlbase.figure_path() + '\\timeandbuilding.png')
 
     tablelist = [labbreakhtml]
-    picturelist = [htmlbase.figure_path() + '\\shiftlocations.png', htmlbase.figure_path() + '\\appointmentlocals.png', htmlbase.figure_path() + '\\timeandbuilding.png'brfun]
+    picturelist = [htmlbase.figure_path() + '\\shiftlocations.png', htmlbase.figure_path() + '\\appointmentlocals.png', htmlbase.figure_path() + '\\timeandbuilding.png']
 
     outputfile = htmlbase.htmlbase('Lab Breakdown', 'Lab Breakdown', tablelist, picturelist)
     outputfile.makeHTML('LabBreakdown')
