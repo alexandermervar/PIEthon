@@ -6,12 +6,13 @@ import os
 #pyinstaller PIEthon.py --onefile
 #    '--onefile',
 #'-y',
+#    '--windowed',
 
 #hopefully this script does all the bundling and such? Idk I'd like to keep it as a run and done.
 PyInstaller.__main__.run([
     '-y',
+    '--debug=all',
     '--name=%s' % 'PIEthon',
-    '--windowed',
     '--add-data=%s' % 'resources/chromedriver.exe;resources',
     '--add-data=%s' % 'resources/iu_stylesheet.qss;resources',
     '--add-data=%s' % 'resources/down_arrow_3.png;resources',
