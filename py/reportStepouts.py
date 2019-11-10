@@ -1,5 +1,5 @@
 from py import functions, htmlbase, PIEdataVARS, PieHandler, report
-import numpy as np
+from numpy import vectorize
 
 def main(driver, startdate, enddate, statuslabel):
     locationstruct = PIEdataVARS.locations
@@ -8,7 +8,7 @@ def main(driver, startdate, enddate, statuslabel):
     locationstruct.set_maxreturns(100000)
     locationurl = locationstruct.make_url()
     locationframe = PieHandler.goandget(driver, locationurl, locationstruct)
-    locationframe['staffed_minutes'] = np.vectorize(functions.getMinutes)(locationframe['assumedDuration-difference'])
+    locationframe['staffed_minutes'] = vectorize(functions.getMinutes)(locationframe['assumedDuration-difference'])
     locationframe['abb'] = locationframe['location-shortName'].apply(lambda x: functions.getAbb(x))
     locationframe = locationframe.groupby('abb')['staffed_minutes'].median().reset_index()
 

@@ -1,18 +1,18 @@
-import pandas as pd
-import json
+from pandas import DataFrame
+from json import loads
 
 def getCSV(input):
-    obj = json.loads(input)
+    obj = loads(input)
     dicter = listloop(obj, {}, '')
-    df = pd.DataFrame(data=dicter)
+    df = DataFrame(data=dicter)
     #print(df)
     df.to_csv('exporter' + '.csv')
 
 def getFrame(input, allowbracks):
-    obj = json.loads(input)
+    obj = loads(input)
     dicter = mainloop(obj, {}, '', allowbracks)
     removelist = []
-    df = pd.DataFrame(data=dicter)
+    df = DataFrame(data=dicter)
     return df
 
 def mainloop(input, dicter, recent, allowbracks):
@@ -109,7 +109,7 @@ def listloop(input, dicter, recent, allowbracks):
                 continue
 
 def invedit(input, search):
-    obj = json.loads(input)
+    obj = loads(input)
 
     returndict = {}
     returndict['labname'] = []
@@ -160,25 +160,25 @@ def invedit(input, search):
 
         iterboyo+=1
 
-    df = pd.DataFrame(data=returndict)
+    df = DataFrame(data=returndict)
     return df
 
 def formpull(input):
     print('alex is a dunsparce')
 
-    obj = json.loads(input)
+    obj = loads(input)
 
     #remove the outer shell for "answer"
     innerpart = obj.get('answers')
 
     dicter = mainloop(innerpart, {}, '')
 
-    df = pd.DataFrame(data=dicter)
+    df = DataFrame(data=dicter)
     return df
 
 def formkeypull(input):
     print('doing a key thing')
-    obj = json.loads(input)
+    obj = loads(input)
     #for dict in the list, pull out items, from
     for formdict in obj:
         #take out the item thing

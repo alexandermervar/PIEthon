@@ -1,4 +1,4 @@
-import datetime
+from datetime import timedelta
 from py import functions
 
 
@@ -135,7 +135,7 @@ class PIEdata:
 
         while(self.enddate-self.startdate).days > self.chunk_size:
             datelist.append(self.startdate)
-            self.set_startdate(self.startdate+datetime.timedelta(days=self.chunk_size))
+            self.set_startdate(self.startdate+timedelta(days=self.chunk_size))
         datelist.append(self.startdate)
         storeend = self.enddate
         chunkcount = 1
@@ -146,7 +146,7 @@ class PIEdata:
             if(chunkcount == len(datelist)):
                 self.set_enddate(storeend)
             else:
-                self.set_enddate(startdate+datetime.timedelta(days=self.chunk_size))
+                self.set_enddate(startdate+timedelta(days=self.chunk_size))
             vardict = self.urlDict()
             newvars = []
             for thing in self.variables:

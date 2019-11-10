@@ -1,8 +1,6 @@
-from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from py import seleniumHandlers
-import os
-import sys
+from os.path import join, abspath
 
 def buildHeadless():
     chrome_options = Options()
@@ -27,8 +25,8 @@ def resource_path(relative_path):
     except Exception:
         base_path = os.path.abspath(".")
     """
-    base_path = os.path.abspath(".")
-    return os.path.join(base_path, relative_path)
+    base_path = abspath(".")
+    return join(base_path, relative_path)
 
 def pieTimeConvert(date):
     fordate = date.strftime('%Y-%m-%d')

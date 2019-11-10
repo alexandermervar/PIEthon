@@ -1,7 +1,7 @@
 from py import functions, htmlbase, PIEdataVARS, PieHandler, report
-from PyQt5 import QtCore
-import numpy as np
-import pandas as pd
+from PyQt5.QtCore import QCoreApplication
+from numpy import vectorize
+from pandas import merge
 import matplotlib.pyplot as plt
 
 def main(driver, startdate, enddate, statuslabel):
@@ -36,11 +36,11 @@ def main(driver, startdate, enddate, statuslabel):
     statusUpdate(statuslabel, 'Loading locations, please keep being patient')
     locationurl = locationstruct.make_url()
     locationframe = PieHandler.goandget(driver, locationurl, locationstruct)
-    locationframe['staffed_hours'] = np.vectorize(functions.getSeconds)(locationframe['assumedDuration-difference'])
+    locationframe['staffed_hours'] = vectorize(functions.getSeconds)(locationframe['assumedDuration-difference'])
     locationframe['abb'] = locationframe['location-shortName'].apply(lambda x: functions.getAbb(x))
     locationframe = locationframe.groupby('abb')['staffed_hours'].sum().reset_index()
     locationframe = locationframe[['abb', 'staffed_hours']]
-    supaframe = pd.merge(locationframe, testy, left_on='abb', right_on='abb', how='outer')
+    supaframe = merge(locationframe, testy, left_on='abb', right_on='abb', how='outer')
     supaframe['contacts_per_hour'] = supaframe['contacts']/supaframe['staffed_hours']
     statusUpdate(statuslabel, 'Loading inventory reports, thanks for sticking around')
 
@@ -53,7 +53,7 @@ def main(driver, startdate, enddate, statuslabel):
     invuseframe['abb'] = invuseframe['lab'].apply(lambda x: functions.getAbb(x))
 
     invuseframe = invuseframe.groupby('abb')['paper_used'].sum().reset_index()
-    supadupaframe = pd.merge(supaframe, invuseframe, on='abb', how='outer')
+    supadupaframe = merge(supaframe, invuseframe, on='abb', how='outer')
     supadupaframe = supadupaframe[['abb', 'staffed_hours', 'contacts', 'contacts_per_hour', 'paper_used']]
     supadupaframe['overall_score']=supadupaframe['contacts_per_hour']*supadupaframe['paper_used']
     supadupaframe.sort_values(by=['overall_score'], ascending=False, inplace=True)
@@ -96,7 +96,7 @@ def main(driver, startdate, enddate, statuslabel):
 
 def statusUpdate(label, newstat):
     label.setText(newstat)
-    QtCore.QCoreApplication.processEvents()
+    QCoreApplication.processEvents()
 
 description = "This report lists contacts per staffed hour and paper usage for each lab, as well as graphs for appointment history. This report is used for prioritizing labs in Lab Breakdown"
 active = True

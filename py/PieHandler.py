@@ -1,8 +1,8 @@
-import time
+from time import sleep
 from py import dataconverter, PIEdataVARS, seleniumHandlers, users, semesters
-import requests
-import pandas as pd
-import numpy as np
+from requests import Session
+from pandas import to_numeric, DataFrame
+from numpy import diff, sum
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
@@ -45,7 +45,7 @@ def caslogin(driver, username, password, duotype):
             button.click()
         inputthing = seleniumHandlers.getBy(driver, 'class', 'passcode-input', 5)
         inputthing.send_keys(duotype)
-        time.sleep(.5)
+        sleep(.5)
         button = driver.find_element_by_xpath("//*[contains(text(), 'Log In')]")
         if not button is False:
             button.click()
@@ -67,11 +67,11 @@ def getPie(driver):
     element = driver.find_element_by_link_text("IUB TCC")
     element.click()
 
-    time.sleep(.5)
+    sleep(.5)
 
     cookies = driver.get_cookies()
 
-    session = requests.Session()
+    session = Session()
     for cookie in cookies:
         session.cookies.set(cookie['name'], cookie['value'])
 
@@ -213,14 +213,14 @@ def invcounttwo(invframe):
 
     for name,data in thingy:
         lab.append(name)
-        counts = pd.to_numeric(data['count']).dropna().to_numpy().astype(int)
-        difs = np.diff(counts)
+        counts = to_numeric(data['count']).dropna().to_numpy().astype(int)
+        difs = diff(counts)
         reorderthresh = float(data[['reordernum']].mean()/1.15)
         newdifs = difs[difs < reorderthresh]
         newerdifs = newdifs[newdifs > 0]
-        paper.append(np.sum(newerdifs))
+        paper.append(sum(newerdifs))
 
-    return pd.DataFrame({'lab':lab,'paper_used':paper})
+    return DataFrame({'lab':lab,'paper_used':paper})
 
 
 

@@ -2,16 +2,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
-import errno
-import os
-import platform
+from errno import ENOENT, EACCES
+from os.path import basename
+from platform import system
 import subprocess
-import sys
-import time
-import warnings
-
+from time import sleep
+from warnings import warn
 from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.common import utils
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.webdriver.chrome import service, webdriver, remote_connection
 
@@ -71,7 +68,7 @@ class HiddenChromeService(service.Service):
             cmd = [self.path]
             cmd.extend(self.command_line_args())
 
-            if platform.system() == 'Windows':
+            if system() == 'Windows':
                 info = subprocess.STARTUPINFO()
                 info.dwFlags = subprocess.STARTF_USESHOWWINDOW
                 info.wShowWindow = 0  # SW_HIDE (6 == SW_MINIMIZE)
@@ -80,7 +77,7 @@ class HiddenChromeService(service.Service):
 
             self.process = subprocess.Popen(
                 cmd, env=self.env,
-                close_fds=platform.system() != 'Windows',
+                close_fds=system() != 'Windows',
                 startupinfo=info,
                 stdout=self.log_file,
                 stderr=self.log_file,
@@ -88,22 +85,22 @@ class HiddenChromeService(service.Service):
         except TypeError:
             raise
         except OSError as err:
-            if err.errno == errno.ENOENT:
+            if err.errno == ENOENT:
                 raise WebDriverException(
                     "'%s' executable needs to be in PATH. %s" % (
                         os.path.basename(self.path), self.start_error_message)
                 )
-            elif err.errno == errno.EACCES:
+            elif err.errno == EACCES:
                 raise WebDriverException(
                     "'%s' executable may have wrong permissions. %s" % (
-                        os.path.basename(self.path), self.start_error_message)
+                        basename(self.path), self.start_error_message)
                 )
             else:
                 raise
         except Exception as e:
             raise WebDriverException(
                 "Executable %s must be in path. %s\n%s" % (
-                    os.path.basename(self.path), self.start_error_message,
+                    basename(self.path), self.start_error_message,
                     str(e)))
         count = 0
         while True:
@@ -111,7 +108,7 @@ class HiddenChromeService(service.Service):
             if self.is_connectable():
                 break
             count += 1
-            time.sleep(1)
+            sleep(1)
             if count == 30:
                 raise WebDriverException("Can't connect to the Service %s" % (
                     self.path,))
@@ -123,7 +120,7 @@ class HiddenChromeWebDriver(webdriver.WebDriver):
                 desired_capabilities=None, service_log_path=None,
                 chrome_options=None, keep_alive=True):
         if chrome_options:
-            warnings.warn('use options instead of chrome_options',
+            warn('use options instead of chrome_options',
                         DeprecationWarning, stacklevel=2)
             options = chrome_options
 

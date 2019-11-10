@@ -1,5 +1,5 @@
 from py import PIEdataVARS, PieHandler, htmlbase, report
-import pandas as pd
+from pandas import Series
 
 def main(driver, startdate, enddate, statuslabel):
     activeuserstruct = PIEdataVARS.activerusers
@@ -25,7 +25,7 @@ def main(driver, startdate, enddate, statuslabel):
 
         missinghold.append(temparray)
 
-    se = pd.Series(missinghold)
+    se = Series(missinghold)
     userframe['Missing Attributes'] = se.values
 
     userframe = userframe[['lastName', 'firstName', 'username', 'Missing Attributes']]

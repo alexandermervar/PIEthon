@@ -1,8 +1,8 @@
 from py import seleniumHandlers
-import time
-import fnmatch
-import pandas as pd
-import os
+from time import sleep
+from fnmatch import fnmatch
+from pandas import read_csv
+from os import listdir, remove
 
 def getdmnx(driver, username, password):
     driver.get('https://dmnx.print.iu.edu:51433/index.html')
@@ -18,33 +18,33 @@ def getdmnx(driver, username, password):
     expando = seleniumHandlers.getBy(driver, 'id', 'isc_1Copen_icon_9', 10)
     expando.click()
 
-    time.sleep(.5)
+    sleep(.5)
 
     expando = seleniumHandlers.getBy(driver, 'id', 'isc_1Copen_icon_11', 10)
     expando.click()
 
-    time.sleep(.5)
+    sleep(.5)
 
     expando = seleniumHandlers.getBy(driver, 'id', 'isc_1Cicon_13', 10)
     expando.click()
 
-    time.sleep(.5)
+    sleep(.5)
 
     expando = seleniumHandlers.getBy(driver, 'id', 'isc_25', 10)
     expando.click()
 
-    time.sleep(.5)
+    sleep(.5)
 
-def gettable(driver) :
+def gettable(driver):
     buttonguy = seleniumHandlers.getBy(driver, 'name', 'isc_2Xicon', 20)
     buttonguy.click()
 
-    time.sleep(1)
+    sleep(1)
 
-    for file in os.listdir('.'):
-        if fnmatch.fnmatch(file, '*.csv'):
-            dataframeo = pd.read_csv(file, header=4)
-            os.remove(file)
+    for file in listdir('.'):
+        if fnmatch(file, '*.csv'):
+            dataframeo = read_csv(file, header=4)
+            remove(file)
 
     return dataframeo
 
