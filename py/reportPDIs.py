@@ -3,13 +3,13 @@ TCC PDI Analysis Fall 2018
 Nick Johnson
 """
 
-import re
+from re import sub
 from datetime import datetime
 from py import report, htmlbase, PIEdataVARS, PieHandler
-import pandas as pd
+from pandas import set_option
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLabel, QPushButton, QRadioButton, QComboBox)
 from PyQt5.QtGui import QIcon
-from PyQt5 import QtCore
+from PyQt5.QtCore import Qt
 
 class Pdis(QWidget):
 
@@ -58,7 +58,7 @@ class Pdis(QWidget):
         # add the status thingy
         self.statuslabel = QLabel(self)
         self.statuslabel.move(75, 110)
-        self.statuslabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        self.statuslabel.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         self.statuslabel.setText("Ready")
         self.statuslabel.resize(195, 13)
 
@@ -93,7 +93,7 @@ class Pdis(QWidget):
     # Builds PDI frame and returns necessary information
     def getSemPdi(self, user="all"):
         # TODO: Implement searching by user
-        pd.set_option("display.max_colwidth", 1000)
+        set_option("display.max_colwidth", 1000)
 
         semStruct = PIEdataVARS.schedules
         semUrl = semStruct.make_url()
@@ -146,11 +146,11 @@ class Pdis(QWidget):
 
 def removeHTML(string: str):  # removes HTML entities from string
     string = string.replace("\n", "")  # removes new line chars
-    string = re.sub('<.*?>', "", string)  # removes HTML tags
-    string = re.sub('&nbsp;|&#160', " ", string)  # removes &nbsp artifacts and replaces with a space
-    string = re.sub('&apos|&#39;', "\'", string)  # removes &#39; artifacts and replaces with apostrophe
-    string = re.sub('&quot;|&#34', "\"", string)  # removes &quot artifacts and replaces with double quote
-    string = re.sub('&amp;|&#38;', "&", string)  # removes &amp; or &#38; and replaces with ampersand
+    string = sub('<.*?>', "", string)  # removes HTML tags
+    string = sub('&nbsp;|&#160', " ", string)  # removes &nbsp artifacts and replaces with a space
+    string = sub('&apos|&#39;', "\'", string)  # removes &#39; artifacts and replaces with apostrophe
+    string = sub('&quot;|&#34', "\"", string)  # removes &quot artifacts and replaces with double quote
+    string = sub('&amp;|&#38;', "&", string)  # removes &amp; or &#38; and replaces with ampersand
 
     return string
 

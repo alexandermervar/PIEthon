@@ -2,8 +2,8 @@ from py import mainGui, functions, PIEdataVARS, PieHandler
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel,
                              QPushButton, QRadioButton, QHBoxLayout, QVBoxLayout)
 from PyQt5.QtGui import QIcon
-from PyQt5 import QtCore
-import time
+from PyQt5.QtCore import Qt, QCoreApplication, QThread
+from time import sleep
 
 class login(QWidget):
 
@@ -63,7 +63,7 @@ class login(QWidget):
         #add the status thingy
         self.statuslabel = QLabel(self)
         self.statuslabel.setObjectName('statuslabel')
-        self.statuslabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        self.statuslabel.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         self.statuslabel.setText("Ready")
 
         userhbox = QVBoxLayout()
@@ -119,7 +119,7 @@ class login(QWidget):
     def statusUpdate(self, newstat):
         #print('in status update')
         self.statuslabel.setText(newstat)
-        QtCore.QCoreApplication.processEvents()
+        QCoreApplication.processEvents()
 
     def startMain(self, user, dataoptions, driver):
         #print('here we go')
@@ -134,7 +134,7 @@ class login(QWidget):
             self.duocode.setEnabled(True)
 
     def keyPressEvent(self, qKeyEvent):
-        if (qKeyEvent.key() == QtCore.Qt.Key_Return or qKeyEvent.key() == QtCore.Qt.Key_Enter) and (self.userbox.hasFocus() or self.passbox.hasFocus()):
+        if (qKeyEvent.key() == Qt.Key_Return or qKeyEvent.key() == Qt.Key_Enter) and (self.userbox.hasFocus() or self.passbox.hasFocus()):
             self.subThread.start()
         else:
             super().keyPressEvent(qKeyEvent)
@@ -145,11 +145,11 @@ class login(QWidget):
         self.startMain(self.userbox.text(), self.datalist, self.driver)
         self.close()
 
-class submitThread(QtCore.QThread):
+class submitThread(QThread):
 
     def __init__(self, window):
         self.window = window
-        QtCore.QThread.__init__(self)
+        QThread.__init__(self)
 
     def __del__(self):
         self.wait()
@@ -192,7 +192,7 @@ class submitThread(QtCore.QThread):
         else:
             self.window.statusUpdate('DUO passed, going to Pie')
         driver = PieHandler.getPie(driver)
-        time.sleep(.7)
+        sleep(.7)
         self.window.statusUpdate('Connected to Pie')
         self.window.statusUpdate('Pulling in Users')
         userlist = PieHandler.grabUsers(driver)

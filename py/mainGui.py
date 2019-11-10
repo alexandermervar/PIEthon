@@ -1,11 +1,12 @@
 from py import PieHandler, previewGui,report, functions
-import datetime
+from datetime import date, timedelta, datetime
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QComboBox,
                              QPushButton, QCalendarWidget, QTabWidget, QVBoxLayout, QHBoxLayout, QSpacerItem,
                              QSizePolicy)
 from PyQt5.QtGui import QIcon
-from PyQt5 import QtCore
-import os
+from PyQt5.QtCore import Qt, QCoreApplication, QThread
+from os.path import exists, expanduser
+from os import mkdir
 
 class mainwindow(QWidget):
 
@@ -26,7 +27,7 @@ class mainwindow(QWidget):
         #add the data type label and C C C combobox
         self.datatypelabel = QLabel(self)
         self.datatypelabel.setText("Data Pull Type")
-        self.datatypelabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.datatypelabel.setAlignment(Qt.AlignCenter)
 
         self.datacombo = QComboBox(self)
         #Sorted by alphabet
@@ -36,7 +37,7 @@ class mainwindow(QWidget):
         #add the filter label
         self.filterlabel = QLabel(self)
         self.filterlabel.setText('Filters')
-        self.filterlabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.filterlabel.setAlignment(Qt.AlignCenter)
 
         #add all of the other filter things
         self.usernamelabel = QLabel(self)
@@ -65,7 +66,7 @@ class mainwindow(QWidget):
 
         #add the startdate and end date calendars
         self.startcal = QCalendarWidget(self)
-        self.startcal.setSelectedDate(datetime.date.today()-datetime.timedelta(days=30))
+        self.startcal.setSelectedDate(date.today()-timedelta(days=30))
         self.startcal.setVerticalHeaderFormat(QCalendarWidget.NoVerticalHeader)
         self.startcal.setGridVisible(True)
         self.startcal.clicked.connect(self.startdatechange)
@@ -82,7 +83,7 @@ class mainwindow(QWidget):
         self.startcombo.currentTextChanged.connect(self.startcomboselect)
 
         self.endcal = QCalendarWidget(self)
-        self.endcal.setSelectedDate(datetime.date.today())
+        self.endcal.setSelectedDate(date.today())
         self.endcal.setVerticalHeaderFormat(QCalendarWidget.NoVerticalHeader)
         self.endcal.setGridVisible(True)
         self.endcal.clicked.connect(self.enddatechange)
@@ -202,7 +203,7 @@ class mainwindow(QWidget):
         self.reporttab = QWidget()
 
         self.startrepcal = QCalendarWidget(self)
-        self.startrepcal.setSelectedDate(datetime.date.today()-datetime.timedelta(days=30))
+        self.startrepcal.setSelectedDate(date.today()-timedelta(days=30))
         self.startrepcal.setVerticalHeaderFormat(QCalendarWidget.NoVerticalHeader)
         self.startrepcal.setGridVisible(True)
         self.startrepcal.clicked.connect(self.startrepdatechange)
@@ -211,7 +212,7 @@ class mainwindow(QWidget):
         self.startreplabel.setText("Start Date: " + self.startrepcal.selectedDate().toString())
 
         self.endrepcal = QCalendarWidget(self)
-        self.endrepcal.setSelectedDate(datetime.date.today())
+        self.endrepcal.setSelectedDate(date.today())
         self.endrepcal.setVerticalHeaderFormat(QCalendarWidget.NoVerticalHeader)
         self.endrepcal.setGridVisible(True)
         self.endrepcal.clicked.connect(self.endrepdatechange)
@@ -221,7 +222,7 @@ class mainwindow(QWidget):
 
         self.reporttypelabel = QLabel(self)
         self.reporttypelabel.setText('Report Type')
-        self.reporttypelabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.reporttypelabel.setAlignment(Qt.AlignCenter)
 
         self.reportdrop = QComboBox(self)
         self.reportdrop.addItems([x.name for x in report.report_list])
@@ -328,7 +329,7 @@ class mainwindow(QWidget):
         self.statuslabel = QLabel(self)
         self.statuslabel.setText("Ready")
         self.statuslabel.setObjectName('statuslabel')
-        self.statuslabel.setAlignment(QtCore.Qt.AlignRight)
+        self.statuslabel.setAlignment(Qt.AlignRight)
 
         outerlayout = QVBoxLayout()
         outerlayout.addWidget(self.tabs)
@@ -358,7 +359,7 @@ class mainwindow(QWidget):
     def statusUpdate(self, newstat):
         #print('in status update')
         self.statuslabel.setText(newstat)
-        QtCore.QCoreApplication.processEvents()
+        QCoreApplication.processEvents()
 
     def startdatechange(self):
         self.startcombo.setCurrentIndex(0)
@@ -389,7 +390,7 @@ class mainwindow(QWidget):
         sempick = self.semesters[self.startcombo.currentText()].getStart()[:10]
         if sempick == '':
             return
-        conv = datetime.datetime.strptime(sempick, '%Y-%m-%d')
+        conv = datetime.strptime(sempick, '%Y-%m-%d')
         self.startlabel.setText("Start Date:  " + conv.strftime('%a %b %d %Y'))
         self.startreplabel.setText("Start Date:  " + conv.strftime('%a %b %d %Y'))
         self.startcal.setSelectedDate(conv)
@@ -400,7 +401,7 @@ class mainwindow(QWidget):
         sempick = self.semesters[self.endcombo.currentText()].getEnd()[:10]
         if sempick == '':
             return
-        conv = datetime.datetime.strptime(sempick, '%Y-%m-%d')
+        conv = datetime.strptime(sempick, '%Y-%m-%d')
         self.endlabel.setText("End Date:  " + conv.strftime('%a %b %d %Y'))
         self.endreplabel.setText("End Date:  " + conv.strftime('%a %b %d %Y'))
         self.endcal.setSelectedDate(conv)
@@ -411,7 +412,7 @@ class mainwindow(QWidget):
         sempick = self.semesters[self.startrepcombo.currentText()].getStart()[:10]
         if sempick == '':
             return
-        conv = datetime.datetime.strptime(sempick, '%Y-%m-%d')
+        conv = datetime.strptime(sempick, '%Y-%m-%d')
         self.startreplabel.setText("Start Date:  " + conv.strftime('%a %b %d %Y'))
         self.startlabel.setText("Start Date:  " + conv.strftime('%a %b %d %Y'))
         self.startrepcal.setSelectedDate(conv)
@@ -422,7 +423,7 @@ class mainwindow(QWidget):
         sempick = self.semesters[self.endrepcombo.currentText()].getEnd()[:10]
         if sempick == '':
             return
-        conv = datetime.datetime.strptime(sempick, '%Y-%m-%d')
+        conv = datetime.strptime(sempick, '%Y-%m-%d')
         self.endreplabel.setText("End Date:  " + conv.strftime('%a %b %d %Y'))
         self.endlabel.setText("End Date:  " + conv.strftime('%a %b %d %Y'))
         self.endrepcal.setSelectedDate(conv)
@@ -493,11 +494,11 @@ class mainwindow(QWidget):
     def datecheck(self):
         return ((self.startcal.selectedDate().daysTo(self.endcal.selectedDate()) < 0) or (self.startrepcal.selectedDate().daysTo(self.endrepcal.selectedDate()) < 0))
 
-class submitThread(QtCore.QThread):
+class submitThread(QThread):
 
     def __init__(self, window):
         self.window = window
-        QtCore.QThread.__init__(self)
+        QThread.__init__(self)
 
     def __del__(self):
         self.wait()
@@ -542,14 +543,12 @@ class submitThread(QtCore.QThread):
                 self.window.setDisabled(False)
                 return
 
-            if not os.path.exists(os.path.expanduser('~/Documents/PIEthon')):
-                os.mkdir(os.path.expanduser('~/Documents/PIEthon'))
-            if not os.path.exists(os.path.expanduser('~/Documents/PIEthon/reports')):
-                print(str(os.path.expanduser('~/Documents/PIEthon/reports')))
-                os.mkdir(os.path.expanduser('~/Documents/PIEthon/reports'))
-
-            if not os.path.exists(os.path.expanduser('~/Documents/PIEthon/figures')):
-                os.mkdir(os.path.expanduser('~/Documents/PIEthon/figures'))
+            if not exists(expanduser('~/Documents/PIEthon')):
+                mkdir(expanduser('~/Documents/PIEthon'))
+            if not exists(expanduser('~/Documents/PIEthon/reports')):
+                mkdir(expanduser('~/Documents/PIEthon/reports'))
+            if not exists(expanduser('~/Documents/PIEthon/figures')):
+                mkdir(expanduser('~/Documents/PIEthon/figures'))
 
             self.window.statusUpdate("Starting Report")
             self.window.current_report.run_main(self.window.driver,self.window.startrepcal.selectedDate().toPyDate(), self.window.endrepcal.selectedDate().toPyDate(), self.window.statuslabel)
