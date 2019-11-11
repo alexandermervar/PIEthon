@@ -110,12 +110,19 @@ attendance_issues = PIEdata.PIEdata('Attendance Issues',
                                 'https://pie.iu.edu/Api/AttendanceIssues?page=0&pageLimit={0}&startTime={1}&endTime={2}',
                                 ['maxreturns', 'startdate', 'enddate'])
 
+#chat messages
+chat_messages = PIEdata.PIEdata('Chat Messages',
+                                'https://pie.iu.edu/Api/ChatMessages?page=0&pageLimit={0}&startTime={1}&endTime={2}&userId={3}',
+                                ['maxreturns', 'startdate', 'enddate', 'username'])
+
 def buildalldatathings(userdict, labdict, invlabs):
     contacts.setuserdict(userdict)
     contacts.setlabdict(labdict)
 
     contactslong.setuserdict(userdict)
     contactslong.setlabdict(labdict)
+
+    chat_messages.setuserdict(userdict)
 
     goldstars.set_assigneddict(userdict)
 
@@ -129,7 +136,7 @@ def buildalldatathings(userdict, labdict, invlabs):
 
     invreports.setchuncks(15)
 
-    itemlist = [contacts, goldstars, pdis, shifts,locations, invreports, appointments, activerusers, graveyardheads, subpleas, schedules, assignedbadges, employeeMeetings, accountchecks, contactslong, attendance_issues]
+    itemlist = [contacts, goldstars, pdis, shifts,locations, invreports, appointments, activerusers, graveyardheads, subpleas, schedules, assignedbadges, employeeMeetings, accountchecks, contactslong, attendance_issues, chat_messages]
 
     datalist = {}
 

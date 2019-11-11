@@ -13,9 +13,10 @@ class report:
         else:
             self.main_run(driver, startdate,enddate,statuslabel)
 
-from py import reportLabBreakdown, reportMissingUserInfo, reportPDIs, reportStepouts
+from py import reportLabBreakdown, reportMissingUserInfo, reportPDIs, reportStepouts, reportChatIcons
 
 report_list = [reportLabBreakdown.labbreakreport,
                reportMissingUserInfo.missinginforeport,
                reportPDIs.pdireport,
-               reportStepouts.stepoutreport]
+               reportStepouts.stepoutreport,
+               reportChatIcons.chaticonreport]
