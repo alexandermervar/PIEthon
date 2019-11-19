@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['PIEthon.py'],
-             pathex=['C:\\Users\\brfunk\\Documents\\PIEthon'],
+             pathex=['C:\\Users\\brfunk\\PycharmProjects\\PIEthon'],
              binaries=[],
              datas=[('resources/chromedriver.exe', 'resources'), ('resources/iu_stylesheet.qss', 'resources'), ('resources/down_arrow_3.png', 'resources'), ('resources/PIEcon.png', 'resources'), ('resources/PIEcon.ico', 'resources')],
              hiddenimports=[],
