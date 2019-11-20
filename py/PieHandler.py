@@ -57,14 +57,12 @@ def caslogin(driver, username, password, duotype):
         return driver
 
 def getPie(driver):
-    driver.get('https://pie.iu.edu')
-    piebut = seleniumHandlers.getBy(driver, 'xpath', "//*[@id=\"mainContent\"]/div/div[2]/div/div/p/button[1]", 5)
-    piebut.click()
-    element = WebDriverWait(driver, 60).until(
-        EC.presence_of_element_located((By.LINK_TEXT, "IUB TCC"))
-    )
+    driver.get('https://tcciub.pie.iu.edu')
+    #piebut = seleniumHandlers.getBy(driver, 'xpath', "//*[@id=\"mainContent\"]/div/div[2]/div/div/p/button[1]", 5)
+    #piebut.click()
 
-    element = driver.find_element_by_link_text("IUB TCC")
+
+    element = driver.find_element_by_xpath("//*[contains(text(), 'Sign In Using IU Login')]")
     element.click()
 
     sleep(.5)
