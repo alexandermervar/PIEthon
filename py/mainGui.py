@@ -482,6 +482,25 @@ class mainwindow(QWidget):
             self.assignedcombo.clear()
             self.assignedcombo.setEnabled(False)
 
+        if ('startdate' not in datatype.variables):
+            self.endcal.setEnabled(False)
+            self.startcal.setEnabled(False)
+            self.startrepcal.setEnabled(False)
+            self.endrepcal.setEnabled(False)
+            self.startcombo.setEnabled(False)
+            self.endcombo.setEnabled(False)
+            self.endrepcombo.setEnabled(False)
+            self.startrepcombo.setEnabled(False)
+        else:
+            self.endcal.setEnabled(True)
+            self.startcal.setEnabled(True)
+            self.startrepcal.setEnabled(True)
+            self.endrepcal.setEnabled(True)
+            self.startcombo.setEnabled(True)
+            self.endcombo.setEnabled(True)
+            self.endrepcombo.setEnabled(True)
+            self.startrepcombo.setEnabled(True)
+
     def completed(self):
         if self.datecheck() or self.dframe is False:
             return

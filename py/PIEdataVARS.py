@@ -62,7 +62,7 @@ appointments = PIEdata.PIEdata('Appointments',
                                ['maxreturns', 'startdate', 'enddate', 'status'])
 appointments.setstatusdict(appointmentstatdict)
 
-# Add Activer Users
+# Add Active Users
 activerusers = PIEdata.PIEdata('Active Users',
                                'https://tcciub.pie.iu.edu/Api/Users?page=0&pageLimit=1000&searchTerms=&active=true&whitelistInclusiveMaskNames=Employee&fromUsersView=true&maskId=5',
                                [])
@@ -97,7 +97,7 @@ employeeMeetings = PIEdata.PIEdata('Employee Meetings',
 #add account checks
 accountchecks = PIEdata.PIEdata('Account Checks',
                                 'https://tcciub.pie.iu.edu/Api/AccountChecks?page=0&pageLimit={0}&searchTerms=&startTime={1}&endTime={2}',
-                                ['maxreturns', 'startdate', 'enddate'])
+                                [])
 
 #add account checks
 contactslong = PIEdata.PIEdata('Contacts-Long',
