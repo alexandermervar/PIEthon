@@ -141,7 +141,7 @@ def buildalldatathings(userdict, labdict, invlabs):
 
     invreports.setchuncks(15)
 
-    itemlist = [contacts, goldstars, pdis, shifts,locations, invreports, appointments, activerusers, graveyardheads, subpleas, schedules, assignedbadges, employeeMeetings, accountchecks, contactslong, attendance_issues, chat_messages, incident_reports]
+    itemlist = [contacts, goldstars, pdis, shifts,locations, invreports, appointments, activerusers, graveyardheads, schedules, assignedbadges, employeeMeetings, contactslong, attendance_issues, chat_messages, incident_reports]
 
     datalist = {}
 
