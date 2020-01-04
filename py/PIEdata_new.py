@@ -12,8 +12,8 @@ class PIEdata:
         #filters
         self.createdby = ''
         self.createdbyDict = {}
-        self.assignedby = ''
-        self.assignedbyDict = {}
+        self.assignedTo = ''
+        self.assignedToDict = {}
         self.location = ''
         self.locationDict = {}
         self.category = ''
@@ -26,22 +26,54 @@ class PIEdata:
 
         #flags
         self.createdbyPost = False
-        self.assignedbyPost = False
+        self.assignedToPost = False
         self.locationPost = False
         self.categoryPost = False
         self.statusPost = False
+        self.startPost = False
+        self.endPost = False
+
         self.invbool = False
         self.form = False
         self.formkey = False
         self.allowbracks = False
 
     def urlList(self):
-        # takes start and end date and makes a chunked list of urls
-        # based on filters in code
+        if self.startDate == '':
+            return [self.genURL('')]
+
         urllist = []
-        if not self.createdbyPost:
+        tempdate = self.startDate
+
+        while (self.endDate - tempdate).days > self.chunk_size:
+            urllist.append(self.genURL(tempdate))
+            tempdate = tempdate + timedelta(days=self.chunk_size)
+
+        urllist.append(self.genURL(tempdate))
 
         return urllist
+
+    def genURL(self, startdate):
+        #take a startdate and create a url for it
+        baseurl = self.link
+        if (not self.startPost and self.startDate is not ''):
+            baseurl = baseurl + '&startTime=' + str(startdate)
+        if (not self.endPost and self.endDate is not ''):
+            baseurl = baseurl + '&endTime=' + str(startdate + timedelta(days=self.chunk_size))
+        if (self.createdbyDict is not {} and not self.createdbyPost and self.createdby is not ''):
+            baseurl = baseurl + '&creatorIds=' + self.createdby
+        if (self.assignedToDict is not {} and not self.assignedToPost and self.assignedTo is not ''):
+            baseurl = baseurl + '&userId=' + self.assignedTo
+        if (self.locationDict is not {} and not self.locationPost and self.location is not ''):
+            baseurl = baseurl + '&LocationIds=' + self.location
+        if (self.categoryDict is not {} and not self.categoryPost and self.category is not ''):
+            baseurl = baseurl + '&categoryIds=' + self.category
+        if (self.statusDict is not {} and not self.statusPost and self.status is not ''):
+            baseurl = baseurl + '&statuses=' + self.status
+        print(baseurl)
+        return baseurl
+
+
         
     def make_url(self):
 

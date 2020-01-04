@@ -141,11 +141,11 @@ def goandget(driver, urllist, piedata):
         rawInput = r.text
         if len(rawInput) == 0 or not rawInput:
             continue
-        if (piedata.getform()):
+        if (piedata.form):
             #this is a form, changing startcut and endcut
             endcut=rawInput.find("questions")-3
             startcut=12
-        if len(rawInput) <= 2 or (piedata.getform() and rawInput[11] =='[' and rawInput[12] == ']'):
+        if len(rawInput) <= 2 or (piedata.form and rawInput[11] =='[' and rawInput[12] == ']'):
             if counter==1 and counter==len(urllist):
                 continue
             elif counter==1:
@@ -158,12 +158,12 @@ def goandget(driver, urllist, piedata):
             continue
         if (len(urllist) != 1):
             if counter == 1:
-                if (piedata.getform()):
+                if (piedata.form):
                     rawInput = rawInput[startcut-1:endcut] + ','
                 else:
                     rawInput = rawInput[:endcut] + ','
             elif counter == len(urllist) or len(totString) == 0:
-                if (piedata.getform()):
+                if (piedata.form):
                     rawInput = rawInput[startcut:endcut] + ']'
                 else:
                     rawInput = rawInput[startcut:]

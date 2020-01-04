@@ -441,65 +441,46 @@ class mainwindow(QWidget):
         if (datatype is None):
             return
 
-        if (not datatype.getuserdict() == {}):
+        if (datatype.createdbyDict is not {}):
             self.usernamecombo.clear()
-            self.usernamecombo.addItems(datatype.getuserdict().keys())
+            self.usernamecombo.addItems(datatype.createdbyDict.keys())
             self.usernamecombo.setEnabled(True)
         else:
             self.usernamecombo.clear()
-            self.usernamecombo.addItems(datatype.getuserdict().keys())
+            #self.usernamecombo.addItems(datatype.createdbyDict.keys())
             self.usernamecombo.setEnabled(False)
 
-        if (not datatype.getlabdict() == {}):
+        if (datatype.locationDict is not {}):
             self.locationcombo.clear()
-            self.locationcombo.addItems(datatype.getlabdict().keys())
+            self.locationcombo.addItems(datatype.locationDict.keys())
             self.locationcombo.setEnabled(True)
         else:
             self.locationcombo.clear()
             self.locationcombo.setEnabled(False)
 
-        if (not datatype.getstatusdict() == []):
+        if (datatype.statusDict is not {}):
             self.statuscombo.clear()
-            self.statuscombo.addItems(datatype.getstatusdict())
+            self.statuscombo.addItems(datatype.statusDict)
             self.statuscombo.setEnabled(True)
         else:
             self.statuscombo.clear()
             self.statuscombo.setEnabled(False)
 
-        if (not datatype.getcategorydict() == {}):
+        if (datatype.categoryDict is not {}):
             self.categorycombo.clear()
-            self.categorycombo.addItems(datatype.getcategorydict().keys())
+            self.categorycombo.addItems(datatype.categoryDict.keys())
             self.categorycombo.setEnabled(True)
         else:
             self.categorycombo.clear()
             self.categorycombo.setEnabled(False)
 
-        if (not datatype.getassigneddict() == {}):
+        if (datatype.assignedToDict is not {}):
             self.assignedcombo.clear()
-            self.assignedcombo.addItems(datatype.getassigneddict().keys())
+            self.assignedcombo.addItems(datatype.assignedToDict.keys())
             self.assignedcombo.setEnabled(True)
         else:
             self.assignedcombo.clear()
             self.assignedcombo.setEnabled(False)
-
-        if ('startdate' not in datatype.variables):
-            self.endcal.setEnabled(False)
-            self.startcal.setEnabled(False)
-            self.startrepcal.setEnabled(False)
-            self.endrepcal.setEnabled(False)
-            self.startcombo.setEnabled(False)
-            self.endcombo.setEnabled(False)
-            self.endrepcombo.setEnabled(False)
-            self.startrepcombo.setEnabled(False)
-        else:
-            self.endcal.setEnabled(True)
-            self.startcal.setEnabled(True)
-            self.startrepcal.setEnabled(True)
-            self.endrepcal.setEnabled(True)
-            self.startcombo.setEnabled(True)
-            self.endcombo.setEnabled(True)
-            self.endrepcombo.setEnabled(True)
-            self.startrepcombo.setEnabled(True)
 
     def completed(self):
         if self.datecheck() or self.dframe is False:
@@ -534,15 +515,14 @@ class submitThread(QThread):
             self.window.statusUpdate("Preparing Data Structure")
 
             datatype = self.window.dataoptions.get(self.window.datacombo.currentText())
-            datatype.set_maxreturns(self.window.maxbox.text())
-            datatype.set_enddate(self.window.endcal.selectedDate().toPyDate())
-            datatype.set_startdate(self.window.startcal.selectedDate().toPyDate())
-            datatype.set_username(self.window.usernamecombo.currentText())
-            datatype.set_assignedto(self.window.assignedcombo.currentText())
-            datatype.set_location(self.window.locationcombo.currentText())
-            datatype.set_category(self.window.categorycombo.currentText())
-            datatype.set_status(self.window.statuscombo.currentText())
-            url = datatype.make_url()
+            datatype.endDate = self.window.endcal.selectedDate().toPyDate()
+            datatype.startDate = self.window.startcal.selectedDate().toPyDate()
+            datatype.createdby = self.window.usernamecombo.currentText()
+            datatype.assignedTo  = self.window.assignedcombo.currentText()
+            datatype.location = self.window.locationcombo.currentText()
+            datatype.category = self.window.categorycombo.currentText()
+            datatype.status = self.window.statuscombo.currentText()
+            url = datatype.urlList()
 
             self.window.statusUpdate("Pulling from Pie")
             frameboy = PieHandler.goandget(self.window.driver, url, datatype)

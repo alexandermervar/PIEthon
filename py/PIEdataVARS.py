@@ -1,4 +1,5 @@
 from py import PIEdata
+from py import PIEdata_new
 
 # Make some variables
 contactcatdict = {}
@@ -120,7 +121,17 @@ incident_reports = PIEdata.PIEdata('Incident Reports',
                                 'https://tcciub.pie.iu.edu/Api/IncidentReports?page=0&pageLimit={0}&startTime={1}&endTime={2}',
                                 ['maxreturns', 'startdate', 'enddate'])
 
+#NEW CONTACTS
+contacts_new = PIEdata_new.PIEdata('Contacts - new', 'https://tcciub.pie.iu.edu/Api/Contacts?page=0&pageLimit=100000&searchTerms=')
+contacts_new.createdbyVoid = False
+contacts_new.categoryVoid = False
+contacts_new.locationVoid = False
+contacts_new.categoryDict = contactcatdict
+
+##NEXT IS TO DO A LIL TESTOORINO WHERE THE RETURN FROM BUILD ALL THINGS IS THE TRUTH HAHAHA GOOD LUCK FIGURING OUT WHAT YOU MEANT LOSER
+
 def buildalldatathings(userdict, labdict, invlabs):
+    """
     contacts.setuserdict(userdict)
     contacts.setlabdict(labdict)
 
@@ -153,5 +164,11 @@ def buildalldatathings(userdict, labdict, invlabs):
 
     for datathing in itemlist:
         datalist[datathing.getName()] = datathing
+    """
+    contacts_new.createdbyDict = userdict
+    contacts_new.locationDict = labdict
+
+    datalist = {}
+    datalist['Contacts - new oooh'] = contacts_new
 
     return datalist
