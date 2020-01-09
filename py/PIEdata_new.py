@@ -61,7 +61,7 @@ class PIEdata:
         if (not self.endPost and self.endDate is not ''):
             baseurl = baseurl + '&endTime=' + str(startdate + timedelta(days=self.chunk_size))
         if (self.createdbyDict is not {} and not self.createdbyPost and self.createdby is not ''):
-            baseurl = baseurl + '&creatorIds=' + self.createdby
+            baseurl = baseurl + '&creatorIds=' + str(self.createdbyDict[self.createdby].getId())
         if (self.assignedToDict is not {} and not self.assignedToPost and self.assignedTo is not ''):
             baseurl = baseurl + '&userId=' + self.assignedTo
         if (self.locationDict is not {} and not self.locationPost and self.location is not ''):
@@ -70,11 +70,13 @@ class PIEdata:
             baseurl = baseurl + '&categoryIds=' + self.category
         if (self.statusDict is not {} and not self.statusPost and self.status is not ''):
             baseurl = baseurl + '&statuses=' + self.status
+        if 'mini' in self.name:
+            baseurl = baseurl + '&mini=true'
         print(baseurl)
         return baseurl
 
 
-        
+"""
     def make_url(self):
 
         if self.startDate == '':
@@ -125,3 +127,4 @@ class PIEdata:
             vardict['assignedto'] = ''
         vardict['status'] = self.status
         return vardict
+"""

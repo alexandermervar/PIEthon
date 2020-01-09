@@ -136,7 +136,7 @@ contacts_new.categoryDict = contactcatdict
 list_o_data.append(contacts_new)
 
 # CONTACTS - mini
-contacts_fast = PIEdata_new.PIEdata('Contacts - fast', 'https://tcciub.pie.iu.edu/Api/Contacts?page=0&pageLimit=100000&searchTerms=')
+contacts_fast = PIEdata_new.PIEdata('Contacts - mini', 'https://tcciub.pie.iu.edu/Api/Contacts?page=0&pageLimit=100000&searchTerms=')
 contacts_fast.createdbyVoid = False
 contacts_fast.categoryVoid = False
 contacts_fast.locationVoid = False
