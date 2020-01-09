@@ -447,7 +447,6 @@ class mainwindow(QWidget):
             self.usernamecombo.setEnabled(True)
         else:
             self.usernamecombo.clear()
-            #self.usernamecombo.addItems(datatype.createdbyDict.keys())
             self.usernamecombo.setEnabled(False)
 
         if (datatype.locationDict is not {}):
@@ -518,7 +517,7 @@ class submitThread(QThread):
             datatype.endDate = self.window.endcal.selectedDate().toPyDate()
             datatype.startDate = self.window.startcal.selectedDate().toPyDate()
             datatype.createdby = self.window.usernamecombo.currentText()
-            datatype.assignedTo  = self.window.assignedcombo.currentText()
+            datatype.assignedTo = datatype.createdbyDict[self.window.assignedcombo.currentText()]
             datatype.location = self.window.locationcombo.currentText()
             datatype.category = self.window.categorycombo.currentText()
             datatype.status = self.window.statuscombo.currentText()

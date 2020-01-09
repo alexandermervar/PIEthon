@@ -121,54 +121,41 @@ incident_reports = PIEdata.PIEdata('Incident Reports',
                                 'https://tcciub.pie.iu.edu/Api/IncidentReports?page=0&pageLimit={0}&startTime={1}&endTime={2}',
                                 ['maxreturns', 'startdate', 'enddate'])
 
-#NEW CONTACTS
-contacts_new = PIEdata_new.PIEdata('Contacts - new', 'https://tcciub.pie.iu.edu/Api/Contacts?page=0&pageLimit=100000&searchTerms=')
+###############################
+### NEW DATA STRUCTURES YAY ###
+###############################
+
+list_o_data = []
+
+# CONTACTS
+contacts_new = PIEdata_new.PIEdata('Contacts', 'https://tcciub.pie.iu.edu/Api/Contacts?page=0&pageLimit=100000&searchTerms=')
 contacts_new.createdbyVoid = False
 contacts_new.categoryVoid = False
 contacts_new.locationVoid = False
 contacts_new.categoryDict = contactcatdict
+list_o_data.append(contacts_new)
 
-##NEXT IS TO DO A LIL TESTOORINO WHERE THE RETURN FROM BUILD ALL THINGS IS THE TRUTH HAHAHA GOOD LUCK FIGURING OUT WHAT YOU MEANT LOSER
+# CONTACTS - mini
+contacts_fast = PIEdata_new.PIEdata('Contacts - fast', 'https://tcciub.pie.iu.edu/Api/Contacts?page=0&pageLimit=100000&searchTerms=')
+contacts_fast.createdbyVoid = False
+contacts_fast.categoryVoid = False
+contacts_fast.locationVoid = False
+contacts_fast.categoryDict = contactcatdict
+list_o_data.append(contacts_fast)
+
+
 
 def buildalldatathings(userdict, labdict, invlabs):
-    """
-    contacts.setuserdict(userdict)
-    contacts.setlabdict(labdict)
 
-    contactslong.setuserdict(userdict)
-    contactslong.setlabdict(labdict)
-
-    chat_messages.setuserdict(userdict)
-
-    goldstars.set_assigneddict(userdict)
-
-    pdis.set_assigneddict(userdict)
-
-    locations.setuserdict(userdict)
-
-    shifts.setuserdict(userdict)
-
-    invreports.setinvlocationdict(invlabs)
-
-    invreports.setchuncks(15)
-
-    itemlist = [contacts, goldstars, pdis, shifts,locations, invreports, appointments, activerusers, graveyardheads, schedules, assignedbadges, employeeMeetings, contactslong, attendance_issues, chat_messages, incident_reports]
-
-    datalist = {}
-
-    subpleas.setallowbracks(True)
-
-    graveyardheads.setform(True)
-
-    formkey.setformkey(True)
-
-    for datathing in itemlist:
-        datalist[datathing.getName()] = datathing
-    """
+    # buff contacts
     contacts_new.createdbyDict = userdict
     contacts_new.locationDict = labdict
 
+    contacts_fast.createdbyDict = userdict
+    contacts_fast.locationDict = labdict
+
     datalist = {}
-    datalist['Contacts - new oooh'] = contacts_new
+    for data in list_o_data:
+        datalist[data.name] = data
 
     return datalist
