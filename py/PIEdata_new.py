@@ -1,5 +1,7 @@
-from datetime import timedelta, date
+from datetime import timedelta, date, datetime
 from py import functions
+import pandas as pd
+import numpy as np
 
 class PIEdata:
     def __init__(self, name, link):
@@ -81,3 +83,53 @@ class PIEdata:
         self.location = ''
         self.category = ''
         self.status = ''
+        self.startDate = ''
+        self.endDate = ''
+
+    def postFilter(self, frame, semesters):
+        #attempt to parse creation date into a dope super cool columns thing
+        try:
+            frame['created'] = pd.to_datetime(frame['created'])
+            frame['created-year'] = pd.DatetimeIndex(frame['created']).year
+            frame['created-month'] = pd.DatetimeIndex(frame['created']).month
+            frame['created-week'] = pd.DatetimeIndex(frame['created']).week
+            frame['created-day'] = pd.DatetimeIndex(frame['created']).day
+            frame['created-weekday'] = pd.DatetimeIndex(frame['created']).weekday
+            frame['created-hour'] = pd.DatetimeIndex(frame['created']).hour
+
+        except:
+            print('could not parse date information')
+
+        # semester time oh boy
+        for semester in semesters:
+            if semester is None or semester.start is '':
+                continue
+            frame['semester'] = [semester.name if semester.start < x else '' for x in frame['created']]
+
+        #true post processing - epic gamer moment incoming
+
+        if (self.startPost and self.startDate is not ''):
+            # filter frame to after startdate
+            try:
+                frame = frame[frame['created'] >= self.startDate]
+            except:
+                print('cannot post-filter on start date')
+        if (self.endPost and self.endDate is not ''):
+            # filter frame to before enddate
+            print('temp')
+        if (self.createdbyPost and self.createdby is not ''):
+            # filter frame to created by
+            print('temp')
+        if (self.assignedToPost and self.assignedTo is not ''):
+            # filter frame to assigned to
+            print('temp')
+        if (self.locationPost and self.location is not ''):
+            # filter frame to location
+            print('temp')
+        if (self.categoryPost and self.category is not ''):
+            # filter frame to category
+            print('temp')
+        if (self.statusPost and self.status is not ''):
+            # filter frame to status
+            print('temp')
+        return frame

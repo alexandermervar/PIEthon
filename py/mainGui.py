@@ -387,10 +387,9 @@ class mainwindow(QWidget):
 
     def startcomboselect(self):
         self.startrepcombo.setCurrentIndex(self.startcombo.currentIndex())
-        sempick = self.semesters[self.startcombo.currentText()].getStart()[:10]
-        if sempick == '':
+        conv = self.semesters[self.startcombo.currentText()].getStart()
+        if conv == '':
             return
-        conv = datetime.strptime(sempick, '%Y-%m-%d')
         self.startlabel.setText("Start Date:  " + conv.strftime('%a %b %d %Y'))
         self.startreplabel.setText("Start Date:  " + conv.strftime('%a %b %d %Y'))
         self.startcal.setSelectedDate(conv)
@@ -398,10 +397,9 @@ class mainwindow(QWidget):
 
     def endcomboselect(self):
         self.endrepcombo.setCurrentIndex(self.endcombo.currentIndex())
-        sempick = self.semesters[self.endcombo.currentText()].getEnd()[:10]
-        if sempick == '':
+        conv = self.semesters[self.endcombo.currentText()].getEnd()
+        if conv == '':
             return
-        conv = datetime.strptime(sempick, '%Y-%m-%d')
         self.endlabel.setText("End Date:  " + conv.strftime('%a %b %d %Y'))
         self.endreplabel.setText("End Date:  " + conv.strftime('%a %b %d %Y'))
         self.endcal.setSelectedDate(conv)
@@ -409,10 +407,9 @@ class mainwindow(QWidget):
 
     def startrepcomboselect(self):
         self.startcombo.setCurrentIndex(self.startrepcombo.currentIndex())
-        sempick = self.semesters[self.startrepcombo.currentText()].getStart()[:10]
-        if sempick == '':
+        conv = self.semesters[self.startrepcombo.currentText()].getStart()
+        if conv == '':
             return
-        conv = datetime.strptime(sempick, '%Y-%m-%d')
         self.startreplabel.setText("Start Date:  " + conv.strftime('%a %b %d %Y'))
         self.startlabel.setText("Start Date:  " + conv.strftime('%a %b %d %Y'))
         self.startrepcal.setSelectedDate(conv)
@@ -420,10 +417,9 @@ class mainwindow(QWidget):
 
     def endrepcomboselect(self):
         self.endcombo.setCurrentIndex(self.endrepcombo.currentIndex())
-        sempick = self.semesters[self.endrepcombo.currentText()].getEnd()[:10]
-        if sempick == '':
+        conv = self.semesters[self.endrepcombo.currentText()].getEnd()
+        if conv == '':
             return
-        conv = datetime.strptime(sempick, '%Y-%m-%d')
         self.endreplabel.setText("End Date:  " + conv.strftime('%a %b %d %Y'))
         self.endlabel.setText("End Date:  " + conv.strftime('%a %b %d %Y'))
         self.endrepcal.setSelectedDate(conv)
@@ -532,6 +528,8 @@ class submitThread(QThread):
                 self.window.setDisabled(False)
                 return
             else:
+                self.window.statusUpdate("Post-processing...")
+                frameboy = datatype.postFilter(frameboy, self.window.semesters)
                 self.window.statusUpdate("Complete")
                 self.window.dframe = frameboy
                 self.window.setDisabled(False)
