@@ -87,6 +87,19 @@ class PIEdata:
         self.endDate = ''
 
     def postFilter(self, frame, semesters):
+
+        #helper for getting things?
+        def semesterMatch(x):
+            for name,semester in semesters.items():
+                if name is '':
+                    continue
+                if semester.start <= x.replace(tzinfo=None) <= semester.end:
+                    return name
+            return None
+
+        #limit semesters to info I care about?
+        # nah
+
         #attempt to parse creation date into a dope super cool columns thing
         try:
             frame['created'] = pd.to_datetime(frame['created'])
@@ -96,15 +109,11 @@ class PIEdata:
             frame['created-day'] = pd.DatetimeIndex(frame['created']).day
             frame['created-weekday'] = pd.DatetimeIndex(frame['created']).weekday
             frame['created-hour'] = pd.DatetimeIndex(frame['created']).hour
+            # semester time oh boy
+            frame['semester'] = frame['created'].map(lambda x: semesterMatch(x))
 
         except:
             print('could not parse date information')
-
-        # semester time oh boy
-        for semester in semesters:
-            if semester is None or semester.start is '':
-                continue
-            frame['semester'] = [semester.name if semester.start < x else '' for x in frame['created']]
 
         #true post processing - epic gamer moment incoming
 
