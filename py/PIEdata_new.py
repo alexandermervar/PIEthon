@@ -63,68 +63,21 @@ class PIEdata:
         if (self.createdbyDict is not {} and not self.createdbyPost and self.createdby is not ''):
             baseurl = baseurl + '&creatorIds=' + str(self.createdbyDict[self.createdby].getId())
         if (self.assignedToDict is not {} and not self.assignedToPost and self.assignedTo is not ''):
-            baseurl = baseurl + '&userId=' + self.assignedTo
+            baseurl = baseurl + '&userId=' + str(self.assignedToDict[self.assignedTo].getId())
         if (self.locationDict is not {} and not self.locationPost and self.location is not ''):
-            baseurl = baseurl + '&LocationIds=' + self.location
+            baseurl = baseurl + '&LocationIds=' + str(self.locationDict[self.location])
         if (self.categoryDict is not {} and not self.categoryPost and self.category is not ''):
-            baseurl = baseurl + '&categoryIds=' + self.category
+            baseurl = baseurl + '&categoryIds=' + str(self.categoryDict[self.category])
         if (self.statusDict is not {} and not self.statusPost and self.status is not ''):
-            baseurl = baseurl + '&statuses=' + self.status
+            baseurl = baseurl + '&statuses=' + str(self.statusDict[self.status])
         if 'mini' in self.name:
             baseurl = baseurl + '&mini=true'
         print(baseurl)
         return baseurl
 
-
-"""
-    def make_url(self):
-
-        if self.startDate == '':
-            return [self.link]
-
-        datelist = []
-
-        while(self.endDate-self.startDate).days > self.chunk_size:
-            datelist.append(self.startDate)
-            self.set_startDate(self.startDate+timedelta(days=self.chunk_size))
-        datelist.append(self.startDate)
-        storeend = self.endDate
-        chunkcount = 1
-
-        urllist = []
-        for startDate in datelist:
-            self.set_startDate(startDate)
-            if(chunkcount == len(datelist)):
-                self.set_endDate(storeend)
-            else:
-                self.set_endDate(startDate+timedelta(days=self.chunk_size))
-            vardict = self.urlDict()
-            newvars = []
-            for thing in self.variables:
-                newvars.append(vardict[thing])
-            url = self.link.format(*newvars)
-            urllist.append(url)
-            chunkcount+=1
-        return urllist
-
-    def urlDict(self):
-        vardict = {}
-        vardict['startDate'] = functions.pieTimeConvert(self.startDate)
-        vardict['endDate'] = functions.pieTimeConvert(self.endDate)
-        if (not self.username == ''):
-            vardict['username'] = self.userdict[self.username].getId()
-        else:
-            vardict['username'] = ''
-        if (not self.location == ''):
-            vardict['location'] = self.labdict[self.location]
-        else:
-            vardict['location'] = ''
-        vardict['category'] = self.category
-        vardict['maxreturns'] = self.maxreturns
-        if (len(self.assignedto) > 1):
-            vardict['assignedto'] = self.assigneddict[self.assignedto].getId()
-        else:
-            vardict['assignedto'] = ''
-        vardict['status'] = self.status
-        return vardict
-"""
+    def reset(self):
+        self.createdby = ''
+        self.assignedTo = ''
+        self.location = ''
+        self.category = ''
+        self.status = ''

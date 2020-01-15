@@ -441,7 +441,7 @@ class mainwindow(QWidget):
         if (datatype is None):
             return
 
-        if (datatype.createdbyDict is not {}):
+        if (len(datatype.createdbyDict) > 1):
             self.usernamecombo.clear()
             self.usernamecombo.addItems(datatype.createdbyDict.keys())
             self.usernamecombo.setEnabled(True)
@@ -449,7 +449,7 @@ class mainwindow(QWidget):
             self.usernamecombo.clear()
             self.usernamecombo.setEnabled(False)
 
-        if (datatype.locationDict is not {}):
+        if (len(datatype.locationDict) > 1):
             self.locationcombo.clear()
             self.locationcombo.addItems(datatype.locationDict.keys())
             self.locationcombo.setEnabled(True)
@@ -457,7 +457,7 @@ class mainwindow(QWidget):
             self.locationcombo.clear()
             self.locationcombo.setEnabled(False)
 
-        if (datatype.statusDict is not {}):
+        if (len(datatype.statusDict) > 1):
             self.statuscombo.clear()
             self.statuscombo.addItems(datatype.statusDict)
             self.statuscombo.setEnabled(True)
@@ -465,7 +465,7 @@ class mainwindow(QWidget):
             self.statuscombo.clear()
             self.statuscombo.setEnabled(False)
 
-        if (datatype.categoryDict is not {}):
+        if (len(datatype.categoryDict) > 1):
             self.categorycombo.clear()
             self.categorycombo.addItems(datatype.categoryDict.keys())
             self.categorycombo.setEnabled(True)
@@ -473,7 +473,7 @@ class mainwindow(QWidget):
             self.categorycombo.clear()
             self.categorycombo.setEnabled(False)
 
-        if (datatype.assignedToDict is not {}):
+        if (len(datatype.assignedToDict) > 1):
             self.assignedcombo.clear()
             self.assignedcombo.addItems(datatype.assignedToDict.keys())
             self.assignedcombo.setEnabled(True)
@@ -522,6 +522,7 @@ class submitThread(QThread):
             datatype.category = self.window.categorycombo.currentText()
             datatype.status = self.window.statuscombo.currentText()
             url = datatype.urlList()
+            datatype.reset()
 
             self.window.statusUpdate("Pulling from Pie")
             frameboy = PieHandler.goandget(self.window.driver, url, datatype)
