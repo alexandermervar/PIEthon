@@ -73,65 +73,56 @@ invreports.createSwitch = True
 invreports.append = '&onlyCurrent=false&pageLimit=null'
 list_o_data.append(invreports)
 
-# Appointments
-appointments = PIEdata_new.PIEdata('Appointments', 'https://tcciub.pie.iu.edu/Api/Appointments?page=0&pageLimit={0}&startTime={1}&endTime={2}&statuses=Completed')
+# APPOINTMENTS
+appointments = PIEdata_new.PIEdata('Appointments', 'https://tcciub.pie.iu.edu/Api/Appointments?page=0&pageLimit=10000000')
 appointments.statusDict = appointmentstatdict
 appointments.append = '&groupByEmployee=false&instanceId=1'
+appointments.assignedToPost = True
 list_o_data.append(appointments)
 
-# Add Active Users
-activerusers = PIEdata.PIEdata('Active Users',
-                               'https://tcciub.pie.iu.edu/Api/Users?page=0&pageLimit=1000&searchTerms=&active=true&whitelistInclusiveMaskNames=Employee&fromUsersView=true&maskId=5',
-                               [])
+# ACTIVE USERS
+activerusers = PIEdata_new.PIEdata('Active Users', 'https://tcciub.pie.iu.edu/Api/Users?page=0&pageLimit=1000&searchTerms=&active=true&whitelistInclusiveMaskNames=Employee&fromUsersView=true&maskId=5')
+list_o_data.append(activerusers)
 
-# Add Graveyard headcounts
-graveyardheads = PIEdata.PIEdata('Graveyard HeadCounts',
-                                 'https://tcciub.pie.iu.edu/Api/LocationEvaluations/Reports?page=0&pageLimit={0}&startTime={1}&endTime={2}&formId=176&minimal=true',
-                                 ['maxreturns', 'startdate', 'enddate'])
+# GRAVEYARD HEADCOUNTS
+graveyardheads = PIEdata_new.PIEdata('Graveyard HeadCounts', 'https://tcciub.pie.iu.edu/Api/LocationEvaluations/Reports?page=0&pageLimit=10000000')
+graveyardheads.append = '&formId=176&minimal=true'
+list_o_data.append(graveyardheads)
 
-# Add the key for form pulling
-formkey = PIEdata.PIEdata('Form Key',
-                          'https://tcciub.pie.iu.edu/Api/LocationEvaluationForms',
-                          [])
-#Add Sub Pleas
-subpleas = PIEdata.PIEdata('Sub Plea',
-                           'https://tcciub.pie.iu.edu/Api/SubPleas?page=0&pageLimit={0}&startTime={1}&endTime={2}',
-                           ['maxreturns', 'startdate', 'enddate'])
-#Add schedules
-schedules = PIEdata.PIEdata('Semester Schedules',
-                            'https://tcciub.pie.iu.edu/Api/Schedules?page=0&pageLimit=101',
-                            [])
-#Add assigned badges
-assignedbadges = PIEdata.PIEdata('Assigned Badges',
-                                 'https://tcciub.pie.iu.edu/Api/AssignedBadges?page=0&pageLimit={0}&startTime={1}&endTime={2}',
-                                 ['maxreturns', 'startdate', 'enddate'])
+# FORM KEY
+formkey = PIEdata_new.PIEdata('Form Key', 'https://tcciub.pie.iu.edu/Api/LocationEvaluationForms')
 
-#add employee meetings
-employeeMeetings = PIEdata.PIEdata('Employee Meetings',
-                                   'https://tcciub.pie.iu.edu/Api/EmployeeMeetings?page=0&pageLimit={0}',
-                                   ['maxreturns'])
+# SUB PLEAS
+subpleas = PIEdata_new.PIEdata('Sub Plea', 'https://tcciub.pie.iu.edu/Api/SubPleas?page=0&pageLimit=1000000')
+list_o_data.append(subpleas)
 
-#add account checks
-accountchecks = PIEdata.PIEdata('Account Checks',
-                                'https://tcciub.pie.iu.edu/Api/AccountChecks?page=0&pageLimit={0}&searchTerms=&startTime={1}&endTime={2}',
-                                [])
+# SCHEDULES
+schedules = PIEdata_new.PIEdata('Semester Schedules', 'https://tcciub.pie.iu.edu/Api/Schedules?page=0&pageLimit=101')
+list_o_data.append(schedules)
 
-#attendance issues
-attendance_issues = PIEdata.PIEdata('Attendance Issues',
-                                'https://tcciub.pie.iu.edu/Api/AttendanceIssues?page=0&pageLimit={0}&startTime={1}&endTime={2}',
-                                ['maxreturns', 'startdate', 'enddate'])
+# ASSIGNED BADGES
+assignedbadges = PIEdata_new.PIEdata('Assigned Badges', 'https://tcciub.pie.iu.edu/Api/AssignedBadges?page=0&pageLimit=1000000')
+list_o_data.append(assignedbadges)
 
-#chat messages
-chat_messages = PIEdata.PIEdata('Chat Messages',
-                                'https://tcciub.pie.iu.edu/Api/ChatMessages?page=0&pageLimit={0}&startTime={1}&endTime={2}&userId={3}',
-                                ['maxreturns', 'startdate', 'enddate', 'username'])
+# EMPLOYEE MEETINGS
+employeeMeetings = PIEdata_new.PIEdata('Employee Meetings', 'https://tcciub.pie.iu.edu/Api/EmployeeMeetings?page=0&pageLimit=10000000')
+list_o_data.append(employeeMeetings)
 
-#incident reports
-incident_reports = PIEdata.PIEdata('Incident Reports',
-                                'https://tcciub.pie.iu.edu/Api/IncidentReports?page=0&pageLimit={0}&startTime={1}&endTime={2}',
-                                ['maxreturns', 'startdate', 'enddate'])
+# ACCOUNT CHECKS
+accountchecks = PIEdata_new.PIEdata('Account Checks', 'https://tcciub.pie.iu.edu/Api/AccountChecks?page=0&pageLimit=1000000')
+list_o_data.append(accountchecks)
 
+# ATTENDANCE ISSUES
+attendance_issues = PIEdata_new.PIEdata('Attendance Issues', 'https://tcciub.pie.iu.edu/Api/AttendanceIssues?page=0&pageLimit=1000000')
+list_o_data.append(attendance_issues)
 
+# CHAT MESSAGES
+chat_messages = PIEdata_new.PIEdata('Chat Messages', 'https://tcciub.pie.iu.edu/Api/ChatMessages?page=0&pageLimit=1000000')
+list_o_data.append(chat_messages)
+
+# INCIDENT REPORTS
+incident_reports = PIEdata_new.PIEdata('Incident Reports', 'https://tcciub.pie.iu.edu/Api/IncidentReports?page=0&pageLimit=1000000')
+list_o_data.append(incident_reports)
 
 def buildalldatathings(userdict, labdict, invlabs):
 
@@ -160,6 +151,9 @@ def buildalldatathings(userdict, labdict, invlabs):
     # buff inventory reports
     invreports.locationDict = invlabs
     invreports.createdbyDict = userdict
+
+    # buff appointments
+    appointments.assignedToDict = userdict
 
     datalist = {}
     for data in list_o_data:
