@@ -22,12 +22,6 @@ appointmentstatdict.append('Started')
 appointmentstatdict.append('Completed')
 appointmentstatdict.append('Cancelled')
 
-# Add Contacts
-contacts = PIEdata.PIEdata('Contacts',
-                           'https://tcciub.pie.iu.edu/Api/Contacts?page=0&pageLimit={0}&searchTerms=&startTime={1}&endTime={2}&LocationIds={3}&categories={4}&creatorIds={5}&mini=true',
-                           ['maxreturns', 'startdate', 'enddate', 'location', 'category', 'username'])
-contacts.setcategorydict(contactcatdict)
-
 # Add Goldstars
 goldstars = PIEdata.PIEdata('Gold Stars',
                             'https://tcciub.pie.iu.edu/Api/GoldStars?page=0&pageLimit={0}&startTime={1}&endTime={2}&statuses={3}&userId={4}',
@@ -129,19 +123,27 @@ list_o_data = []
 
 # CONTACTS
 contacts_new = PIEdata_new.PIEdata('Contacts', 'https://tcciub.pie.iu.edu/Api/Contacts?page=0&pageLimit=100000&searchTerms=')
-contacts_new.createdbyVoid = False
-contacts_new.categoryVoid = False
-contacts_new.locationVoid = False
 contacts_new.categoryDict = contactcatdict
 list_o_data.append(contacts_new)
 
-# CONTACTS - mini
+# CONTACTS - mini (lil cutie goobers)
 contacts_fast = PIEdata_new.PIEdata('Contacts - mini', 'https://tcciub.pie.iu.edu/Api/Contacts?page=0&pageLimit=100000&searchTerms=')
-contacts_fast.createdbyVoid = False
-contacts_fast.categoryVoid = False
-contacts_fast.locationVoid = False
 contacts_fast.categoryDict = contactcatdict
 list_o_data.append(contacts_fast)
+
+# GOLDSTARS
+goldstars = PIEdata_new.PIEdata('Gold Stars', 'https://tcciub.pie.iu.edu/Api/GoldStars?page=0&pageLimit=100000&searchTerms=')
+goldstars.createdbyPost = True
+goldstars.statusDict=statusdict
+list_o_data.append(goldstars)
+
+"""
+# Add PDIs
+pdis = PIEdata.PIEdata('PDIs',
+                       'https://tcciub.pie.iu.edu/Api/ProfessionalDevelopmentIssues?page=0&pageLimit={0}&startTime={1}&endTime={2}&statuses={3}&userId={4}',
+                       ['maxreturns', 'startdate', 'enddate', 'status', 'assignedto'])
+pdis.setstatusdict(statusdict)
+"""
 
 
 
@@ -150,9 +152,12 @@ def buildalldatathings(userdict, labdict, invlabs):
     # buff contacts
     contacts_new.createdbyDict = userdict
     contacts_new.locationDict = labdict
-
     contacts_fast.createdbyDict = userdict
     contacts_fast.locationDict = labdict
+
+    # buff goldstars
+    goldstars.createdbyDict = userdict
+    goldstars.assignedToDict = userdict
 
     datalist = {}
     for data in list_o_data:

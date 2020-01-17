@@ -484,6 +484,7 @@ class mainwindow(QWidget):
             self.mainwind = previewGui.preview(self.dframe, self.datacombo.currentText(), self.startcal.selectedDate().toPyDate(), self.endcal.selectedDate().toPyDate())
             self.mainwind.show()
         self.dframe = False
+        self.dataoptions.get(self.datacombo.currentText()).reset()
         self.statusUpdate('Ready')
 
     def datecheck(self):
@@ -518,7 +519,6 @@ class submitThread(QThread):
             datatype.category = self.window.categorycombo.currentText()
             datatype.status = self.window.statuscombo.currentText()
             url = datatype.urlList()
-            datatype.reset()
 
             self.window.statusUpdate("Pulling from Pie")
             frameboy = PieHandler.goandget(self.window.driver, url, datatype)

@@ -71,7 +71,7 @@ class PIEdata:
         if (self.categoryDict is not {} and not self.categoryPost and self.category is not ''):
             baseurl = baseurl + '&categoryIds=' + str(self.categoryDict[self.category])
         if (self.statusDict is not {} and not self.statusPost and self.status is not ''):
-            baseurl = baseurl + '&statuses=' + str(self.statusDict[self.status])
+            baseurl = baseurl + '&statuses=' + self.status
         if 'mini' in self.name:
             baseurl = baseurl + '&mini=true'
         print(baseurl)
@@ -87,6 +87,8 @@ class PIEdata:
         self.endDate = ''
 
     def postFilter(self, frame, semesters):
+        print(self.createdbyPost)
+        print(self.createdby)
 
         #helper for getting things?
         def semesterMatch(x):
@@ -102,7 +104,7 @@ class PIEdata:
 
         #attempt to parse creation date into a dope super cool columns thing
         try:
-            frame['created'] = pd.to_datetime(frame['created'])
+            frame['created'] = pd.to_datetime(frame['created'], utc=True)
             frame['created-year'] = pd.DatetimeIndex(frame['created']).year
             frame['created-month'] = pd.DatetimeIndex(frame['created']).month
             frame['created-week'] = pd.DatetimeIndex(frame['created']).week
@@ -128,7 +130,11 @@ class PIEdata:
             print('temp')
         if (self.createdbyPost and self.createdby is not ''):
             # filter frame to created by
-            print('temp')
+            createdbyid = self.createdbyDict[self.createdby].getId()
+            try:
+                frame = frame[frame['assignedBy-id'] == createdbyid]
+            except:
+                print('cannot post filter on createdby')
         if (self.assignedToPost and self.assignedTo is not ''):
             # filter frame to assigned to
             print('temp')
