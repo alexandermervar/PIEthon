@@ -12,9 +12,10 @@ contactcatdict['Tabling/Outreach'] = 55
 contactcatdict['Technology'] = 15
 
 statusdict = []
+statusdict.append('')
+statusdict.append('Resolved')
 statusdict.append('Open')
 statusdict.append('Decommissioned')
-statusdict.append('Resolved')
 
 appointmentstatdict = []
 appointmentstatdict.append('Scheduled')
@@ -22,40 +23,61 @@ appointmentstatdict.append('Started')
 appointmentstatdict.append('Completed')
 appointmentstatdict.append('Cancelled')
 
-# Add Goldstars
-goldstars = PIEdata.PIEdata('Gold Stars',
-                            'https://tcciub.pie.iu.edu/Api/GoldStars?page=0&pageLimit={0}&startTime={1}&endTime={2}&statuses={3}&userId={4}',
-                            ['maxreturns', 'startdate', 'enddate', 'status', 'assignedto'])
-goldstars.setstatusdict(statusdict)
+###############################
+### NEW DATA STRUCTURES YAY ###
+###############################
 
-# Add PDIs
-pdis = PIEdata.PIEdata('PDIs',
-                       'https://tcciub.pie.iu.edu/Api/ProfessionalDevelopmentIssues?page=0&pageLimit={0}&startTime={1}&endTime={2}&statuses={3}&userId={4}',
-                       ['maxreturns', 'startdate', 'enddate', 'status', 'assignedto'])
-pdis.setstatusdict(statusdict)
+list_o_data = []
 
-# Add Locations
-locations = PIEdata.PIEdata('User Locations',
-                            'https://tcciub.pie.iu.edu/Api/UserLocations?page=0&pageLimit={0}&onlyLocation=true&startTime={1}&endTime={2}&userId={3}',
-                            ['maxreturns', 'startdate', 'enddate', 'username'])
+# CONTACTS
+contacts_new = PIEdata_new.PIEdata('Contacts - Long', 'https://tcciub.pie.iu.edu/Api/Contacts?page=0&pageLimit=100000&searchTerms=')
+contacts_new.categoryDict = contactcatdict
+list_o_data.append(contacts_new)
 
-# Add Shifts
-shifts = PIEdata.PIEdata('Shifts',
-                         'https://tcciub.pie.iu.edu/Api/Shifts?page=0&pageLimit={0}&weekView=false&userId={1}&startTime={2}&endTime={3}&minimal=true',
-                         ['maxreturns', 'username', 'startdate', 'enddate'])
+# CONTACTS - mini (lil cutie goobers)
+contacts_fast = PIEdata_new.PIEdata('Contacts', 'https://tcciub.pie.iu.edu/Api/Contacts?page=0&pageLimit=100000&searchTerms=')
+contacts_fast.append = '&mini=true'
+contacts_fast.categoryDict = contactcatdict
+list_o_data.append(contacts_fast)
 
-# Add Inventory Reports
-invreports = PIEdata.PIEdata('Inventory Reports',
-                             'https://tcciub.pie.iu.edu/Api/InventoryReports?startTime={0}&endTime={1}&inventoryLocationId={2}&onlyCurrent=false&pageLimit=null',
-                             ['startdate', 'enddate', 'location'])
-invreports.setinvbool(True)
-invreports.setchuncks(15)
+# GOLDSTARS
+goldstars = PIEdata_new.PIEdata('Gold Stars', 'https://tcciub.pie.iu.edu/Api/GoldStars?page=0&pageLimit=100000&searchTerms=')
+goldstars.createdbyPost = True
+goldstars.statusDict=statusdict
+list_o_data.append(goldstars)
 
-# Add Appointments
-appointments = PIEdata.PIEdata('Appointments',
-                               'https://tcciub.pie.iu.edu/Api/Appointments?page=0&pageLimit={0}&startTime={1}&endTime={2}&statuses=Completed&groupByEmployee=false&instanceId=1',
-                               ['maxreturns', 'startdate', 'enddate', 'status'])
-appointments.setstatusdict(appointmentstatdict)
+# PDIs
+pdis = PIEdata_new.PIEdata('PDIs', 'https://tcciub.pie.iu.edu/Api/ProfessionalDevelopmentIssues?page=0&pageLimit=100000&searchTerms=')
+pdis.createdbyPost = True
+pdis.statusDict = statusdict
+list_o_data.append(pdis)
+
+# LOCATIONS
+locations = PIEdata_new.PIEdata('User Locations', 'https://tcciub.pie.iu.edu/Api/UserLocations?page=0&pageLimit=1000000&onlyLocation=true&searchTerms=')
+locations.locationPost = True
+locations.createSwitch = True
+list_o_data.append(locations)
+
+# SHIFTS
+shifts = PIEdata_new.PIEdata('Shifts', 'https://tcciub.pie.iu.edu/Api/Shifts?page=0&pageLimit=100000&weekView=false')
+shifts.append = '&minimal=true'
+shifts.locationPost = True
+list_o_data.append(shifts)
+
+# INVENTORY REPORTS
+invreports = PIEdata_new.PIEdata('Inventory Reports', 'https://tcciub.pie.iu.edu/Api/InventoryReports?')
+invreports.invbool = True
+invreports.chuncks = 15
+invreports.createdbyPost = True
+invreports.createSwitch = True
+invreports.append = '&onlyCurrent=false&pageLimit=null'
+list_o_data.append(invreports)
+
+# Appointments
+appointments = PIEdata_new.PIEdata('Appointments', 'https://tcciub.pie.iu.edu/Api/Appointments?page=0&pageLimit={0}&startTime={1}&endTime={2}&statuses=Completed')
+appointments.statusDict = appointmentstatdict
+appointments.append = '&groupByEmployee=false&instanceId=1'
+list_o_data.append(appointments)
 
 # Add Active Users
 activerusers = PIEdata.PIEdata('Active Users',
@@ -94,12 +116,6 @@ accountchecks = PIEdata.PIEdata('Account Checks',
                                 'https://tcciub.pie.iu.edu/Api/AccountChecks?page=0&pageLimit={0}&searchTerms=&startTime={1}&endTime={2}',
                                 [])
 
-#add account checks
-contactslong = PIEdata.PIEdata('Contacts-Long',
-                                'https://tcciub.pie.iu.edu/Api/Contacts?page=0&pageLimit={0}&searchTerms=&startTime={1}&endtime={2}&LocationIds={3}&categoryIds={4}&creatorIds={5}',
-                                ['maxreturns', 'startdate', 'enddate', 'location', 'category', 'username'])
-contactslong.setcategorydict(contactcatdict)
-
 #attendance issues
 attendance_issues = PIEdata.PIEdata('Attendance Issues',
                                 'https://tcciub.pie.iu.edu/Api/AttendanceIssues?page=0&pageLimit={0}&startTime={1}&endTime={2}',
@@ -110,40 +126,10 @@ chat_messages = PIEdata.PIEdata('Chat Messages',
                                 'https://tcciub.pie.iu.edu/Api/ChatMessages?page=0&pageLimit={0}&startTime={1}&endTime={2}&userId={3}',
                                 ['maxreturns', 'startdate', 'enddate', 'username'])
 
-#chat messages
+#incident reports
 incident_reports = PIEdata.PIEdata('Incident Reports',
                                 'https://tcciub.pie.iu.edu/Api/IncidentReports?page=0&pageLimit={0}&startTime={1}&endTime={2}',
                                 ['maxreturns', 'startdate', 'enddate'])
-
-###############################
-### NEW DATA STRUCTURES YAY ###
-###############################
-
-list_o_data = []
-
-# CONTACTS
-contacts_new = PIEdata_new.PIEdata('Contacts', 'https://tcciub.pie.iu.edu/Api/Contacts?page=0&pageLimit=100000&searchTerms=')
-contacts_new.categoryDict = contactcatdict
-list_o_data.append(contacts_new)
-
-# CONTACTS - mini (lil cutie goobers)
-contacts_fast = PIEdata_new.PIEdata('Contacts - mini', 'https://tcciub.pie.iu.edu/Api/Contacts?page=0&pageLimit=100000&searchTerms=')
-contacts_fast.categoryDict = contactcatdict
-list_o_data.append(contacts_fast)
-
-# GOLDSTARS
-goldstars = PIEdata_new.PIEdata('Gold Stars', 'https://tcciub.pie.iu.edu/Api/GoldStars?page=0&pageLimit=100000&searchTerms=')
-goldstars.createdbyPost = True
-goldstars.statusDict=statusdict
-list_o_data.append(goldstars)
-
-"""
-# Add PDIs
-pdis = PIEdata.PIEdata('PDIs',
-                       'https://tcciub.pie.iu.edu/Api/ProfessionalDevelopmentIssues?page=0&pageLimit={0}&startTime={1}&endTime={2}&statuses={3}&userId={4}',
-                       ['maxreturns', 'startdate', 'enddate', 'status', 'assignedto'])
-pdis.setstatusdict(statusdict)
-"""
 
 
 
@@ -158,6 +144,22 @@ def buildalldatathings(userdict, labdict, invlabs):
     # buff goldstars
     goldstars.createdbyDict = userdict
     goldstars.assignedToDict = userdict
+
+    # buff pdis
+    pdis.createdbyDict = userdict
+    pdis.assignedToDict = userdict
+
+    # buff locations
+    locations.createdbyDict = userdict
+    locations.locationDict = labdict
+
+    # buff shifts
+    shifts.assignedToDict = userdict
+    shifts.locationDict = labdict
+
+    # buff inventory reports
+    invreports.locationDict = invlabs
+    invreports.createdbyDict = userdict
 
     datalist = {}
     for data in list_o_data:

@@ -34,11 +34,13 @@ class PIEdata:
         self.statusPost = False
         self.startPost = False
         self.endPost = False
+        self.createSwitch = False
 
         self.invbool = False
         self.form = False
         self.formkey = False
         self.allowbracks = False
+        self.append = ''
 
     def urlList(self):
         if self.startDate == '':
@@ -63,17 +65,22 @@ class PIEdata:
         if (not self.endPost and self.endDate is not ''):
             baseurl = baseurl + '&endTime=' + str(startdate + timedelta(days=self.chunk_size))
         if (self.createdbyDict is not {} and not self.createdbyPost and self.createdby is not ''):
-            baseurl = baseurl + '&creatorIds=' + str(self.createdbyDict[self.createdby].getId())
+            if not self.createSwitch:
+                baseurl = baseurl + '&creatorIds=' + str(self.createdbyDict[self.createdby].getId())
+            else:
+                baseurl = baseurl + '&userId=' + str(self.createdbyDict[self.createdby].getId())
         if (self.assignedToDict is not {} and not self.assignedToPost and self.assignedTo is not ''):
             baseurl = baseurl + '&userId=' + str(self.assignedToDict[self.assignedTo].getId())
         if (self.locationDict is not {} and not self.locationPost and self.location is not ''):
-            baseurl = baseurl + '&LocationIds=' + str(self.locationDict[self.location])
+            if not self.invbool:
+                baseurl = baseurl + '&LocationIds=' + str(self.locationDict[self.location])
+            else:
+                baseurl = baseurl + '&inventoryLocationId=' + str(self.locationDict[self.location])
         if (self.categoryDict is not {} and not self.categoryPost and self.category is not ''):
             baseurl = baseurl + '&categoryIds=' + str(self.categoryDict[self.category])
         if (self.statusDict is not {} and not self.statusPost and self.status is not ''):
             baseurl = baseurl + '&statuses=' + self.status
-        if 'mini' in self.name:
-            baseurl = baseurl + '&mini=true'
+        baseurl = baseurl + self.append
         print(baseurl)
         return baseurl
 
@@ -87,8 +94,6 @@ class PIEdata:
         self.endDate = ''
 
     def postFilter(self, frame, semesters):
-        print(self.createdbyPost)
-        print(self.createdby)
 
         #helper for getting things?
         def semesterMatch(x):
@@ -104,15 +109,35 @@ class PIEdata:
 
         #attempt to parse creation date into a dope super cool columns thing
         try:
-            frame['created'] = pd.to_datetime(frame['created'], utc=True)
-            frame['created-year'] = pd.DatetimeIndex(frame['created']).year
-            frame['created-month'] = pd.DatetimeIndex(frame['created']).month
-            frame['created-week'] = pd.DatetimeIndex(frame['created']).week
-            frame['created-day'] = pd.DatetimeIndex(frame['created']).day
-            frame['created-weekday'] = pd.DatetimeIndex(frame['created']).weekday
-            frame['created-hour'] = pd.DatetimeIndex(frame['created']).hour
-            # semester time oh boy
-            frame['semester'] = frame['created'].map(lambda x: semesterMatch(x))
+            if 'created' in frame:
+                frame['created'] = pd.to_datetime(frame['created'], utc=True)
+                frame['created-year'] = pd.DatetimeIndex(frame['created']).year
+                frame['created-month'] = pd.DatetimeIndex(frame['created']).month
+                frame['created-week'] = pd.DatetimeIndex(frame['created']).week
+                frame['created-day'] = pd.DatetimeIndex(frame['created']).day
+                frame['created-weekday'] = pd.DatetimeIndex(frame['created']).weekday
+                frame['created-hour'] = pd.DatetimeIndex(frame['created']).hour
+                frame['semester'] = frame['created'].map(lambda x: semesterMatch(x))
+
+            if 'startTime' in frame:
+                frame['startTime'] = pd.to_datetime(frame['startTime'], utc=True)
+                frame['startTime-year'] = pd.DatetimeIndex(frame['startTime']).year
+                frame['startTime-month'] = pd.DatetimeIndex(frame['startTime']).month
+                frame['startTime-week'] = pd.DatetimeIndex(frame['startTime']).week
+                frame['startTime-day'] = pd.DatetimeIndex(frame['startTime']).day
+                frame['startTime-weekday'] = pd.DatetimeIndex(frame['startTime']).weekday
+                frame['startTime-hour'] = pd.DatetimeIndex(frame['startTime']).hour
+                frame['startTime-semester'] = frame['startTime'].map(lambda x: semesterMatch(x))
+
+            if 'endTime' in frame:
+                frame['endTime'] = pd.to_datetime(frame['endTime'], utc=True)
+                frame['endTime-year'] = pd.DatetimeIndex(frame['endTime']).year
+                frame['endTime-month'] = pd.DatetimeIndex(frame['endTime']).month
+                frame['endTime-week'] = pd.DatetimeIndex(frame['endTime']).week
+                frame['endTime-day'] = pd.DatetimeIndex(frame['endTime']).day
+                frame['endTime-weekday'] = pd.DatetimeIndex(frame['endTime']).weekday
+                frame['endTime-hour'] = pd.DatetimeIndex(frame['endTime']).hour
+                frame['endTime-semester'] = frame['endTime'].map(lambda x: semesterMatch(x))
 
         except:
             print('could not parse date information')
@@ -131,16 +156,20 @@ class PIEdata:
         if (self.createdbyPost and self.createdby is not ''):
             # filter frame to created by
             createdbyid = self.createdbyDict[self.createdby].getId()
-            try:
+            if 'assignedBy-id' in frame:
                 frame = frame[frame['assignedBy-id'] == createdbyid]
-            except:
-                print('cannot post filter on createdby')
+            elif 'user-id' in frame and self.createSwitch:
+                frame = frame[frame['user-id'] == createdbyid]
         if (self.assignedToPost and self.assignedTo is not ''):
             # filter frame to assigned to
             print('temp')
         if (self.locationPost and self.location is not ''):
             # filter frame to location
-            print('temp')
+            locationid = self.locationDict[self.location]
+            if 'location-id' in frame:
+                frame = frame[frame['location-id'] == locationid]
+            elif 'shiftGroup-shiftType-baseLocation-id' in frame:
+                frame = frame[frame['shiftGroup-shiftType-baseLocation-id'] == locationid]
         if (self.categoryPost and self.category is not ''):
             # filter frame to category
             print('temp')
