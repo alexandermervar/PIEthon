@@ -34,6 +34,7 @@ class PIEdata:
         self.startPost = False
         self.endPost = False
         self.createSwitch = False
+        self.employeeswitch = False
         self.allowDates = True
 
         self.invbool = False
@@ -66,11 +67,17 @@ class PIEdata:
             baseurl = baseurl + '&endTime=' + str((startdate + timedelta(days=self.chunk_size)).strftime('%Y-%m-%d'))
         if (self.createdbyDict is not {} and not self.createdbyPost and self.createdby is not ''):
             if not self.createSwitch:
-                baseurl = baseurl + '&creatorIds=' + str(self.createdbyDict[self.createdby].getId())
+                if len(self.categoryDict) > 1:
+                    baseurl = baseurl + '&creatorIds=' + str(self.createdbyDict[self.createdby].getId())
+                else:
+                    baseurl = baseurl + '&creatorId=' + str(self.createdbyDict[self.createdby].getId())
             else:
                 baseurl = baseurl + '&userId=' + str(self.createdbyDict[self.createdby].getId())
         if (self.assignedToDict is not {} and not self.assignedToPost and self.assignedTo is not ''):
-            baseurl = baseurl + '&userId=' + str(self.assignedToDict[self.assignedTo].getId())
+            if not self.employeeswitch:
+                baseurl = baseurl + '&userId=' + str(self.assignedToDict[self.assignedTo].getId())
+            else:
+                baseurl = baseurl + '&employeeId=' + str(self.assignedToDict[self.assignedTo].getId())
         if (self.locationDict is not {} and not self.locationPost and self.location is not ''):
             if not self.invbool:
                 baseurl = baseurl + '&LocationIds=' + str(self.locationDict[self.location])

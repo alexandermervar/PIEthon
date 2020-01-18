@@ -100,6 +100,7 @@ list_o_data.append(subpleas)
 
 # SCHEDULES
 schedules = PIEdata_new.PIEdata('Semester Schedules', 'https://tcciub.pie.iu.edu/Api/Schedules?page=0&pageLimit=101')
+schedules.allowDates = False
 list_o_data.append(schedules)
 
 # ASSIGNED BADGES
@@ -110,6 +111,7 @@ list_o_data.append(assignedbadges)
 
 # EMPLOYEE MEETINGS
 employeeMeetings = PIEdata_new.PIEdata('Employee Meetings', 'https://tcciub.pie.iu.edu/Api/EmployeeMeetings?page=0&pageLimit=10000000')
+employeeMeetings.employeeswitch = True
 list_o_data.append(employeeMeetings)
 
 # ACCOUNT CHECKS
@@ -122,10 +124,12 @@ list_o_data.append(accountchecks)
 
 # ATTENDANCE ISSUES
 attendance_issues = PIEdata_new.PIEdata('Attendance Issues', 'https://tcciub.pie.iu.edu/Api/AttendanceIssues?page=0&pageLimit=1000000')
+attendance_issues.assignedToPost = True
 list_o_data.append(attendance_issues)
 
 # CHAT MESSAGES
 chat_messages = PIEdata_new.PIEdata('Chat Messages', 'https://tcciub.pie.iu.edu/Api/ChatMessages?page=0&pageLimit=1000000')
+chat_messages.createSwitch = True
 list_o_data.append(chat_messages)
 
 # INCIDENT REPORTS
@@ -170,6 +174,16 @@ def buildalldatathings(userdict, labdict, invlabs):
     # buff assigned badges
     assignedbadges.assignedToDict = userdict
     assignedbadges.createdbyDict = userdict
+
+    # buff attendance issues
+    attendance_issues.assignedToDict = userdict
+
+    # buff chat messages
+    chat_messages.createdbyDict = userdict
+
+    # buff employee meetings
+    employeeMeetings.createdbyDict = userdict
+    employeeMeetings.assignedToDict = userdict
 
     datalist = {}
     for data in list_o_data:
