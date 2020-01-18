@@ -1,5 +1,6 @@
 from py import PieHandler, previewGui,report, functions
 from datetime import date, timedelta, datetime
+from pytz import utc
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QComboBox,
                              QPushButton, QCalendarWidget, QTabWidget, QVBoxLayout, QHBoxLayout, QSpacerItem,
                              QSizePolicy)
@@ -441,7 +442,12 @@ class mainwindow(QWidget):
             self.usernamecombo.clear()
             self.usernamecombo.addItems(datatype.createdbyDict.keys())
             self.usernamecombo.setEnabled(True)
+            if datatype.createdbyPost:
+                self.usernamelabel.setText("Created By (POST): ")
+            else:
+                self.usernamelabel.setText("Created By: ")
         else:
+            self.usernamelabel.setText("Created By: ")
             self.usernamecombo.clear()
             self.usernamecombo.setEnabled(False)
 
@@ -449,7 +455,12 @@ class mainwindow(QWidget):
             self.locationcombo.clear()
             self.locationcombo.addItems(datatype.locationDict.keys())
             self.locationcombo.setEnabled(True)
+            if datatype.locationPost:
+                self.locationlabel.setText("Location (POST): ")
+            else:
+                self.locationlabel.setText("Location: ")
         else:
+            self.locationlabel.setText("Location: ")
             self.locationcombo.clear()
             self.locationcombo.setEnabled(False)
 
@@ -457,7 +468,12 @@ class mainwindow(QWidget):
             self.statuscombo.clear()
             self.statuscombo.addItems(datatype.statusDict)
             self.statuscombo.setEnabled(True)
+            if datatype.statusPost:
+                self.statuslabel.setText("Status (POST):")
+            else:
+                self.statuslabel.setText("Status:")
         else:
+            self.statuslabel.setText("Status:")
             self.statuscombo.clear()
             self.statuscombo.setEnabled(False)
 
@@ -465,7 +481,12 @@ class mainwindow(QWidget):
             self.categorycombo.clear()
             self.categorycombo.addItems(datatype.categoryDict.keys())
             self.categorycombo.setEnabled(True)
+            if datatype.categoryPost:
+                self.categorylabel.setText("Category (POST):")
+            else:
+                self.categorylabel.setText("Category:")
         else:
+            self.categorylabel.setText("Category:")
             self.categorycombo.clear()
             self.categorycombo.setEnabled(False)
 
@@ -473,9 +494,19 @@ class mainwindow(QWidget):
             self.assignedcombo.clear()
             self.assignedcombo.addItems(datatype.assignedToDict.keys())
             self.assignedcombo.setEnabled(True)
+            if datatype.assignedToPost:
+                self.assignedlabel.setText("Assigned To (POST):")
+            else:
+                self.assignedlabel.setText("Assigned To:")
         else:
+            self.assignedlabel.setText("Assigned To:")
             self.assignedcombo.clear()
             self.assignedcombo.setEnabled(False)
+
+        self.endcal.setEnabled(datatype.allowDates)
+        self.startcal.setEnabled(datatype.allowDates)
+        self.startcombo.setEnabled(datatype.allowDates)
+        self.endcombo.setEnabled(datatype.allowDates)
 
     def completed(self):
         if self.datecheck() or self.dframe is False:
@@ -511,8 +542,8 @@ class submitThread(QThread):
             self.window.statusUpdate("Preparing Data Structure")
 
             datatype = self.window.dataoptions.get(self.window.datacombo.currentText())
-            datatype.endDate = self.window.endcal.selectedDate().toPyDate()
-            datatype.startDate = self.window.startcal.selectedDate().toPyDate()
+            datatype.endDate = datetime.combine(self.window.endcal.selectedDate().toPyDate(), datetime.min.time()).replace(tzinfo=utc)
+            datatype.startDate = datetime.combine(self.window.startcal.selectedDate().toPyDate(), datetime.min.time()).replace(tzinfo=utc)
             datatype.createdby = self.window.usernamecombo.currentText()
             datatype.assignedTo = self.window.assignedcombo.currentText()
             datatype.location = self.window.locationcombo.currentText()

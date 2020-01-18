@@ -1,15 +1,16 @@
 from datetime import datetime
+from pytz import utc
 
 class semester:
     def __init__(self, name, start, end):
         self.name = name
         if start is not '':
-            self.start = datetime.strptime(start[:10], '%Y-%m-%d')
+            self.start = datetime.strptime(start[:10], '%Y-%m-%d').replace(tzinfo=utc)
         else:
             self.start = ''
 
         if end is not  '':
-            self.end = datetime.strptime(end[:10], '%Y-%m-%d')
+            self.end = datetime.strptime(end[:10], '%Y-%m-%d').replace(tzinfo=utc)
         else:
             self.end = ''
 
@@ -21,7 +22,3 @@ class semester:
 
     def getEnd(self):
         return self.end
-
-    def match(self,datein):
-        print('starting match')
-        return self.start < datein < self.end

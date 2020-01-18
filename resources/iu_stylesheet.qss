@@ -129,9 +129,13 @@ QCalendarWidget QToolButton{
     color:white;
 }
 
+QCalendarWidget QAbstractItemView:disabled{
+    background-color: lightgray;
+}
+
 QWidget#qt_calendar_navigationbar{
-    background-color:rgb(153,0,0);
-    color:white;
+    background-color: rgb(153,0,0);
+    color: white;
 }
 
 QCalendarWidget QMenu{

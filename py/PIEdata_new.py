@@ -24,7 +24,6 @@ class PIEdata:
         self.statusDict = {}
         self.startDate = date.today() - timedelta(days=30)
         self.endDate = date.today()
-        self.maxreturns = 10000000
 
         #flags
         self.createdbyPost = False
@@ -35,6 +34,7 @@ class PIEdata:
         self.startPost = False
         self.endPost = False
         self.createSwitch = False
+        self.allowDates = True
 
         self.invbool = False
         self.form = False
@@ -43,7 +43,7 @@ class PIEdata:
         self.append = ''
 
     def urlList(self):
-        if self.startDate == '':
+        if self.startDate == '' or self.startPost:
             return [self.genURL('')]
 
         urllist = []
@@ -61,9 +61,9 @@ class PIEdata:
         #take a startdate and create a url for it
         baseurl = self.link
         if (not self.startPost and self.startDate is not ''):
-            baseurl = baseurl + '&startTime=' + str(startdate)
+            baseurl = baseurl + '&startTime=' + str(startdate.strftime('%Y-%m-%d'))
         if (not self.endPost and self.endDate is not ''):
-            baseurl = baseurl + '&endTime=' + str(startdate + timedelta(days=self.chunk_size))
+            baseurl = baseurl + '&endTime=' + str((startdate + timedelta(days=self.chunk_size)).strftime('%Y-%m-%d'))
         if (self.createdbyDict is not {} and not self.createdbyPost and self.createdby is not ''):
             if not self.createSwitch:
                 baseurl = baseurl + '&creatorIds=' + str(self.createdbyDict[self.createdby].getId())
@@ -90,8 +90,8 @@ class PIEdata:
         self.location = ''
         self.category = ''
         self.status = ''
-        self.startDate = ''
-        self.endDate = ''
+        self.startDate = date.today() - timedelta(days=30)
+        self.endDate = date.today()
 
     def postFilter(self, frame, semesters):
 
@@ -100,12 +100,9 @@ class PIEdata:
             for name,semester in semesters.items():
                 if name is '':
                     continue
-                if semester.start <= x.replace(tzinfo=None) <= semester.end:
+                if semester.start <= x <= semester.end:
                     return name
             return None
-
-        #limit semesters to info I care about?
-        # nah
 
         #attempt to parse creation date into a dope super cool columns thing
         try:
@@ -146,13 +143,15 @@ class PIEdata:
 
         if (self.startPost and self.startDate is not ''):
             # filter frame to after startdate
-            try:
+            if 'created' in frame:
                 frame = frame[frame['created'] >= self.startDate]
-            except:
+            else:
                 print('cannot post-filter on start date')
         if (self.endPost and self.endDate is not ''):
-            # filter frame to before enddate
-            print('temp')
+            if 'created' in frame:
+                frame = frame[frame['created'] < self.endDate]
+            else:
+                print('cannot post-filter on end date')
         if (self.createdbyPost and self.createdby is not ''):
             # filter frame to created by
             createdbyid = self.createdbyDict[self.createdby].getId()
@@ -160,9 +159,15 @@ class PIEdata:
                 frame = frame[frame['assignedBy-id'] == createdbyid]
             elif 'user-id' in frame and self.createSwitch:
                 frame = frame[frame['user-id'] == createdbyid]
+            elif 'creator-id' in frame:
+                frame = frame[frame['creator-id'] == createdbyid]
         if (self.assignedToPost and self.assignedTo is not ''):
             # filter frame to assigned to
-            print('temp')
+            assignedtoid = self.assignedToDict[self.assignedTo].getId()
+            if 'user-id' in frame:
+                frame = frame[frame['user-id'] == assignedtoid]
+            elif 'attendingEmployee-id' in frame:
+                frame = frame[frame['attendingEmployee-id'] == assignedtoid]
         if (self.locationPost and self.location is not ''):
             # filter frame to location
             locationid = self.locationDict[self.location]

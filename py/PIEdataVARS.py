@@ -18,9 +18,10 @@ statusdict.append('Open')
 statusdict.append('Decommissioned')
 
 appointmentstatdict = []
+appointmentstatdict.append('')
+appointmentstatdict.append('Completed')
 appointmentstatdict.append('Scheduled')
 appointmentstatdict.append('Started')
-appointmentstatdict.append('Completed')
 appointmentstatdict.append('Cancelled')
 
 ###############################
@@ -82,6 +83,7 @@ list_o_data.append(appointments)
 
 # ACTIVE USERS
 activerusers = PIEdata_new.PIEdata('Active Users', 'https://tcciub.pie.iu.edu/Api/Users?page=0&pageLimit=1000&searchTerms=&active=true&whitelistInclusiveMaskNames=Employee&fromUsersView=true&maskId=5')
+activerusers.allowDates = False
 list_o_data.append(activerusers)
 
 # GRAVEYARD HEADCOUNTS
@@ -102,6 +104,8 @@ list_o_data.append(schedules)
 
 # ASSIGNED BADGES
 assignedbadges = PIEdata_new.PIEdata('Assigned Badges', 'https://tcciub.pie.iu.edu/Api/AssignedBadges?page=0&pageLimit=1000000')
+assignedbadges.createdbyPost = True
+assignedbadges.assignedToPost = True
 list_o_data.append(assignedbadges)
 
 # EMPLOYEE MEETINGS
@@ -110,6 +114,10 @@ list_o_data.append(employeeMeetings)
 
 # ACCOUNT CHECKS
 accountchecks = PIEdata_new.PIEdata('Account Checks', 'https://tcciub.pie.iu.edu/Api/AccountChecks?page=0&pageLimit=1000000')
+accountchecks.createdbyPost = True
+accountchecks.startPost = True
+accountchecks.endPost = True
+accountchecks.locationPost = True
 list_o_data.append(accountchecks)
 
 # ATTENDANCE ISSUES
@@ -154,6 +162,14 @@ def buildalldatathings(userdict, labdict, invlabs):
 
     # buff appointments
     appointments.assignedToDict = userdict
+
+    # buff account checks
+    accountchecks.createdbyDict = userdict
+    accountchecks.locationDict = labdict
+
+    # buff assigned badges
+    assignedbadges.assignedToDict = userdict
+    assignedbadges.createdbyDict = userdict
 
     datalist = {}
     for data in list_o_data:
