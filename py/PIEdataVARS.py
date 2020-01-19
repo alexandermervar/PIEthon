@@ -134,6 +134,10 @@ list_o_data.append(chat_messages)
 
 # INCIDENT REPORTS
 incident_reports = PIEdata_new.PIEdata('Incident Reports', 'https://tcciub.pie.iu.edu/Api/IncidentReports?page=0&pageLimit=1000000')
+incident_reports.createdbyPost = True
+incident_reports.startPost = True
+incident_reports.endPost = True
+incident_reports.createSwitch = True
 list_o_data.append(incident_reports)
 
 def buildalldatathings(userdict, labdict, invlabs):
@@ -184,6 +188,9 @@ def buildalldatathings(userdict, labdict, invlabs):
     # buff employee meetings
     employeeMeetings.createdbyDict = userdict
     employeeMeetings.assignedToDict = userdict
+
+    # buff incident reports
+    incident_reports.createdbyDict = userdict
 
     datalist = {}
     for data in list_o_data:
