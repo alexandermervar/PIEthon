@@ -3,7 +3,7 @@ from pandas import Series
 
 def main(driver, startdate, enddate, statuslabel):
     activeuserstruct = PIEdataVARS.activerusers
-    urllist = activeuserstruct.make_url()
+    urllist = activeuserstruct.urlList()
     userframe = PieHandler.goandget(driver, urllist, activeuserstruct)
 
     searchlist = ['address', 'emergencyName', 'emergencyRelationship', 'emergencyPhoneNumber', 'phone']

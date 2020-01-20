@@ -96,10 +96,10 @@ class htmlbase:
 
     def makeHTML(self, filename):
         superstring = self.buildall()
-        print(expanduser('~/Documents/PIEthon/reports/'))
-        print(expanduser('~/Documents/PIEthon/reports/') + str(filename) + ".html")
+        #print(expanduser('~/Documents/PIEthon/reports/'))
+        #print(expanduser('~/Documents/PIEthon/reports/') + str(filename) + ".html")
         fh = open(expanduser('~/Documents/PIEthon/reports/') + str(filename) + ".html", "w")
-        print(fh)
+        #print(fh)
         fh.write(superstring)
         fh.close()
 

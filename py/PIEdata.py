@@ -1,178 +1,191 @@
-from datetime import timedelta
+from datetime import timedelta, date, datetime
 from py import functions
-
+import pandas as pd
+import numpy as np
 
 class PIEdata:
-    def __init__(self, name, link, variables):
-        self.variables = variables
+    def __init__(self, name, link):
+
+        #core properties
         self.name = name
         self.link = link
-        self.startdate = ''
-        self.enddate = ''
-        self.username = ''
-        self.location = ''
-        self.category = ''
-        self.status = ''
-        self.assignedto = ''
-        self.maxreturns = 100
-        self.userdict = {}
-        self.labdict = {}
-        self.statusdict = []
-        self.categorydict = {}
-        self.assigneddict = {}
-        self.invlocationdict = {}
-        self.invbool = False
         self.chunk_size = 30
+
+        #filters
+        self.createdby = ''
+        self.createdbyDict = {}
+        self.assignedTo = ''
+        self.assignedToDict = {}
+        self.location = ''
+        self.locationDict = {}
+        self.category = ''
+        self.categoryDict = {}
+        self.status = ''
+        self.statusDict = {}
+        self.startDate = date.today() - timedelta(days=30)
+        self.endDate = date.today()
+
+        #flags
+        self.createdbyPost = False
+        self.assignedToPost = False
+        self.locationPost = False
+        self.categoryPost = False
+        self.statusPost = False
+        self.startPost = False
+        self.endPost = False
+        self.createSwitch = False
+        self.employeeswitch = False
+        self.allowDates = True
+
+        self.invbool = False
         self.form = False
         self.formkey = False
         self.allowbracks = False
+        self.append = ''
 
-    def getallowbracks(self):
-        return self.allowbracks
-
-    def setallowbracks(self, boolboy):
-        self.allowbracks = boolboy
-
-    def setformkey(self, newVal):
-        self.formkey = newVal
-
-    def getformkey(self):
-        return self.formkey
-
-    def setform(self, newVal):
-        self.form = newVal
-
-    def getform(self):
-        return self.form
-
-    def setinvlocationdict(self, newVal):
-        self.invlocationdict = newVal
-
-    def setinvbool(self, newVal):
-        self.invbool = newVal
-
-    def setchuncks(self, newVal):
-        self.chunk_size = newVal
-
-    def setuserdict(self, newVal):
-        self.userdict = newVal
-
-    def setlabdict(self, newVal):
-        self.labdict = newVal
-
-    def setstatusdict(self, newVal):
-        self.statusdict = newVal
-
-    def setcategorydict(self, newVal):
-        self.categorydict = newVal
-
-    def getName(self):
-        return self.name
-
-    def getuserdict(self):
-        return self.userdict
-
-    def getlabdict(self):
-        return self.labdict
-
-    def getstatusdict(self):
-        return self.statusdict
-
-    def getcategorydict(self):
-        return self.categorydict
-
-    def getassigneddict(self):
-        return self.assigneddict
-
-    def getstartdate(self):
-        return self.startdate
-
-    def getenddate(self):
-        return self.enddate
-
-    def getinvlocationdict(self):
-        return self.invlocationdict
-
-    def getinvbool(self):
-        return self.invbool
-
-    def set_startdate(self, newVal):
-        self.startdate = newVal
-
-    def set_enddate(self, newVal):
-        self.enddate = newVal
-
-    def set_username(self, newVal):
-        self.username = newVal
-
-    def set_location(self, newVal):
-        self.location = newVal
-
-    def set_category(self, newVal):
-        self.category = newVal
-
-    def set_maxreturns(self, newVal):
-        self.maxreturns = newVal
-
-    def set_status(self, newVal):
-        self.status = newVal
-
-    def set_assigneddict(self, newVal):
-        self.assigneddict = newVal
-
-    def set_assignedto(self, newVal):
-        self.assignedto = newVal
-
-    def getvariablelist(self):
-        return self.variables
-
-    def make_url(self):
-
-        if self.startdate == '':
-            return [self.link]
-
-        datelist = []
-
-        while(self.enddate-self.startdate).days > self.chunk_size:
-            datelist.append(self.startdate)
-            self.set_startdate(self.startdate+timedelta(days=self.chunk_size))
-        datelist.append(self.startdate)
-        storeend = self.enddate
-        chunkcount = 1
+    def urlList(self):
+        if self.startDate == '' or self.startPost:
+            return [self.genURL('')]
 
         urllist = []
-        for startdate in datelist:
-            self.set_startdate(startdate)
-            if(chunkcount == len(datelist)):
-                self.set_enddate(storeend)
-            else:
-                self.set_enddate(startdate+timedelta(days=self.chunk_size))
-            vardict = self.urlDict()
-            newvars = []
-            for thing in self.variables:
-                newvars.append(vardict[thing])
-            url = self.link.format(*newvars)
-            urllist.append(url)
-            chunkcount+=1
+        tempdate = self.startDate
+
+        while (self.endDate - tempdate).days > self.chunk_size:
+            urllist.append(self.genURL(tempdate))
+            tempdate = tempdate + timedelta(days=self.chunk_size)
+
+        urllist.append(self.genURL(tempdate))
+
         return urllist
 
-    def urlDict(self):
-        vardict = {}
-        vardict['startdate'] = functions.pieTimeConvert(self.startdate)
-        vardict['enddate'] = functions.pieTimeConvert(self.enddate)
-        if (not self.username == ''):
-            vardict['username'] = self.userdict[self.username].getId()
-        else:
-            vardict['username'] = ''
-        if (not self.location == ''):
-            vardict['location'] = self.labdict[self.location]
-        else:
-            vardict['location'] = ''
-        vardict['category'] = self.category
-        vardict['maxreturns'] = self.maxreturns
-        if (len(self.assignedto) > 1):
-            vardict['assignedto'] = self.assigneddict[self.assignedto].getId()
-        else:
-            vardict['assignedto'] = ''
-        vardict['status'] = self.status
-        return vardict
+    def genURL(self, startdate):
+        #take a startdate and create a url for it
+        baseurl = self.link
+        if (not self.startPost and self.startDate is not '' and self.allowDates):
+            baseurl = baseurl + '&startTime=' + str(startdate.strftime('%Y-%m-%d'))
+        if (not self.endPost and self.endDate is not '' and self.allowDates):
+            baseurl = baseurl + '&endTime=' + str((startdate + timedelta(days=self.chunk_size)).strftime('%Y-%m-%d'))
+        if (self.createdbyDict is not {} and not self.createdbyPost and self.createdby is not ''):
+            if not self.createSwitch:
+                if len(self.categoryDict) > 1:
+                    baseurl = baseurl + '&creatorIds=' + str(self.createdbyDict[self.createdby].getId())
+                else:
+                    baseurl = baseurl + '&creatorId=' + str(self.createdbyDict[self.createdby].getId())
+            else:
+                baseurl = baseurl + '&userId=' + str(self.createdbyDict[self.createdby].getId())
+        if (self.assignedToDict is not {} and not self.assignedToPost and self.assignedTo is not ''):
+            if not self.employeeswitch:
+                baseurl = baseurl + '&userId=' + str(self.assignedToDict[self.assignedTo].getId())
+            else:
+                baseurl = baseurl + '&employeeId=' + str(self.assignedToDict[self.assignedTo].getId())
+        if (self.locationDict is not {} and not self.locationPost and self.location is not ''):
+            if not self.invbool:
+                baseurl = baseurl + '&LocationIds=' + str(self.locationDict[self.location])
+            else:
+                baseurl = baseurl + '&inventoryLocationId=' + str(self.locationDict[self.location])
+        if (self.categoryDict is not {} and not self.categoryPost and self.category is not ''):
+            baseurl = baseurl + '&categoryIds=' + str(self.categoryDict[self.category])
+        if (self.statusDict is not {} and not self.statusPost and self.status is not ''):
+            baseurl = baseurl + '&statuses=' + self.status
+        baseurl = baseurl + self.append
+        #print(baseurl)
+        return baseurl
+
+    def reset(self):
+        self.createdby = ''
+        self.assignedTo = ''
+        self.location = ''
+        self.category = ''
+        self.status = ''
+        self.startDate = date.today() - timedelta(days=30)
+        self.endDate = date.today()
+
+    def postFilter(self, frame, semesters):
+
+        #helper for getting things?
+        def semesterMatch(x):
+            for name,semester in semesters.items():
+                if name is '':
+                    continue
+                if semester.start <= x <= semester.end:
+                    return name
+            return None
+
+        #attempt to parse creation date into a dope super cool columns thing
+        try:
+            if 'created' in frame:
+                frame['created'] = pd.to_datetime(frame['created'], utc=True)
+                frame['created-year'] = pd.DatetimeIndex(frame['created']).year
+                frame['created-month'] = pd.DatetimeIndex(frame['created']).month
+                frame['created-week'] = pd.DatetimeIndex(frame['created']).week
+                frame['created-day'] = pd.DatetimeIndex(frame['created']).day
+                frame['created-weekday'] = pd.DatetimeIndex(frame['created']).weekday
+                frame['created-hour'] = pd.DatetimeIndex(frame['created']).hour
+                frame['semester'] = frame['created'].map(lambda x: semesterMatch(x))
+
+            if 'startTime' in frame:
+                frame['startTime'] = pd.to_datetime(frame['startTime'], utc=True)
+                frame['startTime-year'] = pd.DatetimeIndex(frame['startTime']).year
+                frame['startTime-month'] = pd.DatetimeIndex(frame['startTime']).month
+                frame['startTime-week'] = pd.DatetimeIndex(frame['startTime']).week
+                frame['startTime-day'] = pd.DatetimeIndex(frame['startTime']).day
+                frame['startTime-weekday'] = pd.DatetimeIndex(frame['startTime']).weekday
+                frame['startTime-hour'] = pd.DatetimeIndex(frame['startTime']).hour
+                frame['startTime-semester'] = frame['startTime'].map(lambda x: semesterMatch(x))
+
+            if 'endTime' in frame:
+                frame['endTime'] = pd.to_datetime(frame['endTime'], utc=True)
+                frame['endTime-year'] = pd.DatetimeIndex(frame['endTime']).year
+                frame['endTime-month'] = pd.DatetimeIndex(frame['endTime']).month
+                frame['endTime-week'] = pd.DatetimeIndex(frame['endTime']).week
+                frame['endTime-day'] = pd.DatetimeIndex(frame['endTime']).day
+                frame['endTime-weekday'] = pd.DatetimeIndex(frame['endTime']).weekday
+                frame['endTime-hour'] = pd.DatetimeIndex(frame['endTime']).hour
+                frame['endTime-semester'] = frame['endTime'].map(lambda x: semesterMatch(x))
+
+        except:
+            print('could not parse date information')
+
+        #true post processing - epic gamer moment incoming
+
+        if (self.startPost and self.startDate is not ''):
+            # filter frame to after startdate
+            if 'created' in frame:
+                frame = frame[frame['created'] >= self.startDate]
+            else:
+                print('cannot post-filter on start date')
+        if (self.endPost and self.endDate is not ''):
+            if 'created' in frame:
+                frame = frame[frame['created'] < self.endDate]
+            else:
+                print('cannot post-filter on end date')
+        if (self.createdbyPost and self.createdby is not ''):
+            # filter frame to created by
+            createdbyid = self.createdbyDict[self.createdby].getId()
+            if 'assignedBy-id' in frame:
+                frame = frame[frame['assignedBy-id'] == createdbyid]
+            elif 'user-id' in frame and self.createSwitch:
+                frame = frame[frame['user-id'] == createdbyid]
+            elif 'creator-id' in frame:
+                frame = frame[frame['creator-id'] == createdbyid]
+        if (self.assignedToPost and self.assignedTo is not ''):
+            # filter frame to assigned to
+            assignedtoid = self.assignedToDict[self.assignedTo].getId()
+            if 'user-id' in frame:
+                frame = frame[frame['user-id'] == assignedtoid]
+            elif 'attendingEmployee-id' in frame:
+                frame = frame[frame['attendingEmployee-id'] == assignedtoid]
+        if (self.locationPost and self.location is not ''):
+            # filter frame to location
+            locationid = self.locationDict[self.location]
+            if 'location-id' in frame:
+                frame = frame[frame['location-id'] == locationid]
+            elif 'shiftGroup-shiftType-baseLocation-id' in frame:
+                frame = frame[frame['shiftGroup-shiftType-baseLocation-id'] == locationid]
+        if (self.categoryPost and self.category is not ''):
+            # filter frame to category
+            print('temp')
+        if (self.statusPost and self.status is not ''):
+            # filter frame to status
+            print('temp')
+        return frame

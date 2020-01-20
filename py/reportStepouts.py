@@ -3,10 +3,9 @@ from numpy import vectorize
 
 def main(driver, startdate, enddate, statuslabel):
     locationstruct = PIEdataVARS.locations
-    locationstruct.set_enddate(enddate)
-    locationstruct.set_startdate(startdate)
-    locationstruct.set_maxreturns(100000)
-    locationurl = locationstruct.make_url()
+    locationstruct.endDate = enddate
+    locationstruct.startDate = startdate
+    locationurl = locationstruct.urlList()
     locationframe = PieHandler.goandget(driver, locationurl, locationstruct)
     locationframe['staffed_minutes'] = vectorize(functions.getMinutes)(locationframe['assumedDuration-difference'])
     locationframe['abb'] = locationframe['location-shortName'].apply(lambda x: functions.getAbb(x))

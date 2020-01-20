@@ -18,14 +18,13 @@ def main(driver, startdate, enddate, statuslabel):
     container.append(appointmentstruct)
 
     for struct in container:
-        struct.set_enddate(enddate)
-        struct.set_startdate(startdate)
-        struct.set_maxreturns(100000)
+        struct.endDate = enddate
+        struct.startDate = startdate
 
     statusUpdate(statuslabel, 'Loading contacts, please be patient')
 
     #CONTACTS
-    contacturl = contactstruct.make_url()
+    contacturl = contactstruct.urlList()
     contactframe = PieHandler.goandget(driver, contacturl, contactstruct)
     testy = contactframe['locationName'].value_counts().reset_index()
     testy.rename(columns={'locationName': 'contacts', 'index': 'locationName'}, inplace=True)
@@ -34,7 +33,7 @@ def main(driver, startdate, enddate, statuslabel):
 
     #LOCATIONS
     statusUpdate(statuslabel, 'Loading locations, please keep being patient')
-    locationurl = locationstruct.make_url()
+    locationurl = locationstruct.urlList()
     locationframe = PieHandler.goandget(driver, locationurl, locationstruct)
     locationframe['staffed_hours'] = vectorize(functions.getSeconds)(locationframe['assumedDuration-difference'])
     locationframe['abb'] = locationframe['location-shortName'].apply(lambda x: functions.getAbb(x))
@@ -45,7 +44,7 @@ def main(driver, startdate, enddate, statuslabel):
     statusUpdate(statuslabel, 'Loading inventory reports, thanks for sticking around')
 
     #INVENTORY REPORTS
-    inventoryurl = inventoryreportstruct.make_url()
+    inventoryurl = inventoryreportstruct.urlList()
     invframe = PieHandler.goandgetinv(driver, inventoryurl, 'Letter(8.5" x 11")')
     invuseframe = PieHandler.invcounttwo(invframe)
 
@@ -62,7 +61,7 @@ def main(driver, startdate, enddate, statuslabel):
 
     #APPOINTMENTS
     statusUpdate(statuslabel, 'Moving on to appointments now. This will be worth it I swear.')
-    appointmenturl = appointmentstruct.make_url()
+    appointmenturl = appointmentstruct.urlList()
     appointmentframe = PieHandler.goandget(driver, appointmenturl, appointmentstruct)
 
     shiftlocationframe = appointmentframe['shiftType-name'].value_counts().to_frame()

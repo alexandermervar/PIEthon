@@ -76,7 +76,9 @@ def getPie(driver):
     return session
 
 def grabUsers(driver):
-    framey = goandget(driver, ['https://pie.iu.edu/Api/Users?page=0&pageLimit=1000&searchTerms=&active=true&whitelistInclusiveMaskNames=Employee&fromUsersView=true&maskId=5'], PIEdataVARS.contacts_new)
+    activeusers = PIEdataVARS.activerusers
+    urllist = activeusers.urlList()
+    framey = goandget(driver, urllist, activeusers)
 
     framey['name'] = framey['lastName'] + ', ' + framey['firstName']
     framey = framey[['id', 'username', 'name']]
@@ -93,7 +95,9 @@ def grabUsers(driver):
     return userlist
 
 def grabLabs(driver):
-    labframe = goandget(driver, ['https://pie.iu.edu/Api/Locations?'], PIEdataVARS.contacts_new)
+    activelabs = PIEdataVARS.labs
+    urllist = activelabs.urlList()
+    labframe = goandget(driver, urllist, activelabs)
 
     lablist = {}
     lablist[''] = ''
@@ -104,7 +108,9 @@ def grabLabs(driver):
     return lablist
 
 def grabInvLabs(driver):
-    labframe = goandget(driver, ['https://pie.iu.edu/Api/InventoryLocations?page=0&pageLimit=1010'], PIEdataVARS.contacts_new)
+    activelabs = PIEdataVARS.inv_labs
+    urllist = activelabs.urlList()
+    labframe = goandget(driver, urllist, activelabs)
 
     labframe = labframe[['location-shortName', 'id']]
 
@@ -116,7 +122,9 @@ def grabInvLabs(driver):
     return lablist
 
 def grabSemesters(driver):
-    framey = goandget(driver, [PIEdataVARS.schedules.link], PIEdataVARS.schedules)
+    schedules = PIEdataVARS.schedules
+    urllist = schedules.urlList()
+    framey = goandget(driver, urllist, schedules)
 
     framey = framey[['name', 'startTime', 'endTime']]
 
