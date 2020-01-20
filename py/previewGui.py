@@ -1,9 +1,10 @@
 from py import functions
-from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLabel, QLineEdit, QRadioButton, QVBoxLayout,
+from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLabel, QLineEdit, QRadioButton, QVBoxLayout, QMessageBox,
                              QPushButton, QScrollArea, QHBoxLayout, QGroupBox, QFormLayout, QCheckBox)
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
-from os.path import expanduser
+from os.path import exists, expanduser
+from os import mkdir
 
 class prevButton(QPushButton):
 
@@ -46,17 +47,21 @@ class preview(QWidget):
     def initUI(self):
         self.center()
 
-        mygroupbox = QGroupBox('Mark Columns to Keep (' +str(len(self.dframe.columns)) + ' Columns Total)')
+        mygroupbox = QGroupBox('Select Columns to Keep')
         myform = QFormLayout()
 
         buttonlist = []
         checklist = []
 
         previewform = QVBoxLayout()
+        allcheck = QCheckBox('Keep All ' +str(len(self.dframe.columns)) + ' Columns')
+        allcheck.setChecked(True)
+        allcheck.stateChanged.connect(lambda: self.allcheckfunct(checklist, allcheck.checkState()))
         rangenum = min(100, len(self.dframe))
 
         for i in range(len(self.dframe.columns)):
             tempcheck = QCheckBox(self.dframe.columns[i])
+            tempcheck.setChecked(True)
             checklist.append(tempcheck)
             tempbutt = prevButton(i, rangenum, previewform, self.dframe)
             buttonlist.append(tempbutt)
@@ -67,8 +72,13 @@ class preview(QWidget):
         scroll.setWidgetResizable(True)
         scroll.horizontalScrollBar().setEnabled = False
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        layout = QHBoxLayout(self)
-        layout.addWidget(scroll)
+
+        onecolvlayout = QVBoxLayout()
+        onecolvlayout.addWidget(allcheck)
+        onecolvlayout.addWidget(scroll)
+
+        layout = QHBoxLayout()
+        layout.addLayout(onecolvlayout)
 
         previewbox = QGroupBox('Preview (' +str(len(self.dframe.index)) + ' Records Total)')
 
@@ -89,13 +99,15 @@ class preview(QWidget):
         subbox = QGroupBox('')
         #subbox.setFixedWidth(150)
 
+        radiocero = QRadioButton('Documents/PIEthon/exports')
+        radiocero.setChecked(True)
         radiouno = QRadioButton('Downloads')
-        radiouno.setChecked(True)
         radiodos = QRadioButton('Documents')
         radiotres = QRadioButton('Desktop')
 
         radiolist = []
 
+        radiolist.append(radiocero)
         radiolist.append(radiouno)
         radiolist.append(radiodos)
         radiolist.append(radiotres)
@@ -104,6 +116,8 @@ class preview(QWidget):
         subbut = QPushButton('Export')
         subbut.clicked.connect(lambda: self.export(checklist, radiolist))
 
+        closebut = QPushButton('Close')
+        closebut.clicked.connect(self.close)
 
         for radio in radiolist:
             subform.addWidget(radio)
@@ -119,10 +133,18 @@ class preview(QWidget):
 
         subform.addLayout(hboy)
 
-        subform.addWidget(subbut)
-
         subbox.setLayout(subform)
         layout.addWidget(subbox)
+
+        buttonlayout = QHBoxLayout()
+        buttonlayout.addWidget(closebut)
+        buttonlayout.addSpacing(300)
+        buttonlayout.addWidget(subbut)
+
+        totalvlayout = QVBoxLayout(self)
+        totalvlayout.addLayout(layout)
+        totalvlayout.addSpacing(15)
+        totalvlayout.addLayout(buttonlayout)
 
         self.setStyleSheet(open(functions.resource_path("resources\\iu_stylesheet.qss"), "r").read())
 
@@ -136,10 +158,19 @@ class preview(QWidget):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
+    def allcheckfunct(self, checklist, bool):
+        for widget in checklist:
+            widget.setChecked(bool)
+
+
     def export(self, checklist, radiolist):
         expath = ''
         for radio in radiolist:
             if radio.isChecked():
+                if radio.text() == 'Documents/PIEthon/exports':
+                    if not exists(expanduser('~/Documents/PIEthon/exports')):
+                        mkdir(expanduser('~/Documents/PIEthon/exports'))
+                    expath = expanduser('~/Documents/PIEthon/exports/')
                 if radio.text() == 'Downloads':
                     expath = expanduser('~/Downloads/')
                 if radio.text() == 'Documents':
@@ -156,3 +187,13 @@ class preview(QWidget):
             newframe.to_csv(expath + self.exportname.text() + '.csv')
         except:
             newframe.to_csv(expath + str(self.dtype) + '_' + str(self.startdate) + '_' + str(self.enddate) + '.csv')
+
+        buttonReply = QMessageBox.information(self, 'Export Successful', 'Data exported to ' + str(expath), QMessageBox.Ok)
+
+        """
+        msg = QMessageBox()
+        msg.setIcon(QIcon(functions.resource_path('resources\\PIEcon.png')))
+        msg.setText('Export Successful!')
+        msg.setInformativeText('Data exported to ' + str(expath))
+        msg.setStandardButtons(QMessageBox.Ok)
+        """

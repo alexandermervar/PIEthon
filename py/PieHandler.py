@@ -76,7 +76,9 @@ def getPie(driver):
     return session
 
 def grabUsers(driver):
-    framey = goandget(driver, ['https://pie.iu.edu/Api/Users?page=0&pageLimit=1000&searchTerms=&active=true&whitelistInclusiveMaskNames=Employee&fromUsersView=true&maskId=5'], PIEdataVARS.contacts)
+    activeusers = PIEdataVARS.activerusers
+    urllist = activeusers.urlList()
+    framey = goandget(driver, urllist, activeusers)
 
     framey['name'] = framey['lastName'] + ', ' + framey['firstName']
     framey = framey[['id', 'username', 'name']]
@@ -93,7 +95,9 @@ def grabUsers(driver):
     return userlist
 
 def grabLabs(driver):
-    labframe = goandget(driver, ['https://pie.iu.edu/Api/Locations?'], PIEdataVARS.contacts)
+    activelabs = PIEdataVARS.labs
+    urllist = activelabs.urlList()
+    labframe = goandget(driver, urllist, activelabs)
 
     lablist = {}
     lablist[''] = ''
@@ -104,7 +108,9 @@ def grabLabs(driver):
     return lablist
 
 def grabInvLabs(driver):
-    labframe = goandget(driver, ['https://pie.iu.edu/Api/InventoryLocations?page=0&pageLimit=1010'], PIEdataVARS.contacts)
+    activelabs = PIEdataVARS.inv_labs
+    urllist = activelabs.urlList()
+    labframe = goandget(driver, urllist, activelabs)
 
     labframe = labframe[['location-shortName', 'id']]
 
@@ -116,7 +122,9 @@ def grabInvLabs(driver):
     return lablist
 
 def grabSemesters(driver):
-    framey = goandget(driver, [PIEdataVARS.schedules.link], PIEdataVARS.schedules)
+    schedules = PIEdataVARS.schedules
+    urllist = schedules.urlList()
+    framey = goandget(driver, urllist, schedules)
 
     framey = framey[['name', 'startTime', 'endTime']]
 
@@ -141,11 +149,11 @@ def goandget(driver, urllist, piedata):
         rawInput = r.text
         if len(rawInput) == 0 or not rawInput:
             continue
-        if (piedata.getform()):
+        if (piedata.form):
             #this is a form, changing startcut and endcut
             endcut=rawInput.find("questions")-3
             startcut=12
-        if len(rawInput) <= 2 or (piedata.getform() and rawInput[11] =='[' and rawInput[12] == ']'):
+        if len(rawInput) <= 2 or (piedata.form and rawInput[11] =='[' and rawInput[12] == ']'):
             if counter==1 and counter==len(urllist):
                 continue
             elif counter==1:
@@ -158,12 +166,12 @@ def goandget(driver, urllist, piedata):
             continue
         if (len(urllist) != 1):
             if counter == 1:
-                if (piedata.getform()):
+                if (piedata.form):
                     rawInput = rawInput[startcut-1:endcut] + ','
                 else:
                     rawInput = rawInput[:endcut] + ','
             elif counter == len(urllist) or len(totString) == 0:
-                if (piedata.getform()):
+                if (piedata.form):
                     rawInput = rawInput[startcut:endcut] + ']'
                 else:
                     rawInput = rawInput[startcut:]

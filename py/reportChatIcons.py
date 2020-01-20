@@ -15,7 +15,7 @@ def main(driver, startdate, enddate, statuslabel):
     outputfile.makeHTML('Chat Icon Usage')
 
 description = "Chat icon usage numbers in selected time frame"
-active = True
+active = False
 author = 'Brian Funk'
 
 chaticonreport = report.report('Chat Icon Usage', author,active)

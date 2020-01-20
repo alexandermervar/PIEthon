@@ -1,5 +1,6 @@
 from py import PieHandler, previewGui,report, functions
 from datetime import date, timedelta, datetime
+from pytz import utc
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QLineEdit, QLabel, QComboBox,
                              QPushButton, QCalendarWidget, QTabWidget, QVBoxLayout, QHBoxLayout, QSpacerItem,
                              QSizePolicy)
@@ -387,10 +388,9 @@ class mainwindow(QWidget):
 
     def startcomboselect(self):
         self.startrepcombo.setCurrentIndex(self.startcombo.currentIndex())
-        sempick = self.semesters[self.startcombo.currentText()].getStart()[:10]
-        if sempick == '':
+        conv = self.semesters[self.startcombo.currentText()].getStart()
+        if conv == '':
             return
-        conv = datetime.strptime(sempick, '%Y-%m-%d')
         self.startlabel.setText("Start Date:  " + conv.strftime('%a %b %d %Y'))
         self.startreplabel.setText("Start Date:  " + conv.strftime('%a %b %d %Y'))
         self.startcal.setSelectedDate(conv)
@@ -398,10 +398,9 @@ class mainwindow(QWidget):
 
     def endcomboselect(self):
         self.endrepcombo.setCurrentIndex(self.endcombo.currentIndex())
-        sempick = self.semesters[self.endcombo.currentText()].getEnd()[:10]
-        if sempick == '':
+        conv = self.semesters[self.endcombo.currentText()].getEnd()
+        if conv == '':
             return
-        conv = datetime.strptime(sempick, '%Y-%m-%d')
         self.endlabel.setText("End Date:  " + conv.strftime('%a %b %d %Y'))
         self.endreplabel.setText("End Date:  " + conv.strftime('%a %b %d %Y'))
         self.endcal.setSelectedDate(conv)
@@ -409,10 +408,9 @@ class mainwindow(QWidget):
 
     def startrepcomboselect(self):
         self.startcombo.setCurrentIndex(self.startrepcombo.currentIndex())
-        sempick = self.semesters[self.startrepcombo.currentText()].getStart()[:10]
-        if sempick == '':
+        conv = self.semesters[self.startrepcombo.currentText()].getStart()
+        if conv == '':
             return
-        conv = datetime.strptime(sempick, '%Y-%m-%d')
         self.startreplabel.setText("Start Date:  " + conv.strftime('%a %b %d %Y'))
         self.startlabel.setText("Start Date:  " + conv.strftime('%a %b %d %Y'))
         self.startrepcal.setSelectedDate(conv)
@@ -420,10 +418,9 @@ class mainwindow(QWidget):
 
     def endrepcomboselect(self):
         self.endcombo.setCurrentIndex(self.endrepcombo.currentIndex())
-        sempick = self.semesters[self.endrepcombo.currentText()].getEnd()[:10]
-        if sempick == '':
+        conv = self.semesters[self.endrepcombo.currentText()].getEnd()
+        if conv == '':
             return
-        conv = datetime.strptime(sempick, '%Y-%m-%d')
         self.endreplabel.setText("End Date:  " + conv.strftime('%a %b %d %Y'))
         self.endlabel.setText("End Date:  " + conv.strftime('%a %b %d %Y'))
         self.endrepcal.setSelectedDate(conv)
@@ -441,46 +438,75 @@ class mainwindow(QWidget):
         if (datatype is None):
             return
 
-        if (not datatype.getuserdict() == {}):
+        if (len(datatype.createdbyDict) > 1):
             self.usernamecombo.clear()
-            self.usernamecombo.addItems(datatype.getuserdict().keys())
+            self.usernamecombo.addItems(datatype.createdbyDict.keys())
             self.usernamecombo.setEnabled(True)
+            if datatype.createdbyPost:
+                self.usernamelabel.setText("Created By (POST): ")
+            else:
+                self.usernamelabel.setText("Created By: ")
         else:
+            self.usernamelabel.setText("Created By: ")
             self.usernamecombo.clear()
-            self.usernamecombo.addItems(datatype.getuserdict().keys())
             self.usernamecombo.setEnabled(False)
 
-        if (not datatype.getlabdict() == {}):
+        if (len(datatype.locationDict) > 1):
             self.locationcombo.clear()
-            self.locationcombo.addItems(datatype.getlabdict().keys())
+            self.locationcombo.addItems(datatype.locationDict.keys())
             self.locationcombo.setEnabled(True)
+            if datatype.locationPost:
+                self.locationlabel.setText("Location (POST): ")
+            else:
+                self.locationlabel.setText("Location: ")
         else:
+            self.locationlabel.setText("Location: ")
             self.locationcombo.clear()
             self.locationcombo.setEnabled(False)
 
-        if (not datatype.getstatusdict() == []):
+        if (len(datatype.statusDict) > 1):
             self.statuscombo.clear()
-            self.statuscombo.addItems(datatype.getstatusdict())
+            self.statuscombo.addItems(datatype.statusDict)
             self.statuscombo.setEnabled(True)
+            if datatype.statusPost:
+                self.statuslabel.setText("Status (POST):")
+            else:
+                self.statuslabel.setText("Status:")
         else:
+            self.statuslabel.setText("Status:")
             self.statuscombo.clear()
             self.statuscombo.setEnabled(False)
 
-        if (not datatype.getcategorydict() == {}):
+        if (len(datatype.categoryDict) > 1):
             self.categorycombo.clear()
-            self.categorycombo.addItems(datatype.getcategorydict().keys())
+            self.categorycombo.addItems(datatype.categoryDict.keys())
             self.categorycombo.setEnabled(True)
+            if datatype.categoryPost:
+                self.categorylabel.setText("Category (POST):")
+            else:
+                self.categorylabel.setText("Category:")
         else:
+            self.categorylabel.setText("Category:")
             self.categorycombo.clear()
             self.categorycombo.setEnabled(False)
 
-        if (not datatype.getassigneddict() == {}):
+        if (len(datatype.assignedToDict) > 1):
             self.assignedcombo.clear()
-            self.assignedcombo.addItems(datatype.getassigneddict().keys())
+            self.assignedcombo.addItems(datatype.assignedToDict.keys())
             self.assignedcombo.setEnabled(True)
+            if datatype.assignedToPost:
+                self.assignedlabel.setText("Assigned To (POST):")
+            else:
+                self.assignedlabel.setText("Assigned To:")
         else:
+            self.assignedlabel.setText("Assigned To:")
             self.assignedcombo.clear()
             self.assignedcombo.setEnabled(False)
+
+        self.endcal.setEnabled(datatype.allowDates)
+        self.startcal.setEnabled(datatype.allowDates)
+        self.startcombo.setEnabled(datatype.allowDates)
+        self.endcombo.setEnabled(datatype.allowDates)
 
     def completed(self):
         if self.datecheck() or self.dframe is False:
@@ -489,6 +515,7 @@ class mainwindow(QWidget):
             self.mainwind = previewGui.preview(self.dframe, self.datacombo.currentText(), self.startcal.selectedDate().toPyDate(), self.endcal.selectedDate().toPyDate())
             self.mainwind.show()
         self.dframe = False
+        self.dataoptions.get(self.datacombo.currentText()).reset()
         self.statusUpdate('Ready')
 
     def datecheck(self):
@@ -515,15 +542,14 @@ class submitThread(QThread):
             self.window.statusUpdate("Preparing Data Structure")
 
             datatype = self.window.dataoptions.get(self.window.datacombo.currentText())
-            datatype.set_maxreturns(self.window.maxbox.text())
-            datatype.set_enddate(self.window.endcal.selectedDate().toPyDate())
-            datatype.set_startdate(self.window.startcal.selectedDate().toPyDate())
-            datatype.set_username(self.window.usernamecombo.currentText())
-            datatype.set_assignedto(self.window.assignedcombo.currentText())
-            datatype.set_location(self.window.locationcombo.currentText())
-            datatype.set_category(self.window.categorycombo.currentText())
-            datatype.set_status(self.window.statuscombo.currentText())
-            url = datatype.make_url()
+            datatype.endDate = datetime.combine(self.window.endcal.selectedDate().toPyDate(), datetime.min.time()).replace(tzinfo=utc)
+            datatype.startDate = datetime.combine(self.window.startcal.selectedDate().toPyDate(), datetime.min.time()).replace(tzinfo=utc)
+            datatype.createdby = self.window.usernamecombo.currentText()
+            datatype.assignedTo = self.window.assignedcombo.currentText()
+            datatype.location = self.window.locationcombo.currentText()
+            datatype.category = self.window.categorycombo.currentText()
+            datatype.status = self.window.statuscombo.currentText()
+            url = datatype.urlList()
 
             self.window.statusUpdate("Pulling from Pie")
             frameboy = PieHandler.goandget(self.window.driver, url, datatype)
@@ -533,6 +559,8 @@ class submitThread(QThread):
                 self.window.setDisabled(False)
                 return
             else:
+                self.window.statusUpdate("Post-processing...")
+                frameboy = datatype.postFilter(frameboy, self.window.semesters)
                 self.window.statusUpdate("Complete")
                 self.window.dframe = frameboy
                 self.window.setDisabled(False)
