@@ -168,6 +168,8 @@ class preview(QWidget):
         for radio in radiolist:
             if radio.isChecked():
                 if radio.text() == 'Documents/PIEthon/exports':
+                    if not exists(expanduser('~/Documents/PIEthon')):
+                        mkdir(expanduser('~/Documents/PIEthon/'))
                     if not exists(expanduser('~/Documents/PIEthon/exports')):
                         mkdir(expanduser('~/Documents/PIEthon/exports'))
                     expath = expanduser('~/Documents/PIEthon/exports/')
