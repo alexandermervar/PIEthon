@@ -2,9 +2,11 @@ from py import PIEdataVARS, PieHandler, htmlbase, report
 from pandas import Series
 
 def main(driver, startdate, enddate, statuslabel):
-    activeuserstruct = PIEdataVARS.chat_messages
-    urllist = activeuserstruct.make_url()
-    chatframe = PieHandler.goandget(driver, urllist, activeuserstruct)
+    chats = PIEdataVARS.chat_messages
+    chats.startDate = startdate
+    chats.endDate = enddate
+    urllist = chats.urlList()
+    chatframe = PieHandler.goandget(driver, urllist, chats)
 
     chatframe = chatframe[['id', 'alert', 'created', 'text', 'user-username', 'user-firstName', 'user-lastName']]
 

@@ -149,6 +149,15 @@ incident_reports.endPost = True
 incident_reports.createSwitch = True
 list_o_data.append(incident_reports)
 
+# Practicum Completions
+practicums = PIEdata.PIEdata('Practicum Completions', 'https://tcciub.pie.iu.edu/Api/Practicums?page=0&pageLimit=100000')
+practicums.createdbyPost = True
+practicums.employeeswitch = True
+practicums.startPost = True
+practicums.endPost = True
+practicums.append = '&minimal=true'
+# list_o_data.append(practicums)
+
 def buildalldatathings(userdict, labdict, invlabs):
 
     # buff contacts
@@ -200,6 +209,10 @@ def buildalldatathings(userdict, labdict, invlabs):
 
     # buff incident reports
     incident_reports.createdbyDict = userdict
+
+    # buff practicums
+    practicums.createdbyDict = userdict
+    practicums.assignedToDict = userdict
 
     datalist = {}
     for data in list_o_data:
