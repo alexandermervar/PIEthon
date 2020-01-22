@@ -88,7 +88,7 @@ class PIEdata:
         if (self.statusDict is not {} and not self.statusPost and self.status is not ''):
             baseurl = baseurl + '&statuses=' + self.status
         baseurl = baseurl + self.append
-        #print(baseurl)
+        print(baseurl)
         return baseurl
 
     def reset(self):
