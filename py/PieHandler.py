@@ -227,7 +227,3 @@ def invcounttwo(invframe):
         paper.append(sum(newerdifs))
 
     return DataFrame({'lab':lab,'paper_used':paper})
-
-
-
-
