@@ -1,11 +1,9 @@
 from webbrowser import open as webopen
 from os.path import expanduser
 
-def report_path():
-    return expanduser('~/Documents/PIEthon/reports')
+report_path = expanduser('~/Documents/PIEthon/reports')
 
-def figure_path():
-    return expanduser('~/Documents/PIEthon/figures')
+figure_path = expanduser('~/Documents/PIEthon/figures')
 
 class htmlbase:
     def __init__(self, title, header, tablelist, picturelist):
