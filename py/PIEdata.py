@@ -88,7 +88,7 @@ class PIEdata:
         if (self.statusDict is not {} and not self.statusPost and self.status is not ''):
             baseurl = baseurl + '&statuses=' + self.status
         baseurl = baseurl + self.append
-        #print(baseurl)
+        print(baseurl)
         return baseurl
 
     def reset(self):
@@ -114,7 +114,7 @@ class PIEdata:
         #attempt to parse creation date into a dope super cool columns thing
         try:
             if 'created' in frame:
-                frame['created'] = pd.to_datetime(frame['created'], utc=True)
+                frame['created'] = pd.to_datetime(frame['created'], utc=False)
                 frame['created-year'] = pd.DatetimeIndex(frame['created']).year
                 frame['created-month'] = pd.DatetimeIndex(frame['created']).month
                 frame['created-week'] = pd.DatetimeIndex(frame['created']).week
@@ -124,7 +124,7 @@ class PIEdata:
                 frame['semester'] = frame['created'].map(lambda x: semesterMatch(x))
 
             if 'startTime' in frame:
-                frame['startTime'] = pd.to_datetime(frame['startTime'], utc=True)
+                frame['startTime'] = pd.to_datetime(frame['startTime'], utc=False)
                 frame['startTime-year'] = pd.DatetimeIndex(frame['startTime']).year
                 frame['startTime-month'] = pd.DatetimeIndex(frame['startTime']).month
                 frame['startTime-week'] = pd.DatetimeIndex(frame['startTime']).week
@@ -134,7 +134,7 @@ class PIEdata:
                 frame['startTime-semester'] = frame['startTime'].map(lambda x: semesterMatch(x))
 
             if 'endTime' in frame:
-                frame['endTime'] = pd.to_datetime(frame['endTime'], utc=True)
+                frame['endTime'] = pd.to_datetime(frame['endTime'], utc=False)
                 frame['endTime-year'] = pd.DatetimeIndex(frame['endTime']).year
                 frame['endTime-month'] = pd.DatetimeIndex(frame['endTime']).month
                 frame['endTime-week'] = pd.DatetimeIndex(frame['endTime']).week
