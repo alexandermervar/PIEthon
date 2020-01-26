@@ -10,7 +10,11 @@ def main(driver, startdate, enddate, statuslabel):
 
     chatframe = chatframe[['id', 'alert', 'created', 'text', 'user-username', 'user-firstName', 'user-lastName']]
 
-    tablelist = [chatframe.to_html()]
+    #find counts of messages sent
+    message_counts = chatframe.groupby('user-username').count()
+    print(message_counts.columns)
+
+    tablelist = [message_counts.to_html()]
     picturelist = []
 
     outputfile = htmlbase.htmlbase('Chat Icon Usage', 'Chat Icon Usage', tablelist, picturelist)
