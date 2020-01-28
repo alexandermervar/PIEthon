@@ -1,7 +1,7 @@
 from py import functions, htmlbase, PIEdataVARS, PieHandler, report
 from numpy import vectorize
 
-def main(driver, startdate, enddate, statuslabel):
+def main(driver, startdate, enddate, statuslabel, report):
     locationstruct = PIEdataVARS.locations
     locationstruct.endDate = enddate
     locationstruct.startDate = startdate
@@ -11,11 +11,8 @@ def main(driver, startdate, enddate, statuslabel):
     locationframe['abb'] = locationframe['location-shortName'].apply(lambda x: functions.getAbb(x))
     locationframe = locationframe.groupby('abb')['staffed_minutes'].median().reset_index()
 
-    tablelist = [locationframe.to_html()]
-    picturelist = []
-
-    outputfile = htmlbase.htmlbase('Stepout Medians', 'Stepout Medians', tablelist, picturelist)
-    outputfile.makeHTML('StepoutMedians')
+    report.add('table', 'Median Stepout Times', locationframe)
+    report.makeHTML('Stepout Medians')
 
 #This is a bad report...make better lol
 description = "Just give median stepout times for each lab. Honestly kinda useless. Need to make not trash"

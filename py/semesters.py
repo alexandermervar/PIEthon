@@ -5,12 +5,12 @@ class semester:
     def __init__(self, name, start, end):
         self.name = name
         if start is not '':
-            self.start = datetime.strptime(start[:10], '%Y-%m-%d').replace(tzinfo=timezone('US/Eastern'))
+            self.start = datetime.strptime(start[:10], '%Y-%m-%d')
         else:
             self.start = ''
 
         if end is not  '':
-            self.end = datetime.strptime(end[:10], '%Y-%m-%d').replace(tzinfo=timezone('US/Eastern'))
+            self.end = datetime.strptime(end[:10], '%Y-%m-%d')
         else:
             self.end = ''
 

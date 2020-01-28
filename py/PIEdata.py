@@ -114,21 +114,22 @@ class PIEdata:
             return None
 
         #attempt to parse creation date into a dope super cool columns thing
-        tz = timezone('US/Eastern')
 
-        frame['created'] = pd.to_datetime(frame['created'])
-        frame['created-year'] = pd.DatetimeIndex(frame['created']).year
-        frame['created-month'] = pd.DatetimeIndex(frame['created']).month
-        frame['created-week'] = pd.DatetimeIndex(frame['created']).week
-        frame['created-day'] = pd.DatetimeIndex(frame['created']).day
-        frame['created-weekday'] = pd.DatetimeIndex(frame['created']).weekday
-        frame['created-hour'] = pd.DatetimeIndex(frame['created']).hour
+
         try:
             if 'created' in frame:
-                print('temp')
+                frame['created'] = frame['created'].astype(str).str[:-6]
+                frame['created'] = pd.to_datetime(frame['created'])
+                frame['created-year'] = frame['created'].dt.year
+                frame['created-month'] = frame['created'].dt.month
+                frame['created-week'] = pd.DatetimeIndex(frame['created']).week
+                frame['created-day'] = pd.DatetimeIndex(frame['created']).day
+                frame['created-weekday'] = pd.DatetimeIndex(frame['created']).weekday
+                frame['created-hour'] = pd.DatetimeIndex(frame['created']).hour
 
 
             if 'startTime' in frame:
+                frame['startTime'] = frame['startTime'].astype(str).str[:-6]
                 frame['startTime'] = pd.to_datetime(frame['startTime'])
                 frame['startTime-year'] = pd.DatetimeIndex(frame['startTime']).year
                 frame['startTime-month'] = pd.DatetimeIndex(frame['startTime']).month
@@ -138,6 +139,7 @@ class PIEdata:
                 frame['startTime-hour'] = pd.DatetimeIndex(frame['startTime']).hour
 
             if 'endTime' in frame:
+                frame['endTime'] = frame['endTime'].astype(str).str[:-6]
                 frame['endTime'] = pd.to_datetime(frame['endTime'])
                 frame['endTime-year'] = pd.DatetimeIndex(frame['endTime']).year
                 frame['endTime-month'] = pd.DatetimeIndex(frame['endTime']).month
