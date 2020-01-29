@@ -1,7 +1,7 @@
 from py import PIEdataVARS, PieHandler, htmlbase, report
 from pandas import Series
 
-def main(driver, startdate, enddate, statuslabel):
+def main(driver, startdate, enddate, statuslabel, report):
     activeuserstruct = PIEdataVARS.activerusers
     urllist = activeuserstruct.urlList()
     userframe = PieHandler.goandget(driver, urllist, activeuserstruct)
@@ -30,11 +30,9 @@ def main(driver, startdate, enddate, statuslabel):
 
     userframe = userframe[['lastName', 'firstName', 'username', 'Missing Attributes']]
 
-    tablelist = [userframe.to_html()]
-    picturelist = []
+    report.add('table', 'Missing User Info', userframe)
 
-    outputfile = htmlbase.htmlbase('Missing User Info', 'Missing User Info', tablelist, picturelist)
-    outputfile.makeHTML('Missing_User_Info')
+    report.makeHTML('Missing User Info')
 
 def yikescheck(val):
     #might need to check if the value is a string

@@ -2,16 +2,15 @@ from webbrowser import open as webopen
 from os.path import expanduser
 
 report_path = expanduser('~/Documents/PIEthon/reports')
-
 figure_path = expanduser('~/Documents/PIEthon/figures')
 
 class htmlbase:
-    def __init__(self, title, header, tablelist, picturelist):
-
+    def __init__(self):
         #checks for correct folders
-        self.title = title
-        self.header = header
-        self.toppart =\
+        self.title = ''
+        self.header = ''
+        self.items = []
+        self.html =\
         """
         <html>
             <head>
@@ -25,80 +24,63 @@ class htmlbase:
                       <div class="card">
                         <div class="card-body">
         """
-        self.endpart =\
-        """
-            </div>
-              </div>
-            </body>
-            </head>
-        """
-        self.tablelist = tablelist
-        self.picturelist = picturelist
 
-    def setTablelist(self, newtable):
-        self.tablelist = newtable
+    def add(self, type, title, info):
+        newitem = item(type,title,info)
+        self.items.append(newitem)
 
-    def getTablelist(self):
-        return self.tablelist
-
-    def setPicturelist(self, newpict):
-        self.picturelist = newpict
-
-    def buildall(self):
-        mechastring = self.toppart
-        self.fixtables()
-        for tablemaybe in self.tablelist:
-            mechastring = mechastring + tablemaybe
-        self.makePictures()
-        for picture in self.picturelist:
-            mechastring = mechastring + picture
-        mechastring = mechastring + self.endpart
-        return mechastring
-
-    def fixtables(self):
-        newlist = []
-        for indtable in self.tablelist:
-            htmlstring = indtable[36:]
-
-            htmlstring = '<table class="table table-hover table-striped">' + htmlstring
-
-            newlist.append(htmlstring)
-        newlist.append(
-            """
-                  </div>
-                </div>
-                  </div>
-                  </div>
-                  <br>
-            """
-        )
-        self.setTablelist(newlist)
-
-    def makePictures(self):
-        newlisto = []
-        for picture in self.picturelist:
-            tempstring =\
-            """
-                    <div class="col-lg-12">
-                      <div class="card">
-                        <div class="card-body">
-                          <h5 class="card-title">Graph</h5>
-                          <img src="%s" class="img-fluid w-100">
+    def build(self):
+        for item in self.items:
+            self.html = self.html + \
+                        """
+                        <h3>
+                        %s
+                        </h3>
+                        <br>
+                        """ % item.title
+            if item.type == 'table':
+                item.info = item.info.to_html(index=False)[36:]
+                self.html = self.html + '<table class="table table-hover table-striped">' + item.info + \
+                            """
+                                  </div>
+                                </div>
+                                  </div>
+                                  </div>
+                                  <br>
+                            """
+            elif item.type == 'graph':
+                tempstring =\
+                """
+                        <div class="col-lg-12">
+                          <div class="card">
+                            <div class="card-body">
+                              <img src="%s" class="img-fluid w-100">
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                        <br>
+                """ % (figure_path + item.info)
+                self.html = self.html + tempstring
+            else:
+                print('invalid type: ' + str(item.type))
+        self.html = self.html + \
+                """
                     </div>
-                    <br>
-            """ % (picture)
-            newlisto.append(tempstring)
-        self.setPicturelist(newlisto)
+                      </div>
+                    </body>
+                    </head>
+                """
 
     def makeHTML(self, filename):
-        superstring = self.buildall()
-        #print(expanduser('~/Documents/PIEthon/reports/'))
-        #print(expanduser('~/Documents/PIEthon/reports/') + str(filename) + ".html")
-        fh = open(expanduser('~/Documents/PIEthon/reports/') + str(filename) + ".html", "w")
-        #print(fh)
-        fh.write(superstring)
+        self.build()
+        fh = open(expanduser('~/Documents/PIEthon/reports/') + str(filename) + ".html", "w", encoding='utf-8')
+        fh.write(self.html)
         fh.close()
 
         webopen('file://' + expanduser('~\\Documents\\PIEthon\\reports\\') + filename + ".html")
+
+class item:
+    def __init__(self, type, title, info):
+        self.type = type
+        self.title = title
+        self.info = info

@@ -4,7 +4,7 @@ from numpy import vectorize
 from pandas import merge
 import matplotlib.pyplot as plt
 
-def main(driver, startdate, enddate, statuslabel):
+def main(driver, startdate, enddate, statuslabel, report):
     contactstruct = PIEdataVARS.contacts
     locationstruct = PIEdataVARS.locations
     inventoryreportstruct = PIEdataVARS.invreports
@@ -57,7 +57,8 @@ def main(driver, startdate, enddate, statuslabel):
     supadupaframe['overall_score']=supadupaframe['contacts_per_hour']*supadupaframe['paper_used']
     supadupaframe.sort_values(by=['overall_score'], ascending=False, inplace=True)
     supadupaframe = supadupaframe.reset_index(drop=True)
-    labbreakhtml = supadupaframe.to_html()
+    report.add('table', 'Lab Contacts/Hour and Paper Usage (Reams)', supadupaframe)
+
 
     #APPOINTMENTS
     statusUpdate(statuslabel, 'Moving on to appointments now. This will be worth it I swear.')
@@ -69,12 +70,14 @@ def main(driver, startdate, enddate, statuslabel):
     shiftlocationframe.plot.pie(y='shiftType-name',autopct=functions.make_autopct(shiftlocationframe['shiftType-name'].tolist()), fontsize=15, figsize=(8, 8))
     plt.tight_layout()
     plt.savefig(htmlbase.figure_path+ '\\shiftlocations.png')
+    report.add('graph', 'Appointment Assignments', '\\shiftlocations.png')
 
     buildingframe = appointmentframe['ticket-residence-building-name'].value_counts().to_frame()
     plt.tight_layout()
     buildingframe.plot.bar(figsize=(8,8))
     plt.tight_layout()
     plt.savefig(htmlbase.figure_path + '\\appointmentlocals.png')
+    report.add('graph', 'Appointment Locations', '\\appointmentlocals.png')
 
     appointmentframe['month'] = appointmentframe['scheduledStartTime'].apply(lambda x: functions.getMonth(x))
     smallboi = appointmentframe[['month', 'shiftType-shortName']]
@@ -86,12 +89,9 @@ def main(driver, startdate, enddate, statuslabel):
     pivoto.plot.bar()
     plt.tight_layout()
     plt.savefig(htmlbase.figure_path + '\\timeandbuilding.png')
+    report.add('graph', 'Appointment Months', '\\timeandbuilding.png')
 
-    tablelist = [labbreakhtml]
-    picturelist = [htmlbase.figure_path + '\\shiftlocations.png', htmlbase.figure_path + '\\appointmentlocals.png', htmlbase.figure_path + '\\timeandbuilding.png']
-
-    outputfile = htmlbase.htmlbase('Lab Breakdown', 'Lab Breakdown', tablelist, picturelist)
-    outputfile.makeHTML('LabBreakdown')
+    report.makeHTML('Lab Breakdown')
 
 def statusUpdate(label, newstat):
     label.setText(newstat)
