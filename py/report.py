@@ -22,6 +22,9 @@ class report:
     def makeHTML(self, filename):
         self.htmlbase.makeHTML(filename)
 
+    def reset(self):
+        self.htmlbase = htmlbase.htmlbase()
+
 from py import reportLabBreakdown, reportMissingUserInfo, reportPDIs, reportStepouts, reportChatIcons
 
 report_list = [reportLabBreakdown.labbreakreport,

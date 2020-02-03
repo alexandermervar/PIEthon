@@ -516,6 +516,7 @@ class mainwindow(QWidget):
             self.mainwind.show()
         self.dframe = False
         self.dataoptions.get(self.datacombo.currentText()).reset()
+        self.current_report.reset()
         self.statusUpdate('Ready')
 
     def datecheck(self):
@@ -564,6 +565,7 @@ class submitThread(QThread):
                 self.window.statusUpdate("Complete")
                 self.window.dframe = frameboy
                 self.window.setDisabled(False)
+                return
         else:
             if self.window.current_report.active is False:
                 self.window.statusUpdate("ERROR: Report is not active")
@@ -581,3 +583,4 @@ class submitThread(QThread):
             self.window.statusUpdate("Starting Report")
             self.window.current_report.run_main(self.window.driver,self.window.startrepcal.selectedDate().toPyDate(), self.window.endrepcal.selectedDate().toPyDate(), self.window.statuslabel)
             self.window.setDisabled(False)
+            return

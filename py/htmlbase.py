@@ -83,4 +83,5 @@ class item:
     def __init__(self, type, title, info):
         self.type = type
         self.title = title
+        print(str(info))
         self.info = info
