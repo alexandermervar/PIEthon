@@ -469,11 +469,11 @@ class mainwindow(QWidget):
             self.statuscombo.addItems(datatype.statusDict)
             self.statuscombo.setEnabled(True)
             if datatype.statusPost:
-                self.statuslabel.setText("Status (POST):")
+                self.statuslabels.setText("Status (POST):")
             else:
-                self.statuslabel.setText("Status:")
+                self.statuslabels.setText("Status:")
         else:
-            self.statuslabel.setText("Status:")
+            self.statuslabels.setText("Status:")
             self.statuscombo.clear()
             self.statuscombo.setEnabled(False)
 
@@ -509,6 +509,8 @@ class mainwindow(QWidget):
         self.endcombo.setEnabled(datatype.allowDates)
 
     def completed(self):
+        self.statusUpdate('Ready')
+        self.current_report.reset()
         if self.datecheck() or self.dframe is False:
             return
         if(self.tabs.currentIndex()==0):
