@@ -1,6 +1,8 @@
 from py import PIEdataVARS, PieHandler, htmlbase, report
 from pandas import Series, DataFrame, merge
 import matplotlib.pyplot as plt
+from collections import Counter
+import operator
 
 def main(driver, startdate, enddate, statuslabel, report):
     chats = PIEdataVARS.chat_messages
@@ -60,54 +62,65 @@ def main(driver, startdate, enddate, statuslabel, report):
 
     chatframe['icons'] = chatframe['colons'].map(lambda x: iconlistcleaner(x))
     chatframe = chatframe[['id', 'user-username', 'icons']]
+    print(chatframe.head(30))
 
-    melted =\
-    chatframe.icons.apply(Series) \
-        .merge(chatframe, right_index=True, left_index=True) \
-        .drop(["icons"], axis=1) \
-        .melt(id_vars=['id', 'user-username'], value_name="icon") \
-        .drop("variable", axis=1) \
-        .dropna()
-
-    chatframe = chatframe.sort_values(by='id', ascending=False)
+    chatframe['num_icons'] = chatframe['icons'].map(lambda x: len(x))
+    print(chatframe.head(15))
 
     #total number of messages
-    totalsent = melted[['user-username', 'id']]
-    totalunique = totalsent.groupby(['user-username']).nunique().drop('user-username',axis=1)
-    print(totalunique.head(10))
+    beefer = chatframe[['user-username', 'id']]
+    totalunique = beefer.groupby(['user-username']).count()
+    #totalunique.columns.names = ['user-username','total messages sent']
+    print(totalunique.head(15))
     print()
 
     #total icons sent
-    totalicons = totalsent.groupby(['user-username']).count()
-    print(totalicons.head(10))
+    icoframe = chatframe[['user-username', 'num_icons']]
+    totalicons = icoframe.groupby(['user-username']).sum()
+    #totalunique.columns.names = ['user-username', 'total icons sent']
+    print(totalicons.head(15))
     print()
 
-    #find average number of icons/message
-    chatframe['num_icons'] = chatframe['icons'].map(lambda x: len(x))
-    averages = chatframe[['user-username', 'num_icons']]
-    averages = averages.groupby(['user-username']).mean()
-    print(averages.head(10))
-    print()
+    #fold the frames down
+
+    def find_max(x):
+        if (len(x) == 0):
+            return 'N/A'
+        else:
+            maxer = 0
+            val = 'N/A'
+            for key, value in x.items():
+                if value > maxer:
+                    val = key
+                    maxer = value
+            return val + ' (' + str(maxer) + ')'
+
+    modded = chatframe[['user-username', 'icons']]
+    merged = modded.groupby('user-username').agg({'icons': 'sum'})
+    merged['counts'] = merged['icons'].apply(lambda x: dict(Counter(x)))
+    merged['most_used (times)'] = merged['counts'].apply(lambda x: find_max(x))
+    merged['unique icons used'] = merged['counts'].apply(lambda x: len(x))
+    merged = merged[['most_used (times)', 'unique icons used']]
+    print(merged.head(5))
 
     usertable = merge(totalunique,totalicons, left_index=True, right_index=True)
-    usertable = merge(usertable, averages, left_index=True, right_index=True).reset_index()
-    #usertable.columns.names = ['user-username', 'total messages', 'total icons', 'icons/message']
-    print(usertable.head(10))
+    usertable = merge(usertable,merged, left_index=True,right_index=True)
+    print(usertable.head(30))
+    usertable['avg icons/message'] =  usertable['num_icons'] / usertable['id']
+    usertable=usertable.reset_index()
+    usertable.columns = ['username', 'total messages sent', 'total icons sent', 'most used (times)', 'unique icons used', 'avg icons/message']
 
-    report.add('table', 'Count of Icon Usage', usertable)
-    """
-    #do the cool thing
-    plt.rcdefaults()
-    fig, ax = plt.subplots()
+    smaller = usertable.sort_values(by=['total messages sent'], ascending=False).head(20)
+    smaller = smaller.sort_values(by=['total messages sent'], ascending=True)
+    smaller = smaller[['username', 'total messages sent', 'total icons sent']]
 
-    ax.barh(counts['icon'], counts['count'],align='center')
-    ax.invert_yaxis()  # labels read top-to-bottom
-    ax.set_xlabel('Count of Icon Usage')
+    plt.tight_layout()
+    smaller.plot(x='username',kind='barh', figsize=(8, 10), zorder=2, width=0.85)
+    plt.tight_layout()
+    plt.savefig(htmlbase.figure_path + '\\totalmessages.png')
 
-    plt.savefig(htmlbase.figure_path + '\\iconuse.png')
-
-    report.add('graph', 'Icon Use Counts', '\\iconuse.png')
-    """
+    report.add('table', 'User Icon Usage', usertable)
+    report.add('graph', 'Total Messages sent', '\\totalmessages.png')
 
     report.makeHTML('Chat Icon Usage')
 

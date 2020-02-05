@@ -469,11 +469,11 @@ class mainwindow(QWidget):
             self.statuscombo.addItems(datatype.statusDict)
             self.statuscombo.setEnabled(True)
             if datatype.statusPost:
-                self.statuslabel.setText("Status (POST):")
+                self.statuslabels.setText("Status (POST):")
             else:
-                self.statuslabel.setText("Status:")
+                self.statuslabels.setText("Status:")
         else:
-            self.statuslabel.setText("Status:")
+            self.statuslabels.setText("Status:")
             self.statuscombo.clear()
             self.statuscombo.setEnabled(False)
 
@@ -509,6 +509,8 @@ class mainwindow(QWidget):
         self.endcombo.setEnabled(datatype.allowDates)
 
     def completed(self):
+        self.statusUpdate('Ready')
+        self.current_report.reset()
         if self.datecheck() or self.dframe is False:
             return
         if(self.tabs.currentIndex()==0):
@@ -516,6 +518,7 @@ class mainwindow(QWidget):
             self.mainwind.show()
         self.dframe = False
         self.dataoptions.get(self.datacombo.currentText()).reset()
+        self.current_report.reset()
         self.statusUpdate('Ready')
 
     def datecheck(self):
@@ -564,6 +567,7 @@ class submitThread(QThread):
                 self.window.statusUpdate("Complete")
                 self.window.dframe = frameboy
                 self.window.setDisabled(False)
+                return
         else:
             if self.window.current_report.active is False:
                 self.window.statusUpdate("ERROR: Report is not active")
@@ -581,3 +585,4 @@ class submitThread(QThread):
             self.window.statusUpdate("Starting Report")
             self.window.current_report.run_main(self.window.driver,self.window.startrepcal.selectedDate().toPyDate(), self.window.endrepcal.selectedDate().toPyDate(), self.window.statuslabel)
             self.window.setDisabled(False)
+            return
