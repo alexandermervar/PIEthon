@@ -2,7 +2,6 @@ from py import PIEdataVARS, PieHandler, htmlbase, report
 from pandas import Series, DataFrame, merge
 import matplotlib.pyplot as plt
 from collections import Counter
-import operator
 
 def main(driver, startdate, enddate, statuslabel, report):
     chats = PIEdataVARS.chat_messages
@@ -106,7 +105,7 @@ def main(driver, startdate, enddate, statuslabel, report):
     usertable = merge(totalunique,totalicons, left_index=True, right_index=True)
     usertable = merge(usertable,merged, left_index=True,right_index=True)
     print(usertable.head(30))
-    usertable['avg icons/message'] =  usertable['num_icons'] / usertable['id']
+    usertable['avg icons/message'] = usertable['num_icons'] / usertable['id']
     usertable=usertable.reset_index()
     usertable.columns = ['username', 'total messages sent', 'total icons sent', 'most used (times)', 'unique icons used', 'avg icons/message']
 
@@ -121,6 +120,8 @@ def main(driver, startdate, enddate, statuslabel, report):
 
     report.add('table', 'User Icon Usage', usertable)
     report.add('graph', 'Total Messages sent', '\\totalmessages.png')
+
+    # now do the exact same thing, but with icons. Will need to melt.
 
     report.makeHTML('Chat Icon Usage')
 
