@@ -122,6 +122,18 @@ def main(driver, startdate, enddate, statuslabel, report):
     report.add('graph', 'Total Messages sent', '\\totalmessages.png')
 
     # now do the exact same thing, but with icons. Will need to melt.
+    #make new version of chatframe that only has what I care about
+    iconframe = chatframe[['id', 'user-username', 'icons']]
+    melted = iconframe.explode('icons')
+    print(melted.head(15))
+
+    # find total messages appeared in
+    iconappearance = melted.groupby('id','icons').count()
+    print(iconappearance.head(15))
+
+    # find total uses
+    uses = melted.groupby('icons').count()
+    print(uses.head(15))
 
     report.makeHTML('Chat Icon Usage')
 
