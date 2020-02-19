@@ -42,6 +42,8 @@ def main(driver, startdate, enddate, statuslabel, report):
                 continue
             if icon in badlist:
                 continue
+            if not icon[0].isalpha():
+                continue
             if icon in kingdict:
                 kingdict[icon] = kingdict[icon] + 1
             else:
@@ -61,24 +63,17 @@ def main(driver, startdate, enddate, statuslabel, report):
 
     chatframe['icons'] = chatframe['colons'].map(lambda x: iconlistcleaner(x))
     chatframe = chatframe[['id', 'user-username', 'icons']]
-    print(chatframe.head(30))
 
     chatframe['num_icons'] = chatframe['icons'].map(lambda x: len(x))
-    print(chatframe.head(15))
 
     #total number of messages
     beefer = chatframe[['user-username', 'id']]
     totalunique = beefer.groupby(['user-username']).count()
-    #totalunique.columns.names = ['user-username','total messages sent']
-    print(totalunique.head(15))
-    print()
 
     #total icons sent
     icoframe = chatframe[['user-username', 'num_icons']]
     totalicons = icoframe.groupby(['user-username']).sum()
     #totalunique.columns.names = ['user-username', 'total icons sent']
-    print(totalicons.head(15))
-    print()
 
     #fold the frames down
 
@@ -100,11 +95,9 @@ def main(driver, startdate, enddate, statuslabel, report):
     merged['most_used (times)'] = merged['counts'].apply(lambda x: find_max(x))
     merged['unique icons used'] = merged['counts'].apply(lambda x: len(x))
     merged = merged[['most_used (times)', 'unique icons used']]
-    print(merged.head(5))
 
     usertable = merge(totalunique,totalicons, left_index=True, right_index=True)
     usertable = merge(usertable,merged, left_index=True,right_index=True)
-    print(usertable.head(30))
     usertable['avg icons/message'] = usertable['num_icons'] / usertable['id']
     usertable=usertable.reset_index()
     usertable.columns = ['username', 'total messages sent', 'total icons sent', 'most used (times)', 'unique icons used', 'avg icons/message']
@@ -125,15 +118,38 @@ def main(driver, startdate, enddate, statuslabel, report):
     #make new version of chatframe that only has what I care about
     iconframe = chatframe[['id', 'user-username', 'icons']]
     melted = iconframe.explode('icons')
-    print(melted.head(15))
 
     # find total messages appeared in
-    iconappearance = melted.groupby('id','icons').count()
-    print(iconappearance.head(15))
+    iconappearance = melted.groupby(['id','icons']).count().groupby(['icons']).count()
+    iconappearance.rename(columns={iconappearance.columns[0]: "messages appeared in"}, inplace=True)
 
     # find total uses
     uses = melted.groupby('icons').count()
-    print(uses.head(15))
+    uses.rename(columns={uses.columns[1]: "times used"}, inplace = True)
+    uses = uses[['times used']]
+
+    # most used by
+    usedby = melted.groupby(['icons','user-username'], as_index=False)['id'].count()
+    inner = usedby.groupby(['icons']).agg({'id':'max'}).reset_index()
+    usedby = merge(left = usedby, right=inner, how='inner', left_on=['icons','id'], right_on=['icons','id'])
+    usedby = usedby.set_index('icons')
+
+    usedby['most used by (times)'] = usedby['user-username'] + ' (' + usedby['id'].astype(str) + ')'
+    usedby = usedby[['most used by (times)']]
+    usedby = usedby.groupby(['icons']).agg({'most used by (times)':'first'})
+
+    # unique users
+    uniqueusers = melted.groupby(['icons','user-username'], as_index=False)['id'].count().groupby(['icons']).agg({'user-username':'count'})
+    uniqueusers.rename(columns={uniqueusers.columns[0]: "unique users"}, inplace=True)
+
+    # join em all into a biggy wiggy
+    merged = merge(iconappearance,uses, left_index=True, right_index=True)
+    merged = merge(merged,usedby,left_index=True,right_index=True)
+    merged = merge(merged, uniqueusers, left_index=True, right_index=True).reset_index()
+    merged.rename(columns={merged.columns[0]: "icon name"}, inplace=True)
+
+    report.add('table', 'Icon User Usage', merged)
+
 
     report.makeHTML('Chat Icon Usage')
 
