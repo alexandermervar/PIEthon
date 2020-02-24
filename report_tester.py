@@ -16,7 +16,7 @@ Report type, dates, and DUO authentication method are all decided in the file va
 from py.report import report_list
 
 # other variables (default times are Fall 2019)
-report_name = 'Chat Icon Usage'
+report_name = 'Badge Assignments'
 duotype = 'push'
 startdate = datetime.date(2019, 8, 25)
 enddate = datetime.date(2020, 1, 12)

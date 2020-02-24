@@ -25,10 +25,11 @@ class report:
     def reset(self):
         self.htmlbase = htmlbase.htmlbase()
 
-from py import reportLabBreakdown, reportMissingUserInfo, reportPDIs, reportStepouts, reportChatIcons
+from py import reportLabBreakdown, reportMissingUserInfo, reportPDIs, reportStepouts, reportChatIcons, reportBadges
 
 report_list = [reportLabBreakdown.labbreakreport,
                reportMissingUserInfo.missinginforeport,
                reportPDIs.pdireport,
                reportStepouts.stepoutreport,
-               reportChatIcons.chaticonreport]
+               reportChatIcons.chaticonreport,
+               reportBadges.badgereport]

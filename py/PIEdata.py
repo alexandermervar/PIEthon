@@ -36,6 +36,7 @@ class PIEdata:
         self.endPost = False
         self.createSwitch = False
         self.employeeswitch = False
+        self.assignedbyId = False
         self.allowDates = True
 
         self.invbool = False
@@ -68,7 +69,9 @@ class PIEdata:
             chunk = min(self.chunk_size, (self.endDate-startdate).days)
             baseurl = baseurl + '&endTime=' + str((startdate + timedelta(days=chunk)).strftime('%Y-%m-%d'))
         if (self.createdbyDict is not {} and not self.createdbyPost and self.createdby is not ''):
-            if not self.createSwitch:
+            if self.assignedbyId:
+                baseurl = baseurl + '&assignedById=' + str(self.createdbyDict[self.createdby].getId())
+            elif not self.createSwitch:
                 if len(self.categoryDict) > 1:
                     baseurl = baseurl + '&creatorIds=' + str(self.createdbyDict[self.createdby].getId())
                 else:
