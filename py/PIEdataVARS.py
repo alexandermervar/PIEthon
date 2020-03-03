@@ -114,8 +114,7 @@ list_o_data.append(schedules)
 
 # ASSIGNED BADGES
 assignedbadges = PIEdata.PIEdata('Assigned Badges', 'https://tcciub.pie.iu.edu/Api/AssignedBadges?page=0&pageLimit=1000000')
-assignedbadges.createdbyPost = True
-assignedbadges.assignedToPost = True
+assignedbadges.assignedbyId = True
 list_o_data.append(assignedbadges)
 
 # EMPLOYEE MEETINGS
